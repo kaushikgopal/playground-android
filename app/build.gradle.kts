@@ -35,11 +35,9 @@ android {
     buildFeatures {
         compose = true
     }
-    compileOptions {
-        // after agp 8.1.0-alpha09, this is no longer needed
-        // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+    kotlinOptions {
+        // allow kotlin auto-complete in ide
+        jvmTarget = "1.8"
     }
     packaging {
         resources {
