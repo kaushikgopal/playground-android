@@ -15,8 +15,9 @@ class App : Application() {
 
     // Log all priorities in debug builds, no-op in release builds.
     // AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
-    CompositeLogger.install(this)
+    CompositeLogger.install(appComponent.loggers)
 
     logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.provideAppName()}" }
+    logcat { "number of loggers: ${appComponent.loggers.size}" }
   }
 }

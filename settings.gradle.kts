@@ -27,3 +27,9 @@ include(
     ":common",
     ":common:log",
 )
+
+// domain specific dependencies only used in Pudi app
+include(
+    ":domain",
+    ":domain:shared", // used app wide (like AppComponent)
+)

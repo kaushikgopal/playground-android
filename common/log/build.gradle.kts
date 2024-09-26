@@ -29,4 +29,7 @@ dependencies {
     ksp(libs.kotlin.inject.anvil.compiler)
     implementation(libs.kotlin.inject.anvil.runtime)
     implementation(libs.kotlin.inject.anvil.runtime.utils)
+
+    // internal
+    implementation(project(":domain:shared"))
 }

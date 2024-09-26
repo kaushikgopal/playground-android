@@ -70,6 +70,7 @@ dependencies {
 
     // internal
     implementation(project(":common:log"))
+    implementation(project(":domain:shared"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

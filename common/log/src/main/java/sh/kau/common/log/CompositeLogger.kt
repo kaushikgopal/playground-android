@@ -1,13 +1,10 @@
 package sh.kau.common.log
 
-import android.app.Application
-import android.content.pm.ApplicationInfo
-import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
 
 class CompositeLogger(
-    private val loggers: Set<LogcatLogger>, // [crashlyticsLogger, androidLogger]
+    private val loggers: Set<LogcatLogger>,
 ) : LogcatLogger {
 
   override fun isLoggable(priority: LogPriority) = true
@@ -21,22 +18,10 @@ class CompositeLogger(
   }
 
   companion object {
-    fun install(
-        app: Application,
-        // loggers: Set<LogcatLogger>,
-        minPriorityForDebuggableApp: LogPriority = LogPriority.DEBUG,
-    ) {
-      val loggers =
-          setOf<LogcatLogger>(
-              AndroidLogcatLogger(minPriorityForDebuggableApp),
-          )
-
-      if (!LogcatLogger.isInstalled && app.isDebuggableApp) {
+    fun install(loggers: Set<LogcatLogger>) {
+      if (!LogcatLogger.isInstalled) {
         LogcatLogger.install(CompositeLogger(loggers))
       }
     }
   }
 }
-
-private val Application.isDebuggableApp: Boolean
-  get() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
