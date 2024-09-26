@@ -10,3 +10,7 @@ clean:
 	@fd -u -tf ".DS_Store" -X rm
 	@gum log -l debug "remove empty directories, suppressing error messages"
 	@fd -u -td -te -X rmdir
+
+kill-ksp:
+	@gum log -l info "This script will kill your kotlin daemon (useful for ksp errors)"
+	@jps | grep -E 'KotlinCompileDaemon' | awk '{print $$1}' | xargs kill -9 || true
