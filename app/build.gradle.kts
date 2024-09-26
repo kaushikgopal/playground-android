@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("plugin.compose")
+
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -32,12 +34,12 @@ android {
     buildFeatures {
         compose = true
     }
-//    compileOptions {
-//        // after agp 8.1.0-alpha09, this is no longer needed
-//        // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-//        sourceCompatibility = JavaVersion.VERSION_17
-//        targetCompatibility = JavaVersion.VERSION_17
-//    }
+    compileOptions {
+        // after agp 8.1.0-alpha09, this is no longer needed
+        // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -46,20 +48,32 @@ android {
 }
 
 dependencies {
-
+    // kotlin
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    // implementation(platform(libs.kotlin.bom))
+
+    // dependency injection
+    ksp(libs.kotlin.inject.compiler)
+    implementation(libs.kotlin.inject.runtime)
+    ksp(libs.kotlin.inject.anvil.compiler)
+    implementation(libs.kotlin.inject.anvil.runtime)
+    implementation(libs.kotlin.inject.anvil.runtime.utils)
+
+    // Compose Bill Of Materials
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.graphics) //
+    implementation(libs.androidx.ui.tooling.preview) // Android Studio Preview support
     implementation(libs.androidx.material3)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
