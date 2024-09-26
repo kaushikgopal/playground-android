@@ -66,8 +66,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview) // Android Studio Preview support
     implementation(libs.androidx.material3)
     debugImplementation(libs.androidx.ui.tooling)
-
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // internal
+    implementation(project(":common:log"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
