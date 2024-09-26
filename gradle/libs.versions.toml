@@ -10,9 +10,9 @@ appVersionName = "23.062.000"
 kotlin = "2.0.20"
 ksp = "2.0.20-1.0.25"   # issue: https://github.com/google/ksp/issues/2072
 coroutines = "1.8.1"
-kotlin-bcv = "0.13.2"
-kotlin-compiler = "1.5.14"
 kotlin-coroutines = "1.8.1"
+kotlin-compiler = "1.5.14"
+kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 
 kotlinInject = "0.7.2"
