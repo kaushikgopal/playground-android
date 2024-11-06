@@ -16,7 +16,7 @@ kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 
 kotlinInject = "0.7.2"
-kotlinInjectAnvil = "0.0.4"
+kotlinInjectAnvil = "0.1.0"
 
 coreKtx = "1.13.1"
 activityCompose = "1.9.2"
