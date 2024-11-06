@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     kotlin("plugin.compose")
 
     alias(libs.plugins.ksp)
@@ -71,6 +72,9 @@ dependencies {
     // internal
     implementation(project(":common:log"))
     implementation(project(":domain:shared"))
+
+    implementation(libs.androidx.navigation)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
