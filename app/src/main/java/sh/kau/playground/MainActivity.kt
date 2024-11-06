@@ -10,8 +10,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import sh.kau.playground.ui.theme.PlaygroundTheme
+import sh.kau.playground.ui.theme.Purple40
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,8 +21,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PlaygroundTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = Purple40,
+                ) { innerPadding ->
+                    MainScreen(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -31,9 +36,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun MainScreen(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
+        color = Color.White,
         modifier = modifier
     )
 }
@@ -42,6 +48,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     PlaygroundTheme {
-        Greeting("Android")
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = Purple40,
+        ) { innerPadding ->
+            MainScreen(
+                name = "Android Preview",
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
     }
 }
