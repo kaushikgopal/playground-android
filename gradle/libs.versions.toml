@@ -1,5 +1,7 @@
 [versions]
 agp = "8.6.1"
+kotlin = "2.0.20"
+
 compileSdk = "34"
 minSdk = "21"
 targetSdk = "34"
@@ -7,8 +9,7 @@ targetSdk = "34"
 appVersionCode = "1"
 appVersionName = "23.062.000"
 
-kotlin = "2.0.20"
-ksp = "2.0.20-1.0.25"   # issue: https://github.com/google/ksp/issues/2072
+ksp = "2.0.20-1.0.25"       # issue: https://github.com/google/ksp/issues/2072
 coroutines = "1.8.1"
 kotlin-coroutines = "1.8.1"
 kotlin-compiler = "1.5.14"
@@ -56,6 +57,10 @@ material = "1.10.0"
 
 [libraries]
 
+desugar-jdk-lib = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdk" }
+android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
@@ -78,14 +83,14 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
-androidx-navigation = {module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+androidx-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidxAppCompat" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "androidxAppCompat" }
 
-dagger =          { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
+
+dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
-desugar-jdk-lib = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdk" }
 kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlinInject" }
 kotlin-inject-runtime = { group = "me.tatarka.inject", name = "kotlin-inject-runtime", version.ref = "kotlinInject" }
 kotlin-inject-anvil-compiler = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "compiler", version.ref = "kotlinInjectAnvil" }
@@ -126,15 +131,15 @@ atsl-runner = { group = "androidx.test", name = "runner", version.ref = "android
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 
-kotlin =         { id = "org.jetbrains.kotlin.jvm",             version.ref = "kotlin" }  # for jvm only
-kotlin-android = { id = "org.jetbrains.kotlin.android",         version.ref = "kotlin" }  # for andorid projects
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }                                                        # for jvm only
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }                                            # for andorid projects
 kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt =    { id = "org.jetbrains.kotlin.kapt",            version.ref = "kotlin" }  # for annotation processing
-kotlin-kmp =     { id = "org.jetbrains.kotlin.multiplatform",   version.ref = "kotlin" }  # for multiplatform projects
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }                                                  # for annotation processing
+kotlin-kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }                                          # for multiplatform projects
 kotlin-compatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlin-bcv" }
 kotlin-dataframe = { id = "org.jetbrains.kotlinx.dataframe", version.ref = "kotlin-dataframe" }
-kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen",  version.ref = "kotlin" }  #
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" } # for compose navigation
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }                                     #
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }                         # for compose navigation
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
