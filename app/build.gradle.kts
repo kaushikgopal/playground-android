@@ -2,9 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-    kotlin("plugin.compose")
-
     alias(libs.plugins.ksp)
+    kotlin("plugin.compose")
 }
 
 android {
@@ -59,9 +58,13 @@ dependencies {
     implementation(libs.kotlin.inject.anvil.runtime)
     implementation(libs.kotlin.inject.anvil.runtime.utils)
 
+    // navigation
+    implementation(libs.androidx.navigation)
+    implementation(libs.kotlinx.serialization.json)
+
     // Compose Bill Of Materials
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics) //
     implementation(libs.androidx.ui.tooling.preview) // Android Studio Preview support
@@ -72,9 +75,8 @@ dependencies {
     // internal
     implementation(project(":common:log"))
     implementation(project(":domain:shared"))
+    implementation(project(":features:landing"))
 
-    implementation(libs.androidx.navigation)
-    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

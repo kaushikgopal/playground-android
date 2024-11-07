@@ -24,18 +24,15 @@ include(":app")
 
 // common utils that we can swap out with different implementations
 include(
-    ":common",
     ":common:log",
 )
 
 // domain specific dependencies only used in this app
 include(
-    ":domain",
     ":domain:shared", // used app wide (like AppComponent)
 )
 
 // features of this app; each standalone
 include(
-    ":features",
-    ":features:settings",
+    ":features:landing",
 )
