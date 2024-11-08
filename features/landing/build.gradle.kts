@@ -9,10 +9,10 @@ plugins {
 
 android {
     namespace = "sh.kau.playground.features.landing"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = libs.versions.sdk.compile.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = libs.versions.sdk.min.get().toInt()
     }
 
     buildFeatures {
