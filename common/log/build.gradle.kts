@@ -1,15 +1,15 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id(libs.plugins.kotlin.android.get().pluginId)
     alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "sh.kau.playground.common.log"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
+    compileSdk = libs.versions.sdk.compile.get().toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = libs.versions.sdk.min.get().toInt()
     }
 
     // allow kotlin auto-complete in ide
