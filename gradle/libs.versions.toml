@@ -6,7 +6,7 @@ targetSdk = "34"
 appVersionCode = "1"
 appVersionName = "23.062.000"
 
-android-gradle-plugin = "8.7.1"
+android-gradle-plugin = "8.7.2"
 kotlin = "2.0.20"
 
 ksp = "2.0.20-1.0.25"       # issue: https://github.com/google/ksp/issues/2072
@@ -19,7 +19,7 @@ kotlin-dataframe = "0.13.1"
 kotlinInject = "0.7.2"
 kotlinInjectAnvil = "0.1.0"
 
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 activityCompose = "1.9.2"
 androidxAppCompat = "1.7.0"
 androidxLifecycle = "2.8.6"
