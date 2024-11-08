@@ -7,7 +7,7 @@ in a more complex project.
 Some of the concepts implemented here:
 
 - [x] multi module setup (see `:common` & `:domain` & `:features`)
-- [ ] sharing build logic with [gradle convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
+- [x] sharing build logic with [gradle convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
 - [x] dependency injection with kotlin-inject(-anvil)
 - [x] logcat lib and injecting multiple loggers
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
