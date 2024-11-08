@@ -1,7 +1,6 @@
 plugins {
-//    id("playground.feature")
-    alias(libs.plugins.android.library)
-    id(libs.plugins.kotlin.android.get().pluginId)
+    id("template.feature")
+
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     kotlin("plugin.compose")

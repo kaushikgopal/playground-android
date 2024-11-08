@@ -16,15 +16,15 @@ class CoroutinesConventionPlugin: Plugin<Project> {
             val warningsAsErrors: String? by project
             allWarningsAsErrors = warningsAsErrors.toBoolean()
 
-            freeCompilerArgs = freeCompilerArgs + listOf(
-                "-opt-in=kotlin.RequiresOptIn",
-                // Enable experimental coroutines APIs, including Flow
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                "-opt-in=kotlinx.coroutines.FlowPreview",
-                "-opt-in=kotlin.Experimental",
-            )
+//            freeCompilerArgs = freeCompilerArgs + listOf(
+//                "-opt-in=kotlin.RequiresOptIn",
+//                // Enable experimental coroutines APIs, including Flow
+//                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+//                "-opt-in=kotlinx.coroutines.FlowPreview",
+//                "-opt-in=kotlin.Experimental",
+//            )
 
-            jvmTarget = JavaVersion.VERSION_11.toString()
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
 
         dependencies {
