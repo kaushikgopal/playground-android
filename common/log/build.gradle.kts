@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "sh.kau.playground.common.log"
+    namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
     compileSdk = libs.versions.sdk.compile.get().toInt()
 
     defaultConfig {

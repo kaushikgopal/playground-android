@@ -3,8 +3,9 @@ sdk-compile = "34"
 sdk-min = "21"
 sdk-target = "34"
 
-version-code = "1"
-version-name = "23.062.000"
+app-namespace="sh.kau.playground"
+app-version-code = "1"
+app-version-name = "23.062.000"
 
 android-gradle-plugin = "8.7.2"
 kotlin = "2.0.20"
