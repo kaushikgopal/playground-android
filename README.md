@@ -6,10 +6,12 @@ in a more complex project.
 
 Some of the concepts implemented here:
 
-- [x] multi module setup (see `:common` & `:domain` & `:features`)
 - [x] sharing build logic with [gradle convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
+- [x] gradle version catalog, BOM & Bundles
+- [x] multi module setup (see `:common` & `:domain` & `:features`)
 - [x] dependency injection with kotlin-inject(-anvil)
 - [x] logcat lib and injecting multiple loggers
+- [ ] compose-navigation between feature modules
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 
 

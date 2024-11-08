@@ -11,16 +11,12 @@ android-gradle-plugin = "8.7.2"
 kotlin = "2.0.20"
 
 ksp = "2.0.20-1.0.25"       # issue: https://github.com/google/ksp/issues/2072
-coroutines = "1.9.0"
-kotlin-coroutines = "1.8.1"
-kotlin-compiler = "1.5.14"
 kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 
 kotlinInject = "0.7.2"
 kotlinInjectAnvil = "0.1.0"
 
-coreKtx = "1.15.0"
 activityCompose = "1.9.2"
 androidxAppCompat = "1.7.0"
 androidxLifecycle = "2.8.6"
@@ -62,7 +58,7 @@ gradle-plugin-android = { group = "com.android.tools.build", name = "gradle", ve
 gradle-plugin-kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 ## Android
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version = "1.15.0" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "androidxLifecycle" }
@@ -96,11 +92,13 @@ atsl-runner = { group = "androidx.test", name = "runner", version.ref = "android
 
 # Non Android
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version = "1.9.0" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
+coroutines-android = { module = "org.jetbrains.kotlin:kotlinx-coroutines-android" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
+
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlinInject" }
@@ -154,3 +152,17 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+
+[bundles]
+compose = [
+    "androidx-core-ktx",
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-activity-compose",
+    "compose-ui",
+    "compose-material",
+    # "compose-tools",
+    # "compose-navigation",
+    # "compose-material-window",
+    # "accompanist-swiperefresh",
+    # "accompanist-systemuicontroller"
+]

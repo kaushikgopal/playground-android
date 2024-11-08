@@ -49,8 +49,6 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       val implementation by configurations
       val debugImplementation by configurations
 
-      // kotlin
-      implementation(libs.androidx.core.ktx)
 
       // dependency injection
       ksp(libs.kotlin.inject.compiler)
@@ -59,15 +57,15 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       implementation(libs.kotlin.inject.anvil.runtime)
       implementation(libs.kotlin.inject.anvil.runtime.utils)
 
-      // Compose Bill Of Materials
+      // Compose
       implementation(platform(libs.compose.bom))
-      implementation(libs.androidx.activity.compose)
-      implementation(libs.compose.ui)
+      implementation(libs.bundles.compose)
+
+      debugImplementation(libs.compose.tools.preview) // Android Studio Preview support
+      // debugImplementation(libs.compose.tools)
+
+
       implementation(libs.compose.tools.graphics) //
-      implementation(libs.compose.tools.preview) // Android Studio Preview support
-      implementation(libs.compose.material)
-      debugImplementation(libs.compose.tools)
-      implementation(libs.androidx.lifecycle.runtime.ktx)
     }
   }
 }
