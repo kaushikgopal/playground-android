@@ -1,7 +1,5 @@
 plugins {
     id("template.feature")
-
-    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     kotlin("plugin.compose")
 }
@@ -26,13 +24,6 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-
-    // dependency injection
-    ksp(libs.kotlin.inject.compiler)
-    implementation(libs.kotlin.inject.runtime)
-    ksp(libs.kotlin.inject.anvil.compiler)
-    implementation(libs.kotlin.inject.anvil.runtime)
-    implementation(libs.kotlin.inject.anvil.runtime.utils)
 
     // navigation
     implementation(libs.compose.navigation)
