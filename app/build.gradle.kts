@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
+    id(libs.plugins.android.application.get().pluginId)
+    id(libs.plugins.kotlin.android.get().pluginId)
+//    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     kotlin("plugin.compose")
 }
@@ -59,17 +59,17 @@ dependencies {
     implementation(libs.kotlin.inject.anvil.runtime.utils)
 
     // navigation
-    implementation(libs.androidx.navigation)
+    implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
     // Compose Bill Of Materials
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.compose.bom))
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics) //
-    implementation(libs.androidx.ui.tooling.preview) // Android Studio Preview support
-    implementation(libs.androidx.material3)
-    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.tools.graphics) //
+    implementation(libs.compose.tools.preview) // Android Studio Preview support
+    implementation(libs.compose.material)
+    debugImplementation(libs.compose.tools)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // internal
@@ -80,8 +80,8 @@ dependencies {
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.test.junit4)
+    debugImplementation(libs.compose.test.manifest)
 }

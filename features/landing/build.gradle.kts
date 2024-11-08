@@ -1,6 +1,7 @@
 plugins {
+//    id("playground.feature")
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id(libs.plugins.kotlin.android.get().pluginId)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     kotlin("plugin.compose")
@@ -35,17 +36,17 @@ dependencies {
     implementation(libs.kotlin.inject.anvil.runtime.utils)
 
     // navigation
-    implementation(libs.androidx.navigation)
+    implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
     // Compose Bill Of Materials
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.compose.bom))
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics) //
-    implementation(libs.androidx.ui.tooling.preview) // Android Studio Preview support
-    implementation(libs.androidx.material3)
-    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.tools.graphics) //
+    implementation(libs.compose.tools.preview) // Android Studio Preview support
+    implementation(libs.compose.material)
+    debugImplementation(libs.compose.tools)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
 
