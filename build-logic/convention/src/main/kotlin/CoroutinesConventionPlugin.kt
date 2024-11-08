@@ -10,7 +10,7 @@ import utils.kotlinOptions
 class CoroutinesConventionPlugin: Plugin<Project> {
 
     override fun apply(target: Project) = with(target) {
-        val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+        val libs = extensions.getByType<VersionCatalogsExtension>().named("utils.libs")
 
         kotlinOptions {
             val warningsAsErrors: String? by project

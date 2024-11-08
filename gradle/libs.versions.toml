@@ -1,7 +1,7 @@
 [versions]
-sdk-compile = "34"
+sdk-compile = "35"
 sdk-min = "21"
-sdk-target = "34"
+sdk-target = "35"
 
 app-namespace="sh.kau.playground"
 app-version-code = "1"
