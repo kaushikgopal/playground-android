@@ -6,23 +6,13 @@ plugins {
 
 android {
     namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
-    compileSdk = libs.versions.sdk.compile.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.sdk.min.get().toInt()
-    }
 
     buildFeatures {
         compose = true
     }
-    kotlinOptions {
-        // allow kotlin auto-complete in ide
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
 
     // navigation

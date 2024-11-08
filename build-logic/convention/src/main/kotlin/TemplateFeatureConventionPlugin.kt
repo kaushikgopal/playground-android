@@ -1,11 +1,10 @@
-import kotlin.jvm.kotlin
-import kotlin.text.get
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
 import utils.android
+import utils.kotlinOptions
 import utils.libs
 
 class TemplateFeatureConventionPlugin : Plugin<Project> {
@@ -17,7 +16,12 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
         plugins.apply(libs.plugins.ksp.get().pluginId)
 
         android {
-          buildFeatures { compose = true }
+          compileSdk = libs.versions.sdk.compile.get().toInt()
+          defaultConfig { minSdk = libs.versions.sdk.min.get().toInt() }
+          kotlinOptions {
+            // allow kotlin auto-complete in ide
+            jvmTarget = "1.8"
+          }
 
           packaging {
             resources {
