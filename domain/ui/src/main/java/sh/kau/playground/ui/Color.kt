@@ -1,4 +1,4 @@
-package sh.kau.playground.ui.theme
+package sh.kau.playground.ui
 
 import androidx.compose.ui.graphics.Color
 

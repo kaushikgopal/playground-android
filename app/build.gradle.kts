@@ -33,7 +33,10 @@ dependencies {
 
   // internal
   implementation(project(":common:log"))
+
+  implementation(project(":domain:ui"))
   implementation(project(":domain:shared"))
+
   implementation(project(":features:landing"))
 
   testImplementation(libs.junit)

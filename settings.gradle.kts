@@ -21,15 +21,16 @@ include(":app")
 
 // common utils that we can swap out with different implementations
 include(
-    ":common:log",
+    ":common:log",   // android non-ui (compose) module
 )
 
 // domain specific dependencies only used in this app
 include(
-    ":domain:shared", // used app wide (like AppComponent)
+    ":domain:shared", // pure kotlin module |  (like @Named for DI usage)
+    ":domain:ui",     // compose theme & style shared
 )
 
 // features of this app; each standalone
 include(
-    ":features:landing",
+    ":features:landing", // android ui (compose) module
 )

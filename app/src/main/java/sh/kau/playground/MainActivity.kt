@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import sh.kau.features.landing.ui.LandingScreen
-import sh.kau.playground.ui.theme.PlaygroundTheme
-import sh.kau.playground.ui.theme.Purple40
+import sh.kau.playground.ui.PlaygroundTheme
+import sh.kau.playground.ui.Purple40
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

@@ -22,13 +22,13 @@ fun LandingScreen(name: String, modifier: Modifier = Modifier) {
 
 //@Preview(showBackground = true)
 //@Composable
-//fun LandingPreview() {
+//fun LandingScreenPreview() {
 //    PlaygroundTheme {
 //        Scaffold(
 //            modifier = Modifier.fillMaxSize(),
 //            containerColor = Purple40,
 //        ) { innerPadding ->
-//            MainScreen(
+//            LandingScreen(
 //                name = "Android Preview",
 //                modifier = Modifier.padding(innerPadding)
 //            )
