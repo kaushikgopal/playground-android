@@ -68,10 +68,12 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
-compose-tools-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-compose-tools = { module = "androidx.compose.ui:ui-tooling" }
-compose-tools-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-material = { module = "androidx.compose.material3:material3" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
+
+compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-tools-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 
@@ -158,8 +160,8 @@ compose = [
     "androidx-core-ktx",
     "androidx-lifecycle-runtime-ktx",
     "androidx-activity-compose",
-    "compose-ui",
-    "compose-material",
+    "compose-ui",       #  main APIs for the underlying toolkit systems
+    "compose-material", #  material 3 design system
     # "compose-tools",
     # "compose-navigation",
     # "compose-material-window",

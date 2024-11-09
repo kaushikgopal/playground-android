@@ -23,7 +23,7 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       }
 
   /** Configurations common to both android app modules & android library modules */
-  fun Project.applyAndroidConfig(commonExtension: CommonExtension<*, *, *, *, *, *>) {
+  private fun Project.applyAndroidConfig(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
       compileSdk = libs.versions.sdk.compile.get().toInt()
       defaultConfig { minSdk = libs.versions.sdk.min.get().toInt() }
@@ -39,7 +39,7 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
         }
       }
 
-      buildFeatures { compose = true }
+      buildFeatures { compose = true } // enable compose functionality in Android Studio
     }
 
     plugins.apply(libs.plugins.kotlin.android.get().pluginId)
@@ -58,11 +58,10 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       // Compose
       implementation(platform(libs.compose.bom))
       implementation(libs.bundles.compose)
+      // AndroidStudio Preview support
+      implementation(libs.compose.tooling.preview)
+      debugImplementation(libs.compose.tooling)
 
-      debugImplementation(libs.compose.tools.preview) // Android Studio Preview support
-      // debugImplementation(libs.compose.tools)
-
-      implementation(libs.compose.tools.graphics) //
     }
   }
 }
