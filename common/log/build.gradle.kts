@@ -22,11 +22,8 @@ dependencies {
     api(libs.logcat)
 
     // dependency injection
-    ksp(libs.kotlin.inject.compiler)
-    implementation(libs.kotlin.inject.runtime)
-    ksp(libs.kotlin.inject.anvil.compiler)
-    implementation(libs.kotlin.inject.anvil.runtime)
-    implementation(libs.kotlin.inject.anvil.runtime.utils)
+    ksp(libs.bundles.kotlin.inject.compiler)
+    implementation(libs.bundles.kotlin.inject)
 
     // internal
     implementation(project(":domain:shared"))

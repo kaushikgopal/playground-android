@@ -166,3 +166,13 @@ compose = [
     # "accompanist-swiperefresh",
     # "accompanist-systemuicontroller"
 ]
+
+kotlin-inject = [
+    "kotlin-inject-runtime",
+    "kotlin-inject-anvil-runtime",
+    "kotlin-inject-anvil-runtime-utils",
+]
+kotlin-inject-compiler = [
+    "kotlin-inject-compiler",
+    "kotlin-inject-anvil-compiler",
+]

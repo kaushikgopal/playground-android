@@ -1,26 +1,29 @@
-import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
-import utils.configExtension
+import utils.configAndroidAppAndLib
 import utils.kotlinOptions
 import utils.libs
+import kotlin.jvm.kotlin
 
+/**
+ * You might be inclined to just include a lot of stuff here.
+ *
+ * Resist that urge! Only truly put things you find are common everywhere.
+ */
 class TemplateFeatureConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) =
       with(project) {
-        pluginManager.withPlugin("com.android.application") {
-          configExtension<ApplicationExtension> { project.applyAndroidConfig(this) }
-        }
-        pluginManager.withPlugin("com.android.library") {
-          configExtension<LibraryExtension> { project.applyAndroidConfig(this) }
-        }
+        configAndroidAppAndLib(
+            androidApp = { project.applyAndroidConfig(this) },
+            androidLib = { project.applyAndroidConfig(this) },
+        )
       }
 
+  /** Configurations common to both android app modules & android library modules */
   fun Project.applyAndroidConfig(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     commonExtension.apply {
       compileSdk = libs.versions.sdk.compile.get().toInt()
@@ -49,13 +52,9 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       val implementation by configurations
       val debugImplementation by configurations
 
-
       // dependency injection
-      ksp(libs.kotlin.inject.compiler)
-      implementation(libs.kotlin.inject.runtime)
-      ksp(libs.kotlin.inject.anvil.compiler)
-      implementation(libs.kotlin.inject.anvil.runtime)
-      implementation(libs.kotlin.inject.anvil.runtime.utils)
+      ksp(libs.bundles.kotlin.inject.compiler)
+      implementation(libs.bundles.kotlin.inject)
 
       // Compose
       implementation(platform(libs.compose.bom))
@@ -63,7 +62,6 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
 
       debugImplementation(libs.compose.tools.preview) // Android Studio Preview support
       // debugImplementation(libs.compose.tools)
-
 
       implementation(libs.compose.tools.graphics) //
     }
