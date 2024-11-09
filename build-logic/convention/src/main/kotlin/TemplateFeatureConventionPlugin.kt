@@ -7,7 +7,6 @@ import org.gradle.kotlin.dsl.provideDelegate
 import utils.configAndroidAppAndLib
 import utils.kotlinOptions
 import utils.libs
-import kotlin.jvm.kotlin
 
 /**
  * You might be inclined to just include a lot of stuff here.

@@ -1,3 +1,6 @@
+# many of these commands are specific to my macOS setup
+# so you may need to install some of these tools like fd, gum
+
 clean: clean-build
 	@gum log -l debug "removing .gradle directories"
 	@fd -u -t d '^.gradle$$' -X rm -Rf

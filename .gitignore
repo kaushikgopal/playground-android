@@ -152,8 +152,6 @@ $RECYCLE.BIN/
 **/build/
 !src/**/build/
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle/wrapper/gradle-wrapper.jar
 
 # Cache of project
 .gradletasknamecache
@@ -245,6 +243,9 @@ output.json
 # Android Profiling
 *.hprof
 
+
 ##############################################################################
 ### Project Specific
 
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle/wrapper/gradle-wrapper.jar

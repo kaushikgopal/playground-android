@@ -25,8 +25,6 @@ android {
 }
 
 dependencies {
-  // implementation(platform(libs.kotlin.bom))
-
   // navigation
   implementation(libs.compose.navigation)
   implementation(libs.kotlinx.serialization.json)
