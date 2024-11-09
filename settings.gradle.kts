@@ -33,4 +33,5 @@ include(
 // features of this app; each standalone
 include(
     ":features:landing", // android ui (compose) module
+    ":features:settings",
 )

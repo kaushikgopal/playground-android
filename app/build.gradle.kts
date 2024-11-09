@@ -36,6 +36,7 @@ dependencies {
   implementation(project(":domain:shared"))
 
   implementation(project(":features:landing"))
+  implementation(project(":features:settings"))
 
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)

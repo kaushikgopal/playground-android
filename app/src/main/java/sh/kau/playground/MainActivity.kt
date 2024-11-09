@@ -10,7 +10,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import sh.kau.features.landing.ui.LandingScreen
 import sh.kau.playground.ui.PlaygroundTheme
-import sh.kau.playground.ui.Purple40
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,9 +19,11 @@ class MainActivity : ComponentActivity() {
       PlaygroundTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = Purple40,
         ) { innerPadding ->
-          LandingScreen(name = "Android", modifier = Modifier.padding(innerPadding))
+          LandingScreen(
+              name = "Android developer",
+              modifier = Modifier.padding(innerPadding),
+          )
         }
       }
     }
