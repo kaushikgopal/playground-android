@@ -6,13 +6,13 @@ in a more complex project.
 
 Some of the concepts implemented here:
 
+- [x] multi module setup (see `:common` & `:domain` & `:features`)
 - [x] sharing build logic with [gradle convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
 - [x] gradle version catalog, BOM & Bundles
-- [x] multi module setup (see `:common` & `:domain` & `:features`)
-- [x] dependency injection with kotlin-inject(-anvil)
-- [x] logcat lib and injecting multiple loggers
 - [ ] compose-navigation between feature modules
+- [x] dependency injection with kotlin-inject(-anvil)
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
+- [x] logcat lib and injecting multiple loggers
 
 
 # Getting started
@@ -21,6 +21,6 @@ Some of the concepts implemented here:
 - in AndroidStudio rename the app package sh.kau.playground
 - Check if the manifest package was renamed along with the package
 - In app/build.gradle.kts, change the applicationId to the new app package
-- Run ./gradlew dependencyUpdates and check for dependencies
+
 
 Ready to Use and you're ready to start working on your new app!
