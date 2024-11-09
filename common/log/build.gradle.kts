@@ -21,8 +21,6 @@ android {
 dependencies {
     api(libs.logcat)
 
-    implementation(libs.androidx.core.ktx)
-
     // dependency injection
     ksp(libs.kotlin.inject.compiler)
     implementation(libs.kotlin.inject.runtime)
