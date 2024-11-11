@@ -3,7 +3,7 @@ sdk-compile = "35"
 sdk-min = "21"
 sdk-target = "35"
 
-app-namespace="sh.kau.playground"
+app-namespace = "sh.kau.playground"
 app-version-code = "1"
 app-version-name = "23.062.000"
 
@@ -160,10 +160,9 @@ compose = [
     "androidx-core-ktx",
     "androidx-lifecycle-runtime-ktx",
     "androidx-activity-compose",
-    "compose-ui",       #  main APIs for the underlying toolkit systems
+    "compose-ui", #  main APIs for the underlying toolkit systems
     "compose-material", #  material 3 design system
     # "compose-tools",
-    # "compose-navigation",
     # "compose-material-window",
     # "accompanist-swiperefresh",
     # "accompanist-systemuicontroller"

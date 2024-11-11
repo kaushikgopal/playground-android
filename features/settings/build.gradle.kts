@@ -8,8 +8,6 @@ android {
 }
 
 dependencies {
-
-
   // internal
   implementation(project(":domain:ui"))
 }
