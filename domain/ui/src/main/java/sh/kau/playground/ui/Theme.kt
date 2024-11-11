@@ -2,6 +2,7 @@ package sh.kau.playground.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -45,6 +46,5 @@ fun PlaygroundTheme(
         else -> LightColorScheme
       }
 
-  androidx.compose.material3.MaterialTheme(
-      colorScheme = colorScheme, typography = Typography, content = content)
+  MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
