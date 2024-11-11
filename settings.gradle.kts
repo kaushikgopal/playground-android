@@ -19,12 +19,12 @@ rootProject.name = "Playground"
 
 include(":app")
 
-// common utils that we can swap out with different implementations
+// common deps shared across the app but swappable with other implementations
 include(
     ":common:log",   // android non-ui (compose) module
 )
 
-// domain specific dependencies only used in this app
+// common deps shared across the app but domain specific and only used in this app
 include(
     ":domain:shared", // pure kotlin module |  (like @Named for DI usage)
     ":domain:ui",     // compose theme & style shared

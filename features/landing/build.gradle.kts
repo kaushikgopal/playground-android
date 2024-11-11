@@ -8,10 +8,6 @@ android {
 }
 
 dependencies {
-  // navigation
-  implementation(libs.compose.navigation)
-  implementation(libs.kotlinx.serialization.json)
-
   // internal
   implementation(project(":domain:ui"))
 }

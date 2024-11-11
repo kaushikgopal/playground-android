@@ -65,6 +65,8 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
 
       // Navigation
       implementation(libs.compose.navigation)
+      implementation(libs.kotlinx.serialization.json)
+
 
     }
   }
