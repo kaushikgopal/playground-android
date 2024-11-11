@@ -1,7 +1,6 @@
 plugins {
   id("com.android.library")
   id("template.feature")
-  alias(libs.plugins.kotlin.serialization)
 }
 
 android {

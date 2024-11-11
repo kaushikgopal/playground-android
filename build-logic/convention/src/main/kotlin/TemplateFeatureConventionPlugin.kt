@@ -45,6 +45,7 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
     plugins.apply(libs.plugins.kotlin.android.get().pluginId)
     plugins.apply(libs.plugins.kotlin.compose.compiler.get().pluginId)
     plugins.apply(libs.plugins.ksp.get().pluginId)
+    plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
 
     dependencies {
       val ksp by configurations
@@ -61,6 +62,9 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       // AndroidStudio Preview support
       implementation(libs.compose.tooling.preview)
       debugImplementation(libs.compose.tooling)
+
+      // Navigation
+      implementation(libs.compose.navigation)
 
     }
   }
