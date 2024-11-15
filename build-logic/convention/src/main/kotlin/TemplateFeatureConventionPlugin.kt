@@ -19,6 +19,19 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
         configAndroidAppAndLib(
           androidApp = {
             project.applyAndroidConfig(this)
+
+            // app level lint settings
+            lint {
+              quiet = true
+              // if true, stop the gradle build if errors are found
+              abortOnError = true
+              // if true, only report errors
+              ignoreWarnings = true
+              // Produce report for CI:
+              // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
+              sarifOutput = file("../lint-results.sarif")
+              textReport = true
+            }
           },
           androidLib = {
             project.applyAndroidConfig(this)
@@ -75,6 +88,10 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       // Navigation
       implementation(libs.compose.navigation)
       implementation(libs.kotlinx.serialization.json)
+
+      // internal dependencies
+      // be very judicious in adding more dependencies here
+      implementation(project(":common:log"))
 
       // enable lint
       val lintChecks by configurations

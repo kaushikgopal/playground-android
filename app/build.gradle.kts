@@ -1,6 +1,6 @@
 plugins {
   id("com.android.application")
-  id("template.feature")
+  id("template.feature") // comes packed with a lot of feature even at app level
 }
 
 android {
@@ -22,26 +22,11 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
-
-  lint {
-    quiet = true
-    // if true, stop the gradle build if errors are found
-    abortOnError = true
-    // if true, only report errors
-    ignoreWarnings = true
-    // Produce report for CI:
-    // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
-    sarifOutput = file("../lint-results.sarif")
-    textReport = true
-  }
 }
 
 dependencies {
 
-
-// internal
-  implementation(project(":common:log"))
-
+  // internal
   implementation(project(":domain:ui"))
   implementation(project(":domain:shared"))
 

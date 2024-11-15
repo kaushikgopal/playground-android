@@ -16,13 +16,16 @@ import sh.kau.playground.ui.Pink40
 
 @Composable
 fun SettingsScreen() {
-  Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
+  Box(modifier = Modifier
+      .fillMaxSize()
+      .background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
           text = "Settings Screen",
           color = Color.White,
           style = MaterialTheme.typography.headlineLarge,
-          fontWeight = FontWeight.Bold)
+          fontWeight = FontWeight.Bold,
+      )
     }
   }
 }
