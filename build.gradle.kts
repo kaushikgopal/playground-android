@@ -12,4 +12,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
 
     alias(libs.plugins.kotlin.serialization) apply false // needed for navigation
+
+    alias(libs.plugins.android.lint) apply false
 }

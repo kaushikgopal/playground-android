@@ -9,11 +9,11 @@ Some of the concepts implemented here:
 - [x] multi module setup (see `:common` & `:domain` & `:features`)
 - [x] sharing build logic with [gradle convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
 - [x] gradle version catalog, BOM & Bundles
-- [ ] compose-navigation between feature modules
+- [x] compose-navigation between feature modules
 - [x] dependency injection with kotlin-inject(-anvil)
+- [x] custom lint-rules
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 - [x] logcat lib and injecting multiple loggers
-
 
 # Getting started
 - Download this repository and open the template folder on Android Studio

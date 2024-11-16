@@ -17,8 +17,25 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) =
       with(project) {
         configAndroidAppAndLib(
-            androidApp = { project.applyAndroidConfig(this) },
-            androidLib = { project.applyAndroidConfig(this) },
+          androidApp = {
+            project.applyAndroidConfig(this)
+
+            // app level lint settings
+            lint {
+              quiet = true
+              // if true, stop the gradle build if errors are found
+              abortOnError = true
+              // if true, only report errors
+              ignoreWarnings = true
+              // Produce report for CI:
+              // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
+              // sarifOutput = file("../lint-results.sarif")
+              textReport = true
+            }
+          },
+          androidLib = {
+            project.applyAndroidConfig(this)
+          },
         )
       }
 
@@ -40,6 +57,11 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       }
 
       buildFeatures { compose = true } // enable compose functionality in Android Studio
+
+      lint {
+        // run lint on dependencies of this project
+        checkDependencies = true
+      }
     }
 
     plugins.apply(libs.plugins.kotlin.android.get().pluginId)
@@ -66,6 +88,16 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       // Navigation
       implementation(libs.compose.navigation)
       implementation(libs.kotlinx.serialization.json)
+
+      // internal dependencies
+      // be very judicious in adding more dependencies here
+      implementation(project(":common:log"))
+
+      // enable lint
+      val lintChecks by configurations
+      lintChecks(project(":common:lint-rules"))
+
+      //  implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     }
   }
 }

@@ -1,6 +1,6 @@
 plugins {
   id("com.android.application")
-  id("template.feature")
+  id("template.feature") // comes packed with a lot of feature even at app level
 }
 
 android {
@@ -25,9 +25,8 @@ android {
 }
 
 dependencies {
-  // internal
-  implementation(project(":common:log"))
 
+  // internal
   implementation(project(":domain:ui"))
   implementation(project(":domain:shared"))
 
