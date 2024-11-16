@@ -11,7 +11,7 @@ Some of the concepts implemented here:
 - [x] gradle version catalog, BOM & Bundles
 - [x] compose-navigation between feature modules
 - [x] dependency injection with kotlin-inject(-anvil)
-- [ ] custom lint-rules
+- [x] custom lint-rules
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 - [x] logcat lib and injecting multiple loggers
 
