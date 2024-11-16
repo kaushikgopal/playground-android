@@ -19,3 +19,27 @@ clean-build:
 kill-ksp:
 	@gum log -l info "This script will kill your kotlin daemon (useful for ksp errors)"
 	@jps | grep -E 'KotlinCompileDaemon' | awk '{print $$1}' | xargs kill -9 || true
+
+build:
+	@gum log -l info "This script will assemble the project (without linting)"
+	@./gradlew assemble -x lint
+
+lint:
+	@gum log -l info "This script will run lint checks"
+	@./gradlew lint
+
+lint-update:
+	@gum log -l info "Update the baseline for lint"
+	@./gradlew updateLintBaseline
+
+tests:
+	@echo "Run all unit tests without linting"
+	./gradlew tests -x lint
+
+#tests-screenshots:
+#	@echo "Verify all screenshots"
+#	./gradlew verifyPaparazziDebug
+#
+#record-screenshots:
+#	@echo "Record all screenshots"
+#	./gradlew recordPaparazziDebug

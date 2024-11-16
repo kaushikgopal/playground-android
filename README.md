@@ -14,6 +14,7 @@ Some of the concepts implemented here:
 - [x] custom lint-rules
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 - [x] logcat lib and injecting multiple loggers
+- [x] Makefile with common cli commands
 
 # Getting started
 - Download this repository and open the template folder on Android Studio
