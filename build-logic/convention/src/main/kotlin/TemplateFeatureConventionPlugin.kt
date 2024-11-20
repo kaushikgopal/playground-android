@@ -4,10 +4,10 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import utils.configAndroidAppAndLib
 import utils.kotlinOptions
 import utils.libs
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 /**
  * You might be inclined to just include a lot of stuff here.
@@ -78,13 +78,6 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       // dependency injection
       ksp(libs.bundles.kotlin.inject.compiler)
       implementation(libs.bundles.kotlin.inject)
-
-      // Compose
-      implementation(platform(libs.compose.bom))
-      implementation(libs.bundles.compose)
-      // AndroidStudio Preview support
-      implementation(libs.compose.tooling.preview)
-      debugImplementation(libs.compose.tooling)
 
       // Navigation
       implementation(libs.compose.navigation)
