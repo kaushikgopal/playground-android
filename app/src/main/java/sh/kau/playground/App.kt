@@ -3,7 +3,7 @@ package sh.kau.playground
 import android.app.Application
 import logcat.LogPriority
 import logcat.logcat
-import sh.kau.common.log.CompositeLogger
+import sh.kau.playground.common.log.CompositeLogger
 import sh.kau.playground.di.AppComponent
 
 class App : Application() {

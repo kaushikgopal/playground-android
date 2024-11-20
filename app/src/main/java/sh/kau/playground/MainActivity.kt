@@ -10,11 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import sh.kau.features.landing.nav.LandingScreenRoute
-import sh.kau.features.landing.nav.addLandingRoute
-import sh.kau.features.settings.nav.SettingsRoutes.SettingsGraphRoute
-import sh.kau.features.settings.nav.addSettingsGraph
-import sh.kau.playground.ui.PlaygroundTheme
+import sh.kau.playground.domain.ui.PlaygroundTheme
+import sh.kau.playground.features.landing.nav.LandingScreenRoute
+import sh.kau.playground.features.landing.nav.addLandingRoute
+import sh.kau.playground.features.settings.nav.SettingsRoutes.SettingsGraphRoute
+import sh.kau.playground.features.settings.nav.addSettingsGraph
 
 class MainActivity : ComponentActivity() {
 
