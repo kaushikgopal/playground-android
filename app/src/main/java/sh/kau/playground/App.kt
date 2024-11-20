@@ -1,6 +1,7 @@
 package sh.kau.playground
 
 import android.app.Application
+import android.util.Log
 import logcat.LogPriority
 import logcat.logcat
 import sh.kau.playground.common.log.CompositeLogger
@@ -21,6 +22,7 @@ class App : Application() {
     // is made possible because AppComponent inherits KotlinInjectAppComponentMerged directly
     // you could alternatively provide another injection intermediate object
 //    logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.provideAppName()}" }
+    Log.i("App", "xxx Welcome to ${appComponent.configComponent.provideAppName()}")
 
 //    logcat { "number of loggers: ${appComponent.loggers.size}" }
   }
