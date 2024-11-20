@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
-import sh.kau.domain.Named
 import sh.kau.playground.App
+import sh.kau.playground.domain.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent

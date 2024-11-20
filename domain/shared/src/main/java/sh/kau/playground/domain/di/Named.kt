@@ -1,4 +1,4 @@
-package sh.kau.domain
+package sh.kau.playground.domain.di
 
 import me.tatarka.inject.annotations.Qualifier
 
