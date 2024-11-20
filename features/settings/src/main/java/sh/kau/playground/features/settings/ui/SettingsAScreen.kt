@@ -19,6 +19,7 @@ import sh.kau.playground.domain.ui.Pink40
 fun SettingsAScreen(
     onNavigateToSettingsB: () -> Unit,
 ) {
+
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(

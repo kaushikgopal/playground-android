@@ -25,3 +25,12 @@ Some of the concepts implemented here:
 
 
 Ready to Use and you're ready to start working on your new app!
+
+
+# App module diagram (multi-module setup)
+
+This should give you an idea of how the inter module dependencies are setup. 
+In practice, when you add feature modules it should be pretty straightforward as the
+core dependencies are already setup.
+
+![App module diagram](./app-module-diagram.jpg)
