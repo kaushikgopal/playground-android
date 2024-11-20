@@ -1,98 +1,52 @@
-import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import utils.configAndroidAppAndLib
-import utils.kotlinOptions
+import utils.android
 import utils.libs
 
 /**
- * You might be inclined to just include a lot of stuff here.
+ * Feature convention plugin. This is the typical plugin you want to use while building most
+ * features.
  *
- * Resist that urge! Only truly put things you find are common everywhere.
+ * Usage:
+ * ```
+ * plugins {
+ *   id("com.android.library")
+ *   id("template.feature")
+ * }
+ * ```
+ *
+ * You might be inclined to just include a lot of stuff here. Resist that urge! Only truly put
+ * things you find are common everywhere.
+ *
+ * For android-specific configurations, use the [TemplateAndroidConventionPlugin] instead.
  */
-class TemplateFeatureConventionPlugin : Plugin<Project> {
-  override fun apply(project: Project) =
-      with(project) {
-        configAndroidAppAndLib(
-          androidApp = {
-            project.applyAndroidConfig(this)
+class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
+  override fun apply(project: Project) {
+    with(project) {
 
-            // app level lint settings
-            lint {
-              quiet = true
-              // if true, stop the gradle build if errors are found
-              abortOnError = true
-              // if true, only report errors
-              ignoreWarnings = true
-              // Produce report for CI:
-              // https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/sarif-support-for-code-scanning
-              // sarifOutput = file("../lint-results.sarif")
-              textReport = true
-            }
-          },
-          androidLib = {
-            project.applyAndroidConfig(this)
-          },
-        )
-      }
+      // Bring in the functionality from [TemplateAndroidConventionPlugin]
+      super.apply(project)
 
-  /** Configurations common to both android app modules & android library modules */
-  private fun Project.applyAndroidConfig(commonExtension: CommonExtension<*, *, *, *, *, *>) {
-    commonExtension.apply {
-      compileSdk = libs.versions.sdk.compile.get().toInt()
-      defaultConfig { minSdk = libs.versions.sdk.min.get().toInt() }
-      kotlinOptions {
-        // allow kotlin auto-complete in ide
-        jvmTarget.set(JvmTarget.JVM_1_8)
-      }
+      android {
+        namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
 
-      packaging {
-        resources {
-          excludes.add("/META-INF/{AL2.0,LGPL2.1}")
-          excludes.add("/META-INF/LICENSE*")
+        buildFeatures { compose = true } // enable compose functionality in Android Studio
+
+        plugins.apply(libs.plugins.kotlin.android.get().pluginId)
+        plugins.apply(libs.plugins.kotlin.compose.compiler.get().pluginId)
+        plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
+
+        dependencies {
+          val implementation by configurations
+
+          // internal dependencies
+          implementation(project(":domain:ui")) // brings in compose
+          implementation(project(":common:log"))
+          // implementation(project(":domain:shared"))
         }
       }
-
-      buildFeatures { compose = true } // enable compose functionality in Android Studio
-
-      lint {
-        // run lint on dependencies of this project
-        checkDependencies = true
-      }
-    }
-
-    plugins.apply(libs.plugins.kotlin.android.get().pluginId)
-    plugins.apply(libs.plugins.kotlin.compose.compiler.get().pluginId)
-    plugins.apply(libs.plugins.ksp.get().pluginId)
-    plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
-
-    dependencies {
-      val ksp by configurations
-      val implementation by configurations
-      val debugImplementation by configurations
-
-      // dependency injection
-      ksp(libs.bundles.kotlin.inject.compiler)
-      implementation(libs.bundles.kotlin.inject)
-
-      // Navigation
-      implementation(libs.compose.navigation)
-      implementation(libs.kotlinx.serialization.json)
-
-      // internal dependencies
-      // be very judicious in adding more dependencies here
-      implementation(project(":common:log"))
-      implementation(project(":domain:ui")) // brings in compose
-
-      // enable lint
-      val lintChecks by configurations
-      lintChecks(project(":common:lint-rules"))
-
-      //  implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     }
   }
 }

@@ -1,9 +1,16 @@
+import utils.libs
+
 plugins {
+  id("com.android.library")
   id("template.android")
   alias(libs.plugins.kotlin.compose.compiler)
 }
 
-android { buildFeatures { compose = true } }
+android {
+  namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
+
+  buildFeatures { compose = true }
+}
 
 dependencies {
   // Compose
