@@ -8,7 +8,7 @@ import sh.kau.features.landing.ui.LandingScreen
 
 @Serializable object LandingScreenRoute
 
-fun NavGraphBuilder.landingScreen(
+fun NavGraphBuilder.addLandingRoute(
     name: String = "Default name",
     modifier: Modifier = Modifier,
     onNavigateToSettings: () -> Unit,

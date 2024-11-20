@@ -19,7 +19,7 @@ sealed class SettingsRoutes {
   @Serializable data object ScreenBRoute
 }
 
-fun NavGraphBuilder.buildSettingsGraph(
+fun NavGraphBuilder.addSettingsGraph(
     navGraphBuilder: NavGraphBuilder,
     navHostController: NavHostController,
 ) {

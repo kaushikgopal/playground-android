@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import sh.kau.features.landing.nav.LandingScreenRoute
-import sh.kau.features.landing.nav.landingScreen
+import sh.kau.features.landing.nav.addLandingRoute
 import sh.kau.features.settings.nav.SettingsRoutes.SettingsGraphRoute
-import sh.kau.features.settings.nav.buildSettingsGraph
+import sh.kau.features.settings.nav.addSettingsGraph
 import sh.kau.playground.ui.PlaygroundTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,12 +32,12 @@ class MainActivity : ComponentActivity() {
               navController = navController,
               startDestination = LandingScreenRoute,
           ) {
-            // building the main nava graph
-            landingScreen(
+              // building the main nav graph
+              addLandingRoute(
                 modifier = Modifier.padding(innerPadding),
                 onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
             )
-            buildSettingsGraph(
+              addSettingsGraph(
                 navGraphBuilder = this,
                 navHostController = navController,
             )
