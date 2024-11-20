@@ -17,7 +17,15 @@ dependencies {
 
 gradlePlugin {
     plugins {
+
+        register("templateAndroid") {
+            // pure basic android module
+            id = "template.android"
+            implementationClass = "TemplateAndroidConventionPlugin"
+        }
+
         register("templateFeature") {
+            // typical UI feature (based on android module above)
             id = "template.feature"
             implementationClass = "TemplateFeatureConventionPlugin"
         }

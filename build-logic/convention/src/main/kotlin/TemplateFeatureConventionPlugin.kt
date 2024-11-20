@@ -86,7 +86,7 @@ class TemplateFeatureConventionPlugin : Plugin<Project> {
       // internal dependencies
       // be very judicious in adding more dependencies here
       implementation(project(":common:log"))
-      implementation(project(":domain:ui"))
+      implementation(project(":domain:ui")) // brings in compose
 
       // enable lint
       val lintChecks by configurations

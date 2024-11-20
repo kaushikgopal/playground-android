@@ -16,23 +16,15 @@ inline fun Project.configAndroidAppAndLib(
     crossinline androidApp: ApplicationExtension.() -> Unit,
     crossinline androidLib: LibraryExtension.() -> Unit,
 ) {
-  pluginManager.withPlugin("com.android.library") {
-    androidLib {
-      androidLib.invoke(this)
-    }
-  }
-  pluginManager.withPlugin("com.android.application") {
-    androidApp {
-      androidApp.invoke(this)
-    }
-  }
+  pluginManager.withPlugin("com.android.library") { android { androidLib.invoke(this) } }
+  pluginManager.withPlugin("com.android.application") { app { androidApp.invoke(this) } }
 }
 
-inline fun Project.androidApp(block: ApplicationExtension.() -> Unit): ApplicationExtension {
+inline fun Project.app(block: ApplicationExtension.() -> Unit): ApplicationExtension {
   return project.extensions.getByType(ApplicationExtension::class.java).apply(block)
 }
 
-inline fun Project.androidLib(block: LibraryExtension.() -> Unit): LibraryExtension {
+inline fun Project.android(block: LibraryExtension.() -> Unit): LibraryExtension {
   return project.extensions.getByType(LibraryExtension::class.java).apply(block)
 }
 
