@@ -1,4 +1,4 @@
-package sh.kau.playground.domain
+package sh.kau.playground.domain.shared
 
 /**
  * This is the main application interface.

@@ -6,7 +6,7 @@ import logcat.LogPriority
 import logcat.logcat
 import sh.kau.playground.common.log.CompositeLogger
 import sh.kau.playground.di.AppComponent
-import sh.kau.playground.domain.App
+import sh.kau.playground.domain.shared.App
 
 class PlaygroundApp : App, Application() {
 

@@ -7,7 +7,7 @@ import me.tatarka.inject.annotations.IntoSet
 import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.common.log.AndroidLogger
 import sh.kau.playground.common.log.AndroidLogger2
-import sh.kau.playground.domain.App
+import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.Named
 
 @Component

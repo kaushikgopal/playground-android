@@ -4,7 +4,7 @@ import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.App
+import sh.kau.playground.domain.shared.App
 
 /**
  * Only reason we have this vs using AndroidLogcatLogger directly is:

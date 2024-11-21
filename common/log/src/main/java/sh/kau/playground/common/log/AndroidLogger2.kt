@@ -4,7 +4,7 @@ import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.App
+import sh.kau.playground.domain.shared.App
 
 /** Purely to demonstrate multi-binding + composite logging you shouldn't have this in a real app */
 @Inject
