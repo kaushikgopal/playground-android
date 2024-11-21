@@ -3,13 +3,11 @@ plugins {
     id("template.android")
 }
 
+
 android {
     namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
 }
 
 dependencies {
-    api(libs.logcat)
-
     // internal
-    implementation(project(":domain:app"))
 }

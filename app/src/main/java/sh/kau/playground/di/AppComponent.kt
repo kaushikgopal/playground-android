@@ -3,8 +3,8 @@ package sh.kau.playground.di
 import android.content.Context
 import me.tatarka.inject.annotations.Component
 import sh.kau.playground.common.log.di.LogComponent
-import sh.kau.playground.domain.shared.App
-import sh.kau.playground.domain.shared.di.ConfigComponent
+import sh.kau.playground.domain.app.App
+import sh.kau.playground.domain.app.di.ConfigComponent
 
 @Component
 abstract class AppComponent(
@@ -20,7 +20,7 @@ abstract class AppComponent(
       if (instance != null) return instance!!
 
       val app = context.applicationContext as App
-      val config = ConfigComponent.create(app)
+      val config = ConfigComponent.Companion.create(app)
       instance =
           AppComponent::class.create(
               config,

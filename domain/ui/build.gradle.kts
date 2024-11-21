@@ -22,5 +22,6 @@ dependencies {
   debugApi(libs.compose.tooling)
 
   // Internal
+  implementation(project(":domain:app"))
   implementation(project(":domain:shared"))
 }
