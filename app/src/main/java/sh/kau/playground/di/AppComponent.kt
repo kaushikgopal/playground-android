@@ -8,17 +8,10 @@ import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.common.log.AndroidLogger
 import sh.kau.playground.common.log.AndroidLogger2
 import sh.kau.playground.domain.shared.App
-import sh.kau.playground.domain.shared.di.Named
-
-@Component
-abstract class ConfigComponent(private val app: App) {
-
-  @Provides fun provideAppName(): @Named("appName") String = "My Playground!"
-}
+import sh.kau.playground.domain.shared.di.ConfigComponent
 
 @Component
 abstract class AppComponent(
-    @get:Provides val app: App,
     @Component val configComponent: ConfigComponent, // component inheritance
 ) {
 
@@ -41,8 +34,7 @@ abstract class AppComponent(
       val app = context.applicationContext as App
       instance =
           AppComponent::class.create(
-              app,
-              ConfigComponent::class.create(app),
+              ConfigComponent.create(app),
           )
 
       return instance!!
