@@ -11,5 +11,4 @@ dependencies {
     api(libs.logcat)
 
     // internal
-    implementation(project(":domain:shared"))
 }
