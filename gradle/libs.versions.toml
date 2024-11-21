@@ -158,12 +158,12 @@ compose = [
 
 kotlin-inject = [
     "kotlin-inject-runtime",
-    "kotlin-inject-anvil-runtime",
-    "kotlin-inject-anvil-runtime-utils",
+#    "kotlin-inject-anvil-runtime",
+#    "kotlin-inject-anvil-runtime-utils",
 ]
 kotlin-inject-compiler = [
     "kotlin-inject-compiler",
-    "kotlin-inject-anvil-compiler",
+#    "kotlin-inject-anvil-compiler",
 ]
 lint-api = [
     "kotlin-stdlib",

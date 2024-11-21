@@ -1,7 +1,11 @@
+
 plugins {
     id(libs.plugins.kotlin.jvm.get().pluginId)
+    id(libs.plugins.ksp.get().pluginId)
 }
 
 dependencies {
-    implementation(libs.kotlin.inject.runtime)
+    // dependency injection
+    ksp(libs.bundles.kotlin.inject.compiler)
+    implementation(libs.bundles.kotlin.inject)
 }
