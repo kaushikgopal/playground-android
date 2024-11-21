@@ -1,6 +1,7 @@
 plugins {
   id("com.android.application")
   id("template.android")
+  alias(libs.plugins.kotlin.compose.compiler)
 }
 
 android {
@@ -22,6 +23,8 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
+
+  buildFeatures { compose = true }
 
   lint {
     quiet = true

@@ -40,7 +40,6 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
 
         dependencies {
           val implementation by configurations
-
           // internal dependencies
           implementation(project(":domain:ui")) // brings in compose
           implementation(project(":common:log"))
