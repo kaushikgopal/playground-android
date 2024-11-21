@@ -42,7 +42,6 @@ android {
 dependencies {
   // internal
   implementation(project(":domain:app"))
-  implementation(project(":domain:ui"))
 
   implementation(project(":features:landing"))
   implementation(project(":features:settings"))
