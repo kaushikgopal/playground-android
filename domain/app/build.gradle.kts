@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-    api(libs.logcat)
-
     // internal
+    api(project(":common:log"))
+    api(project(":domain:ui")) // brings in compose
 }

@@ -9,13 +9,11 @@ abstract class ConfigComponent(
     private val app: App,
 ) {
 
-    @Provides
-    fun provideAppName(): @Named("appName") String = "My Playground!"
+  @Provides fun provideAppName(): @Named("appName") String = "My Playground!"
 
-    @Provides
-    fun isDebuggable(): @Named("debuggableApp") Boolean = app.isDebuggable
+  @Provides fun isDebuggable(): @Named("debuggableApp") Boolean = app.isDebuggable
 
-    companion object {
-        fun create(app: App): ConfigComponent = ConfigComponent::class.create(app)
-    }
+  companion object {
+    fun create(app: App): ConfigComponent = ConfigComponent::class.create(app)
+  }
 }

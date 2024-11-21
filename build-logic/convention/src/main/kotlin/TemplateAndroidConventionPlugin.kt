@@ -84,6 +84,7 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
 
       // internal dependencies
       // be very judicious in adding more dependencies here
+      implementation(project(":domain:shared"))
 
       // enable lint
       val lintChecks by configurations

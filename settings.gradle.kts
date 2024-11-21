@@ -18,22 +18,25 @@ dependencyResolutionManagement {
 
 rootProject.name = "Playground"
 
+// See [app-module-diagram.webp] for visual reference
 include(":app")
 
-// common deps shared across the app but swappable with other implementations
+// common modules (shared across the app) but swappable with other implementations
 include(
-    ":common:log", // android non-ui (compose) module
+    ":common:log", // android module
     ":common:lint-rules",
 )
 
-// common deps shared across the app but domain specific and only used in this app
+// module specific to this app
 include(
-    ":domain:shared", // pure kotlin module |  (like @Named for DI usage)
-    ":domain:ui", // compose theme & style shared
+    ":domain:shared", // pure kotlin module |  @Named + ConfigComponent + referenced everywhere
+    ":domain:ui", // compose theme & design system
+    ":domain:app", // app level functionality
+    // features depend on this module preventing circular dependency over :app
 )
 
 // features of this app; each standalone
 include(
-    ":features:landing", // android ui (compose) module
+    ":features:landing", // typical feature
     ":features:settings",
 )
