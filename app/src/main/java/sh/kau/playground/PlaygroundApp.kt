@@ -1,14 +1,19 @@
 package sh.kau.playground
 
 import android.app.Application
+import android.content.pm.ApplicationInfo
 import logcat.LogPriority
 import logcat.logcat
 import sh.kau.playground.common.log.CompositeLogger
 import sh.kau.playground.di.AppComponent
+import sh.kau.playground.domain.App
 
-class App : Application() {
+class PlaygroundApp : App, Application() {
 
   private val appComponent by lazy(LazyThreadSafetyMode.NONE) { AppComponent.from(this) }
+
+  override val isDebuggable: Boolean
+    get() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
   override fun onCreate() {
     super.onCreate()
