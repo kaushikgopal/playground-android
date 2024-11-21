@@ -3,7 +3,7 @@ package sh.kau.playground.domain.ui
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import sh.kau.playground.domain.app.App
+import sh.kau.playground.domain.shared.App
 
 /**
  * Usage:

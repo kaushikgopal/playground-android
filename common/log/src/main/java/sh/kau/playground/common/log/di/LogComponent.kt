@@ -6,7 +6,7 @@ import me.tatarka.inject.annotations.IntoSet
 import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.common.log.AndroidLogger
 import sh.kau.playground.common.log.AndroidLogger2
-import sh.kau.playground.domain.app.di.ConfigComponent
+import sh.kau.playground.domain.shared.di.ConfigComponent
 
 @Component
 abstract class LogComponent(

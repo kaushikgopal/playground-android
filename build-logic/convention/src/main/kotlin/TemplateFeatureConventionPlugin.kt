@@ -43,7 +43,6 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
           // internal dependencies
           implementation(project(":domain:app"))
           implementation(project(":domain:ui")) // brings in compose
-          implementation(project(":common:log"))
         }
       }
     }

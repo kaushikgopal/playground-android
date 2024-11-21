@@ -43,7 +43,6 @@ dependencies {
   // internal
   implementation(project(":domain:app"))
   implementation(project(":domain:ui"))
-  implementation(project(":common:log"))
 
   implementation(project(":features:landing"))
   implementation(project(":features:settings"))

@@ -1,9 +1,8 @@
-package sh.kau.playground.domain.app.di
+package sh.kau.playground.domain.shared.di
 
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
-import sh.kau.playground.domain.app.App
-import sh.kau.playground.domain.shared.di.Named
+import sh.kau.playground.domain.shared.App
 
 @Component
 abstract class ConfigComponent(

@@ -1,10 +1,10 @@
-package sh.kau.playground.di
+package sh.kau.playground.domain.app.di
 
 import android.content.Context
 import me.tatarka.inject.annotations.Component
 import sh.kau.playground.common.log.di.LogComponent
-import sh.kau.playground.domain.app.App
-import sh.kau.playground.domain.app.di.ConfigComponent
+import sh.kau.playground.domain.shared.App
+import sh.kau.playground.domain.shared.di.ConfigComponent
 
 @Component
 abstract class AppComponent(
@@ -24,7 +24,7 @@ abstract class AppComponent(
       instance =
           AppComponent::class.create(
               config,
-              LogComponent.create(config),
+              LogComponent.Companion.create(config),
           )
 
       return instance!!
