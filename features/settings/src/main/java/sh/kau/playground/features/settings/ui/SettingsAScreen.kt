@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,19 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import logcat.logcat
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.domain.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
 
 // kotlin-inject function injection (1)
-// typealias SettingsAScreen = @Composable (() -> Unit) -> Unit
-typealias SettingsAScreen = @Composable () -> Unit
+typealias SettingsAScreen = @Composable (navToSettingsB: () -> Unit) -> Unit
 
 @Inject
 @Composable
 fun SettingsAScreen(
     bindings: SettingsBindings,
-//    onNavigateToSettingsB: () -> Unit,
+    @Assisted navToSettingsB: () -> Unit, // kotlin-inject assisted injection
 ) {
   logcat(bindings.tag) { "xxx injected app name →  ${bindings.appName}" }
 
@@ -37,12 +38,12 @@ fun SettingsAScreen(
           style = MaterialTheme.typography.headlineLarge,
           fontWeight = FontWeight.Bold,
       )
-      /*Button(
-          onClick = onNavigateToSettingsB,
+      Button(
+          onClick = navToSettingsB,
           modifier = Modifier.align(Alignment.CenterHorizontally),
       ) {
         Text(text = "Settings B", color = Color.White)
-      }*/
+      }
     }
   }
 }
