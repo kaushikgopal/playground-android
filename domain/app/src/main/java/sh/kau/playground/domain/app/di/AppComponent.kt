@@ -1,5 +1,6 @@
 package sh.kau.playground.domain.app.di
 
+import android.content.Context
 import me.tatarka.inject.annotations.Component
 import sh.kau.playground.common.log.di.LogComponent
 import sh.kau.playground.domain.shared.App
@@ -15,7 +16,9 @@ abstract class AppComponent(
   companion object {
     private var instance: AppComponent? = null
 
-    fun from(app: App): AppComponent {
+    fun from(context: Context): AppComponent {
+      val app = context.applicationContext as App
+
       if (instance != null) return instance!!
 
       val config = ConfigComponent.Companion.create(app)

@@ -5,8 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import kotlinx.serialization.Serializable
+import sh.kau.playground.features.settings.di.SettingsComponent
 import sh.kau.playground.features.settings.nav.SettingsRoutes.SettingsGraphRoute
-import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
 
 sealed class SettingsRoutes {
@@ -18,12 +18,18 @@ sealed class SettingsRoutes {
 }
 
 fun NavGraphBuilder.addSettingsGraph(
+    settingsComponent: SettingsComponent,
     navGraphBuilder: NavGraphBuilder,
     navHostController: NavHostController,
 ) {
+
   navGraphBuilder.navigation<SettingsGraphRoute>(startDestination = SettingsRoutes.ScreenARoute) {
     composable<SettingsRoutes.ScreenARoute> {
-      SettingsAScreen { navHostController.navigate(SettingsRoutes.ScreenBRoute) }
+       // kotlin-inject function injection (3)
+      // () invokes @Composable  ⚠️    ↓
+      settingsComponent.settingsAScreen()
+      //      settingsComponent.settingsAScreen() {
+      // navHostController.navigate(SettingsRoutes.ScreenBRoute) }
     }
     composable<SettingsRoutes.ScreenBRoute> { SettingsBScreen() }
   }
