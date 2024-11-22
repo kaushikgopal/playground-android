@@ -9,11 +9,12 @@ Some of the concepts implemented here:
 - [x] multi module setup (see `:common` & `:domain` & `:features`)
 - [x] sharing build logic with [gradle convention plugin](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
 - [x] gradle version catalog, BOM & Bundles
-- [x] compose-navigation between feature modules
-- [x] dependency injection with kotlin-inject(-anvil)
 - [x] custom lint-rules
-- [x] logcat lib and injecting multiple loggers
+- [x] compose-navigation between feature modules
 - [x] Makefile with common cli commands
+- [x] dependency injection with kotlin-inject
+  - [x] function-injection demo in `@Composable`
+- [x] logcat lib and injecting multiple loggers
 - [ ] use Coil for image loading 
 - [ ] add networking lob
 - [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
