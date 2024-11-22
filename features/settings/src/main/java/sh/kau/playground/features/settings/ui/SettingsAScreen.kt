@@ -19,7 +19,6 @@ import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.domain.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
 
-// kotlin-inject function injection (1)
 typealias SettingsAScreen = @Composable (navToSettingsB: () -> Unit) -> Unit
 
 @Inject
@@ -28,7 +27,7 @@ fun SettingsAScreen(
     bindings: SettingsBindings,
     @Assisted navToSettingsB: () -> Unit, // kotlin-inject assisted injection
 ) {
-  logcat(bindings.tag) { "xxx injected app name →  ${bindings.appName}" }
+  logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

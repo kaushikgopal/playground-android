@@ -12,10 +12,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import logcat.logcat
+import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.domain.ui.Pink40
+import sh.kau.playground.features.settings.di.SettingsBindings
 
+// kotlin-inject function injection (1)
+typealias SettingsBScreen = @Composable () -> Unit
+
+@Inject
 @Composable
-fun SettingsBScreen() {
+fun SettingsBScreen(
+    bindings: SettingsBindings,
+) {
+
+ logcat("SettingsB") { "xxx injected app name →  ${bindings.appName}" }
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
@@ -30,5 +41,5 @@ fun SettingsBScreen() {
 @Preview(showBackground = true)
 @Composable
 fun SettingsBScreenPreview() {
-  SettingsBScreen()
+//  SettingsBScreen()
 }
