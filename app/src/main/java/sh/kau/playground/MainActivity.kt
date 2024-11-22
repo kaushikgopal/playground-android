@@ -10,9 +10,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import sh.kau.playground.domain.app.di.AppComponent
 import sh.kau.playground.domain.ui.PlaygroundTheme
 import sh.kau.playground.features.landing.nav.LandingScreenRoute
 import sh.kau.playground.features.landing.nav.addLandingRoute
+import sh.kau.playground.features.settings.di.SettingsComponent
 import sh.kau.playground.features.settings.nav.SettingsRoutes.SettingsGraphRoute
 import sh.kau.playground.features.settings.nav.addSettingsGraph
 
@@ -21,6 +23,8 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
+
+    val appComponent = AppComponent.from(this)
 
     setContent {
       PlaygroundTheme {
@@ -32,12 +36,13 @@ class MainActivity : ComponentActivity() {
               navController = navController,
               startDestination = LandingScreenRoute,
           ) {
-              // building the main nav graph
-              addLandingRoute(
+            // building the main nav graph
+            addLandingRoute(
                 modifier = Modifier.padding(innerPadding),
                 onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
             )
-              addSettingsGraph(
+            addSettingsGraph(
+                settingsComponent = SettingsComponent.create(appComponent),
                 navGraphBuilder = this,
                 navHostController = navController,
             )
