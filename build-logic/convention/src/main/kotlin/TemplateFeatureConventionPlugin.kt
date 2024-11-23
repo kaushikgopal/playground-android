@@ -43,6 +43,7 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
 
           // internal dependencies
           implementation(project(":domain:app"))
+          implementation(project(":common:networking"))
         }
       }
     }

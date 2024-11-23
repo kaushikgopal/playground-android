@@ -13,7 +13,6 @@ import sh.kau.playground.domain.shared.di.Named
  * - control if logs sent for debuggable app
  * - demonstrate/show-off multibinding with kotlin-inject
  */
-@AppScope
 @Inject
 // @SingleIn(AppScope::class)
 // @ContributesBinding(AppScope::class, multibinding = true)

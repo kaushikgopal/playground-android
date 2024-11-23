@@ -3,6 +3,7 @@ package sh.kau.playground.domain.app.di
 import android.content.Context
 import me.tatarka.inject.annotations.Component
 import sh.kau.playground.common.log.di.LogComponent
+import sh.kau.playground.common.networking.di.NetworkComponent
 import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.AppScope
 import sh.kau.playground.domain.shared.di.ConfigComponent
@@ -12,6 +13,7 @@ import sh.kau.playground.domain.shared.di.ConfigComponent
 abstract class AppComponent(
     // component inheritance ↓
     @Component val configComponent: ConfigComponent,
+    @Component val networkComponent: NetworkComponent,
     @Component val logComponent: LogComponent,
 ) {
 
@@ -27,6 +29,7 @@ abstract class AppComponent(
       instance =
           AppComponent::class.create(
               config,
+              NetworkComponent.Companion.create(),
               LogComponent.Companion.create(config),
           )
 

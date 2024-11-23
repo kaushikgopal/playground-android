@@ -6,10 +6,8 @@ import me.tatarka.inject.annotations.IntoSet
 import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.common.log.AndroidLogger
 import sh.kau.playground.common.log.AndroidLogger2
-import sh.kau.playground.domain.shared.di.AppScope
 import sh.kau.playground.domain.shared.di.ConfigComponent
 
-@AppScope
 @Component
 abstract class LogComponent(
     @Component val config: ConfigComponent, // loggers need @Named("debuggableApp")
@@ -24,7 +22,6 @@ abstract class LogComponent(
   protected fun provideAndroidLogger2(logger: AndroidLogger2): LogcatLogger = logger
 
   abstract val loggers: Set<LogcatLogger> // multi-bindings
-
 
   companion object {
     fun create(config: ConfigComponent): LogComponent = LogComponent::class.create(config)
