@@ -26,6 +26,7 @@ fun SettingsBScreen(
     bindings: SettingsBindings,
 ) {
 
+
  logcat("SettingsB") { "xxx injected app name →  ${bindings.appName}" }
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
