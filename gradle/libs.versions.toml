@@ -19,39 +19,16 @@ kotlinInjectAnvil = "0.1.0"
 
 activityCompose = "1.9.2"
 lint = "31.7.2"  # = agp + 23.0.0
-androidxAppCompat = "1.7.0"
 androidxLifecycle = "2.8.6"
 androidxTest = "1.6.2"
 composeBom = "2024.09.02" # https://developer.android.com/jetpack/compose/bom/bom-mapping
-constraintlayout = "2.1.4"
 composeNavigation = "2.8.3"
-dagger = "2.46.1"
 desugarJdk = "2.1.2"
 espresso = "3.6.1"
-flowbinding = "1.2.0"
 junit = "4.13.2"
-kotlinxSerialization = "1.7.3"
-leakCanary = "2.11"
-lottie = "6.0.1"
-mockito = "2.23.0"
-mockitoKotlin = "1.6.0"
-okhttp = "3.9.0"
-picasso = "2.71828"
-retrofit = "2.9.0"
-rxAndroid = "2.1.0"
-rxBindings = "2.2.0"
-rxBindingsViewpager = "3.0.0-alpha2"
-rxIdler = "0.9.1"
-rxJava = "2.2.2"
 secretsGradlePlugin = "2.0.1"
 spotless = "6.15.0"
-squareLogcat = "0.1"
-timber = "4.7.1"
-trueTime = "4.0.0.alpha"
-truth = "0.42"
-turbine = "1.0.0"
 junitVersion = "1.1.5"
-material = "1.10.0"
 
 [libraries]
 
@@ -76,19 +53,15 @@ compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-tools-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 
 desugar-jdk-lib = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdk" }
+
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
 lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "lint" }
 lint-cli = { group = "com.android.tools.lint", name = "lint", version.ref = "lint" }
 lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "lint" }
 
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidxAppCompat" }
-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "androidxAppCompat" }
 
 ## Testing
 compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
@@ -107,40 +80,23 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
 coroutines-android = { module = "org.jetbrains.kotlin:kotlinx-coroutines-android" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-
 kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlinInject" }
 kotlin-inject-runtime = { group = "me.tatarka.inject", name = "kotlin-inject-runtime", version.ref = "kotlinInject" }
 kotlin-inject-anvil-compiler = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "compiler", version.ref = "kotlinInjectAnvil" }
 kotlin-inject-anvil-runtime = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime", version.ref = "kotlinInjectAnvil" }
 kotlin-inject-anvil-runtime-utils = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime-optional", version.ref = "kotlinInjectAnvil" }
-logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "squareLogcat" }
 
-dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
-dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
-flowbinding = { group = "io.github.reactivecircus.flowbinding", name = "flowbinding-android", version.ref = "flowbinding" }
-google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
-leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakCanary" }
-leakcanary-noop = { group = "com.squareup.leakcanary", name = "leakcanary-android-no-op", version.ref = "leakCanary" }
-lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
-mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
-mockito-kotlin = { group = "com.nhaarman", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
-picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-adapter_rxjava = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "retrofit" }
-retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
-retrofit-mock = { group = "com.squareup.retrofit2", name = "retrofit-mock", version.ref = "retrofit" }
-rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxAndroid" }
-rx-bindings = { group = "com.jakewharton.rxbinding2", name = "rxbinding", version.ref = "rxBindings" }
-rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxJava" }
-rx-replayingShare = { group = "com.jakewharton.rx2", name = "replaying-share", version.ref = "rxAndroid" }
-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
-truetime = { group = "com.github.instacart", name = "truetime-android", version.ref = "trueTime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.3" }
+
+ktor-bom = { module = "io.ktor:ktor-bom", version = "3.0.1" }
+ktor-client-android = { module = "io.ktor:ktor-client-android" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
+
+logcat = { group = "com.squareup.logcat", name = "logcat", version = "0.1" }
 
 ## Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 
 [bundles]
@@ -155,7 +111,6 @@ compose = [
     # "accompanist-swiperefresh",
     # "accompanist-systemuicontroller"
 ]
-
 kotlin-inject = [
     "kotlin-inject-runtime",
 #    "kotlin-inject-anvil-runtime",
@@ -177,6 +132,12 @@ lint-tests = [
     "lint-cli",
     "lint-tests"
 ]
+ktor = [
+    "ktor-client-android",
+    "ktor-client-serialization",
+    "ktor-client-logging",
+    "kotlinx-serialization-json"
+]
 
 
 [plugins]
@@ -192,7 +153,7 @@ kotlin-kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin"
 kotlin-compatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlin-bcv" }
 kotlin-dataframe = { id = "org.jetbrains.kotlinx.dataframe", version.ref = "kotlin-dataframe" }
 kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }                                     #
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }                         # for compose navigation
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }                         # compose-navigation + ktor
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
