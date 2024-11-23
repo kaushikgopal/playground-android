@@ -7,7 +7,6 @@ import androidx.navigation.compose.navigation
 import kotlinx.serialization.Serializable
 import sh.kau.playground.features.settings.di.SettingsComponent
 import sh.kau.playground.features.settings.nav.SettingsRoutes.SettingsGraphRoute
-import sh.kau.playground.features.settings.ui.SettingsBScreen
 
 sealed class SettingsRoutes {
   @Serializable data object SettingsGraphRoute
