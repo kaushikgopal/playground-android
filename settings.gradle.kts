@@ -25,6 +25,7 @@ include(":app")
 include(
     ":common:log", // android module
     ":common:lint-rules",
+    ":common:networking",
 )
 
 // module specific to this app
