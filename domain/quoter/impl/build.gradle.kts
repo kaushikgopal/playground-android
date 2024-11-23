@@ -8,9 +8,7 @@ android {
 }
 
 dependencies {
-//    api(platform(":domain:quoter:api"))
-
+    api(projects.domain.quoter.api)
     // internal dependencies
-//    implementation(platform(":common:networking"))
     implementation(projects.common.networking)
 }

@@ -12,8 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import logcat.logcat
 import me.tatarka.inject.annotations.Inject
+import sh.kau.playground.domain.quoter.api.Quote
+import sh.kau.playground.domain.quoter.api.QuotesRepo
 import sh.kau.playground.domain.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
 
@@ -26,8 +27,6 @@ fun SettingsBScreen(
     bindings: SettingsBindings,
 ) {
 
-
- logcat("SettingsB") { "xxx injected app name →  ${bindings.appName}" }
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
@@ -42,5 +41,12 @@ fun SettingsBScreen(
 @Preview(showBackground = true)
 @Composable
 fun SettingsBScreenPreview() {
-//  SettingsBScreen()
+  val quotesRepoImpl =
+      object : QuotesRepo {
+        override fun quoteForTheDay(): Quote {
+          return Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+        }
+      }
+  val bindings = SettingsBindings("Playground", quotesRepoImpl)
+  SettingsBScreen(bindings)
 }

@@ -9,4 +9,5 @@ android {
 
 dependencies {
   // internal
+  implementation(projects.domain.quoter.impl)
 }
