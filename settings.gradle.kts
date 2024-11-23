@@ -33,7 +33,9 @@ include(
     // features depend on this module preventing circular dependency over :app
 
     ":domain:ui", // compose theme & design system
-    ":domain:quoter", // produce quotes
+
+    ":domain:quoter:api", // produce quotes
+    ":domain:quoter:impl",
 
     ":domain:shared", // pure kotlin module |  @Named + ConfigComponent + referenced everywhere
 )

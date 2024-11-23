@@ -31,7 +31,7 @@ internal val KtorClient: HttpClient =
                 logcat { "[Ktor] $message" }
               }
             }
-        level = LogLevel.BODY
+        level = LogLevel.ALL
       }
       engine {
         connectTimeout = TIME_OUT
