@@ -4,8 +4,10 @@ import android.content.Context
 import me.tatarka.inject.annotations.Component
 import sh.kau.playground.common.log.di.LogComponent
 import sh.kau.playground.domain.shared.App
+import sh.kau.playground.domain.shared.di.AppScope
 import sh.kau.playground.domain.shared.di.ConfigComponent
 
+@AppScope
 @Component
 abstract class AppComponent(
     // component inheritance ↓

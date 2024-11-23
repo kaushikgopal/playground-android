@@ -4,6 +4,7 @@ import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Inject
+import sh.kau.playground.domain.shared.di.AppScope
 import sh.kau.playground.domain.shared.di.Named
 
 /**
@@ -12,6 +13,7 @@ import sh.kau.playground.domain.shared.di.Named
  * - control if logs sent for debuggable app
  * - demonstrate/show-off multibinding with kotlin-inject
  */
+@AppScope
 @Inject
 // @SingleIn(AppScope::class)
 // @ContributesBinding(AppScope::class, multibinding = true)
