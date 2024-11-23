@@ -75,8 +75,7 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
       val ksp by configurations
 
       // Navigation
-      implementation(libs.compose.navigation)
-      implementation(libs.kotlinx.serialization.json)
+      implementation(libs.bundles.compose.navigation)
 
       // dependency injection
       ksp(libs.bundles.kotlin.inject.compiler)

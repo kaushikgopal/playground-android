@@ -111,6 +111,10 @@ compose = [
     # "accompanist-swiperefresh",
     # "accompanist-systemuicontroller"
 ]
+compose-navigation = [
+    "compose-navigation",
+    "kotlinx-serialization-json",
+]
 kotlin-inject = [
     "kotlin-inject-runtime",
 #    "kotlin-inject-anvil-runtime",
@@ -119,6 +123,12 @@ kotlin-inject = [
 kotlin-inject-compiler = [
     "kotlin-inject-compiler",
 #    "kotlin-inject-anvil-compiler",
+]
+ktor = [
+    "ktor-client-android",
+    "ktor-client-serialization",
+    "ktor-client-logging",
+    # "kotlinx-serialization-json",  # compose-navigation includes this
 ]
 lint-api = [
     "kotlin-stdlib",
@@ -132,12 +142,7 @@ lint-tests = [
     "lint-cli",
     "lint-tests"
 ]
-ktor = [
-    "ktor-client-android",
-    "ktor-client-serialization",
-    "ktor-client-logging",
-    "kotlinx-serialization-json"
-]
+
 
 
 [plugins]
