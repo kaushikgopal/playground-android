@@ -123,21 +123,21 @@ compose-navigation = [
 ]
 kotlin-inject = [
     "kotlin-inject-runtime",
-#    "kotlin-inject-anvil-runtime",
-#    "kotlin-inject-anvil-runtime-utils",
+    #    "kotlin-inject-anvil-runtime",
+    #    "kotlin-inject-anvil-runtime-utils",
 ]
 kotlin-inject-compiler = [
     "kotlin-inject-compiler",
-#    "kotlin-inject-anvil-compiler",
+    # "kotlin-inject-anvil-compiler",
 ]
 ktor = [
-    "ktor-client-core",             # ktor core
-    "ktor-client-android",          # ktor engine
+    "ktor-client-android", # ktor engine
     "ktor-client-content-negotiation", # serialization
-#    "ktor-client-serialization", # json content negotiation ?
-    "ktor-serialization-kotlinx-json",
-#    "ktor-client-resources",
+    "ktor-serialization-kotlinx-json", # json content negotiation using kotlinx-serialization
     "ktor-client-logging",
+    # "ktor-client-core",             # ktor core
+    # "ktor-client-serialization",
+    # "ktor-client-resources",
     # "kotlinx-serialization-json",  # compose-navigation includes this
 ]
 lint-api = [

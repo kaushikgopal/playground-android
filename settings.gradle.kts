@@ -41,8 +41,8 @@ include(
 
 // common modules (shared across the app) but swappable with other implementations
 include(
-    ":common:log", // android module
     ":common:networking",
+    ":common:log", // android module
     ":common:lint-rules",
 )
 
