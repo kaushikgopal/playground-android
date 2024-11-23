@@ -11,7 +11,7 @@ Some of the concepts implemented here:
 - [x] gradle [version catalog](https://github.com/kaushikgopal/playground-android/blob/master/gradle/libs.versions.toml), BOM & Bundles (one source of truth)
 - [x] [custom lint-rules](https://github.com/kaushikgopal/playground-android/pull/5/files)
 - [x] compose-navigation between feature modules
-- [x] Makefile with common cli commands
+- [x] [Makefile](https://github.com/kaushikgopal/playground-android/blob/master/Makefile) with common cli commands
 - [x] dependency injection with kotlin-inject
   - [x] [function-injection](https://github.com/kaushikgopal/playground-android/pull/9/commits/aad254957a003982633006fb2f350ee7a372f11d) demo in `@Composable`
 - [x] [logcat](https://github.com/square/logcat) lib and injecting [multiple loggers](https://github.com/kaushikgopal/playground-android/blob/master/common/log/src/main/java/sh/kau/playground/common/log/CompositeLogger.kt)
