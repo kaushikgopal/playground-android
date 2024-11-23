@@ -40,12 +40,12 @@ android {
 }
 
 dependencies {
+  implementation(projects.domain.app)
 
   // internal
-  implementation(project(":features:landing"))
-  implementation(project(":features:settings"))
+  implementation(projects.features.landing)
+  implementation(projects.features.settings)
 
-  implementation(project(":domain:app"))
 
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)

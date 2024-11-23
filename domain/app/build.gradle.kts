@@ -9,7 +9,8 @@ android {
 
 dependencies {
     // internal
-    api(project(":common:log"))
-    api(project(":domain:ui")) // brings in compose
-    api(project(":common:networking"))
+    api(projects.domain.ui) // brings in compose
+    api(projects.common.networking)
+
+    api(projects.common.log)
 }
