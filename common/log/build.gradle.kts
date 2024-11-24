@@ -10,5 +10,11 @@ android {
 dependencies {
     api(libs.logcat)
 
-    // internal
+    // --- internal dependencies
+    // Navigation
+    implementation(libs.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
+    // dependency injection
+    ksp(libs.bundles.kotlin.inject.compiler)
+    implementation(libs.bundles.kotlin.inject)
 }

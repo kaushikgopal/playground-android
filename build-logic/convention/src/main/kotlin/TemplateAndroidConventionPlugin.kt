@@ -74,6 +74,18 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
       val implementation by configurations
       val ksp by configurations
 
+      // --- internal dependencies
+      // Be super super judicious about what you put here
+      // more often than not, it's easier to just declare the dependencies manually again
+      // You won't gain much by "reuse"
+      // be very judicious in adding more dependencies here
+      implementation(project(":domain:shared"))
+
+      // enable lint
+      val lintChecks by configurations
+      lintChecks(project(":common:lint-rules"))
+
+      /* some common dependencies you might want to add
       // Navigation
       implementation(libs.compose.navigation)
       implementation(libs.kotlinx.serialization.json)
@@ -81,14 +93,7 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
       // dependency injection
       ksp(libs.bundles.kotlin.inject.compiler)
       implementation(libs.bundles.kotlin.inject)
-
-      // internal dependencies
-      // be very judicious in adding more dependencies here
-      implementation(project(":domain:shared"))
-
-      // enable lint
-      val lintChecks by configurations
-      lintChecks(project(":common:lint-rules"))
+      */
 
       //  implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     }
