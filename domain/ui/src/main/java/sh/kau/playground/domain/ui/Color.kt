@@ -2,7 +2,7 @@ package sh.kau.playground.domain.ui
 
 import androidx.compose.ui.graphics.Color
 
-// TODO: KG - should switch to a Tailwind style declaration
+// TODO: should switch to a Tailwind style declaration
 
 val Purple80 = Color(0xFFD0BCFF)
 val Purple40 = Color(0xFF6650a4)

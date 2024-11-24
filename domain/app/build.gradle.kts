@@ -17,5 +17,4 @@ dependencies {
 
     // --- internal dependencies
     implementation(projects.common.log)
-    implementation(projects.common.networking)
 }

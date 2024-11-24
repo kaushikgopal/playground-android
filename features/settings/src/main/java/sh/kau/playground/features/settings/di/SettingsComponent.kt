@@ -21,6 +21,9 @@ abstract class SettingsComponent(
   abstract val settingsBScreen: SettingsBScreen
 
   // i would typically shove this in a Component (if there were more deps from the quotes module)
+  // TODO: remove direct dependency on QuotesRepoImpl here
+  //    making QuotesRepoImpl directly injectable (via kotlin-inject-anvil)
+  //    will prevent us from now needing feature:settings → :common:networking
   @Provides fun quotesRepo(quotesRepo: QuotesRepoImpl): QuotesRepo = quotesRepo
 
   companion object {

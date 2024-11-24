@@ -9,10 +9,17 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import logcat.logcat
+import me.tatarka.inject.annotations.Inject
+import sh.kau.playground.domain.shared.di.AppScope
 
-private const val TIME_OUT = 30_000
-
-internal val KtorClient: HttpClient =
+/**
+ * This class abstracts away the implementation details for networking.
+ * * It prevents direct dependency over networking libraries (like Ktor) to spread across the app
+ */
+@AppScope
+@Inject
+class NetworkApi() {
+  val client: Lazy<HttpClient> = lazy {
     HttpClient(Android) {
       install(ContentNegotiation) {
         json(
@@ -38,3 +45,7 @@ internal val KtorClient: HttpClient =
         socketTimeout = TIME_OUT
       }
     }
+  }
+}
+
+private const val TIME_OUT: Int = 30_000

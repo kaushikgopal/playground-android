@@ -21,6 +21,6 @@ dependencies {
   // but providing implementation through settings comp
   // TODO: kotlin-inject-anvil can remove below need
   implementation(projects.domain.quoter.impl) // usually not required
-  implementation(projects.common.networking) // shouldn't be required (as quotes should take care)
-
+  // see SettingsComponent.kt for more info on how to remove this in the future
+  implementation(projects.common.networking) // shouldn't be required
 }
