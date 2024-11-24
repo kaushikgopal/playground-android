@@ -15,8 +15,6 @@ dependencies {
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
 
-
-    // internal
-    api(projects.common.log)
-    api(projects.domain.ui) // brings in compose
+    // --- internal dependencies
+    implementation(projects.common.log)
 }

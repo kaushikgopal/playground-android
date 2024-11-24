@@ -13,14 +13,14 @@ android {
 }
 
 dependencies {
-  // Compose
-  // using api (so modules that depend on this one can leverage compose directly)
+
+  // --- internal dependencies
+  implementation(projects.domain.shared)
+
+  // dependencies you want most other feature modules to have
+  // be judicious
   api(platform(libs.compose.bom))
   api(libs.bundles.compose)
-  // AndroidStudio Preview support
-  api(libs.compose.tooling.preview)
+  api(libs.compose.tooling.preview)  // AndroidStudio Preview support
   debugApi(libs.compose.tooling)
-
-  // Internal
-  implementation(projects.domain.shared)
 }
