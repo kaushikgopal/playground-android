@@ -72,7 +72,6 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
 
     dependencies {
       val implementation by configurations
-      val ksp by configurations
 
       // --- internal dependencies
       // Be super super judicious about what you put here

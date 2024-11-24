@@ -37,13 +37,6 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
         plugins.apply(libs.plugins.kotlin.android.get().pluginId)
         plugins.apply(libs.plugins.kotlin.compose.compiler.get().pluginId)
         plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
-
-        dependencies {
-          val implementation by configurations
-
-          // internal dependencies
-          implementation(project(":domain:app"))
-        }
       }
     }
   }
