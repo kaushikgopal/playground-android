@@ -17,5 +17,7 @@ dependencies {
 
   // --- internal dependencies
   implementation(projects.domain.app)
-  implementation(projects.domain.quoter.impl)
+  implementation(projects.domain.quoter.api)
+  implementation(projects.domain.quoter.impl) // usually not required
+                                              // but providing implementation through settings comp
 }

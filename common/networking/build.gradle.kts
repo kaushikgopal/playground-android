@@ -12,5 +12,13 @@ dependencies {
   implementation(platform((libs.ktor.bom)))
   implementation(libs.bundles.ktor)
 
-  implementation(project(":common:log"))
+  // Navigation
+  implementation(libs.compose.navigation)
+  implementation(libs.kotlinx.serialization.json)
+  // dependency injection
+  ksp(libs.bundles.kotlin.inject.compiler)
+  implementation(libs.bundles.kotlin.inject)
+
+  // --- internal dependencies
+  implementation(projects.common.log)
 }

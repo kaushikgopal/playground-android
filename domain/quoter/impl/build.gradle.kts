@@ -8,7 +8,14 @@ android {
 }
 
 dependencies {
-    api(projects.domain.quoter.api)
+    implementation(projects.domain.quoter.api)
+
+
+    // dependency injection
+    ksp(libs.bundles.kotlin.inject.compiler)
+    implementation(libs.bundles.kotlin.inject)
+
+
     // internal dependencies
     implementation(projects.common.networking)
 }
