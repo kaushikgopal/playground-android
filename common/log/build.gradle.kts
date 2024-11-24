@@ -8,7 +8,16 @@ android {
 }
 
 dependencies {
-    api(libs.logcat)
+    // Navigation
+    implementation(libs.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
+    // dependency injection
+    ksp(libs.bundles.kotlin.inject.compiler)
+    implementation(libs.bundles.kotlin.inject)
 
-    // internal
+    // --- internal dependencies
+
+    // dependencies you want most other feature modules to have
+    // be judicious
+    api(libs.logcat)
 }

@@ -30,7 +30,7 @@ include(
 // module specific to this app
 include(
     ":domain:app", // app level functionality
-    // features depend on this module preventing circular dependency over :app
+    // features depend on this module, preventing circular dependency over :app
 
     ":domain:ui", // compose theme & design system
 
@@ -47,4 +47,3 @@ include(
     ":common:log", // android module
     ":common:lint-rules",
 )
-

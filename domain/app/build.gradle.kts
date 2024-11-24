@@ -8,9 +8,14 @@ android {
 }
 
 dependencies {
-    // internal
-    api(projects.domain.ui) // brings in compose
-    api(projects.common.networking)
+    // Navigation
+    implementation(libs.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
+    // dependency injection
+    ksp(libs.bundles.kotlin.inject.compiler)
+    implementation(libs.bundles.kotlin.inject)
 
-    api(projects.common.log)
+    // --- internal dependencies
+    implementation(projects.common.log)
+    implementation(projects.common.networking)
 }

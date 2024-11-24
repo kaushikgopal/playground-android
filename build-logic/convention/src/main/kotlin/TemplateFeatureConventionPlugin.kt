@@ -39,11 +39,16 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
         plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
 
         dependencies {
+          // below will be directly usable in feature module
           val implementation by configurations
-
-          // internal dependencies
           implementation(project(":domain:app"))
           implementation(project(":common:networking"))
+
+          // below will pull inner implementation as well
+          // be judicious here
+          val api by configurations
+          api(project(":common:log"))
+          api(project(":domain:ui")) // brings in compose
         }
       }
     }
