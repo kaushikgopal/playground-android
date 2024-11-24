@@ -10,7 +10,10 @@ android {
 
 dependencies {
   implementation(platform((libs.ktor.bom)))
-  implementation(libs.bundles.ktor)
+  // TODO: move from api → implementation
+  //  we do this allow HttpClient access to consumers of this module
+  //  but that's only because we haven't come up with an abstraction yet
+  api(libs.bundles.ktor)
 
   // Navigation
   implementation(libs.compose.navigation)

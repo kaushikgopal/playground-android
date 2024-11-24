@@ -18,4 +18,7 @@ dependencies {
 
     // internal dependencies
     implementation(projects.common.networking)
+    // can be removed with kotlin-inject-anvil
+    implementation(platform((libs.ktor.bom)))
+    implementation(libs.bundles.ktor)
 }

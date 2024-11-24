@@ -20,7 +20,7 @@ abstract class SettingsComponent(
   // kotlin-inject function injection (2)
   abstract val settingsBScreen: SettingsBScreen
 
-  // i would typically shove this in a Component (if there are more quotes objects
+  // i would typically shove this in a Component (if there were more deps from the quotes module)
   @Provides fun quotesRepo(quotesRepo: QuotesRepoImpl): QuotesRepo = quotesRepo
 
   companion object {

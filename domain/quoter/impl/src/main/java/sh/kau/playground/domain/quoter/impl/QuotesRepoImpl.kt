@@ -1,13 +1,16 @@
 package sh.kau.playground.domain.quoter.impl
 
+import io.ktor.client.HttpClient
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.common.networking.di.NetworkScope
 import sh.kau.playground.domain.quoter.api.Quote
 import sh.kau.playground.domain.quoter.api.QuotesRepo
 
-@NetworkScope
+//@NetworkScope
 @Inject
-class QuotesRepoImpl : QuotesRepo {
+class QuotesRepoImpl(
+    client: HttpClient,
+) : QuotesRepo {
 
   override fun quoteForTheDay(): Quote {
     val quote =

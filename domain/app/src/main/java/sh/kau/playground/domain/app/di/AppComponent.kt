@@ -12,6 +12,7 @@ import sh.kau.playground.domain.shared.di.ConfigComponent
 @Component
 abstract class AppComponent(
     // component inheritance ↓
+    // dependencies from below will now be available to AppComponent
     @Component val configComponent: ConfigComponent,
     @Component val networkComponent: NetworkComponent,
     @Component val logComponent: LogComponent,
