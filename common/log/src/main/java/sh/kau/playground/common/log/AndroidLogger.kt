@@ -4,7 +4,6 @@ import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.shared.di.AppScope
 import sh.kau.playground.domain.shared.di.Named
 
 /**

@@ -42,7 +42,6 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
           // below will be directly usable in feature module
           val implementation by configurations
           implementation(project(":domain:app"))
-          implementation(project(":common:networking"))
 
           // below will pull inner implementation as well
           // be judicious here

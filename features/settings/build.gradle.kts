@@ -18,6 +18,8 @@ dependencies {
   // --- internal dependencies
   implementation(projects.domain.app)
   implementation(projects.domain.quoter.api)
+  // but providing implementation through settings comp
+  // TODO: kotlin-inject-anvil can remove below need
   implementation(projects.domain.quoter.impl) // usually not required
-                                              // but providing implementation through settings comp
+
 }
