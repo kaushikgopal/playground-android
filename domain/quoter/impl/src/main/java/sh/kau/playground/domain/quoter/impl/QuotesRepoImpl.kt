@@ -6,7 +6,7 @@ import sh.kau.playground.common.networking.di.NetworkScope
 import sh.kau.playground.domain.quoter.api.Quote
 import sh.kau.playground.domain.quoter.api.QuotesRepo
 
-//@NetworkScope
+@NetworkScope
 @Inject
 class QuotesRepoImpl(
     client: HttpClient,
