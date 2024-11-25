@@ -48,7 +48,7 @@ dependencies {
   ksp(libs.bundles.kotlin.inject.compiler)
   implementation(libs.bundles.kotlin.inject)
 
-  // --- internal dependencies
+  // --- project dependencies
   implementation(projects.domain.app)
   implementation(projects.features.landing)
   implementation(projects.features.settings)

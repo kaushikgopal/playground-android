@@ -1,6 +1,7 @@
 package sh.kau.playground.domain.app.di
 
 import android.content.Context
+import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.domain.shared.App
 import sh.kau.playground.features.settings.di.SettingsComponent
@@ -18,13 +19,13 @@ abstract class AppComponent(
 //    @Component val logComponent: LogComponent,
 ): SettingsComponent.Factory {
 
+    abstract val loggers: Set<LogcatLogger> // multi-bindings
+
     companion object {
     private var instance: AppComponent? = null
 
     fun from(context: Context): AppComponent {
       if (instance != null) return instance!!
-
-      val app = context.applicationContext as App
 
 //      val config = ConfigComponent.Companion.create(app)
       instance =

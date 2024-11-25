@@ -35,7 +35,7 @@ fun SettingsBScreen(bindings: SettingsBindings) {
 
   // TODO: use USF like pattern
   var quote by remember { mutableStateOf<Quote?>(null) }
-  LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
+//  LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
 
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

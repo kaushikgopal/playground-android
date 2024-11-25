@@ -15,9 +15,9 @@ dependencies {
   ksp(libs.bundles.kotlin.inject.compiler)
   implementation(libs.bundles.kotlin.inject)
 
-  // --- internal dependencies
+  // --- project dependencies
 //  implementation(projects.domain.app)
-  implementation(projects.domain.quoter.api)
+  api(projects.domain.quoter.api)
   // but providing implementation through settings comp
   // TODO: kotlin-inject-anvil can remove below need
 //  implementation(projects.domain.quoter.impl) // usually not required

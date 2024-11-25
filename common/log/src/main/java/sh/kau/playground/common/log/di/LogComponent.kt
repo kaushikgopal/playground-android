@@ -15,7 +15,7 @@ interface LogComponent {
   //  @Provides
   //  fun provideAndroidLogger2(logger: AndroidLogger2): LogcatLogger = logger
 
-  val loggers: Set<LogcatLogger> // multi-bindings
+//  val loggers: Set<LogcatLogger> // multi-bindings
 
   //  companion object {
   //    fun create(config: ConfigComponent): LogComponent = LogComponent::class.create(config)
