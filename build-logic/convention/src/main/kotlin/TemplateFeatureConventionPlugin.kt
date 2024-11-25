@@ -41,7 +41,7 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
         dependencies {
           // below will be directly usable in feature module
           val implementation by configurations
-          implementation(project(":domain:app"))
+          // implementation(project(":domain:app"))
 
           // below will pull inner implementation as well
           // be judicious here

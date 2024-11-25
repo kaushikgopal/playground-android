@@ -14,7 +14,6 @@ import sh.kau.playground.domain.app.di.AppComponent
 import sh.kau.playground.domain.ui.PlaygroundTheme
 import sh.kau.playground.features.landing.nav.LandingScreenRoute
 import sh.kau.playground.features.landing.nav.addLandingRoute
-import sh.kau.playground.features.settings.di.SettingsComponent
 import sh.kau.playground.features.settings.nav.SettingsRoutes.SettingsGraphRoute
 import sh.kau.playground.features.settings.nav.addSettingsGraph
 
@@ -25,6 +24,7 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
 
     val appComponent = AppComponent.from(this)
+    val settingsComponent = appComponent.createSettingsComponent()
 
     setContent {
       PlaygroundTheme {
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
             )
             addSettingsGraph(
-                settingsComponent = SettingsComponent.create(appComponent),
+                settingsComponent = settingsComponent,
                 navGraphBuilder = this,
                 navHostController = navController,
             )

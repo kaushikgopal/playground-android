@@ -10,10 +10,12 @@ import sh.kau.playground.common.networking.NetworkApi
 import sh.kau.playground.domain.quoter.api.Quote
 import sh.kau.playground.domain.quoter.api.QuotesRepo
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@SingleIn(AppScope::class)
 @Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class QuotesRepoImpl(
     private val api: NetworkApi,
 ) : QuotesRepo {
