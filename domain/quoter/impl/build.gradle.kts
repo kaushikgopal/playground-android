@@ -9,16 +9,14 @@ android {
 }
 
 dependencies {
-    implementation(projects.domain.quoter.api)
-
     // dependency injection
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
-
-
-    // internal dependencies
-    implementation(projects.common.networking)
     // should be removed with kotlin-inject-anvil
     implementation(platform((libs.ktor.bom)))
     implementation(libs.bundles.ktor)
+
+    // --- internal dependencies
+    implementation(projects.domain.quoter.api)
+    implementation(projects.common.networking)
 }

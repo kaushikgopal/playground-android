@@ -8,7 +8,7 @@ android {
 }
 
 dependencies {
-    // Navigation
+    // navigation
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
     // dependency injection

@@ -14,8 +14,7 @@ dependencies {
   //  we do this allow HttpClient access to consumers of this module
   //  but that's only because we haven't come up with an abstraction yet
   api(libs.bundles.ktor)
-
-  // Navigation
+  // navigation
   implementation(libs.compose.navigation)
   implementation(libs.kotlinx.serialization.json)
   // dependency injection

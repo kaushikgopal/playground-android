@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.domain.quoter.api.Quote
-import sh.kau.playground.domain.quoter.api.QuotesRepo
 import sh.kau.playground.domain.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
 
@@ -32,11 +31,10 @@ typealias SettingsBScreen = @Composable () -> Unit
 
 @Inject
 @Composable
-fun SettingsBScreen(
-    bindings: SettingsBindings,
-) {
-  var quote by remember { mutableStateOf<Quote?>(null) }
+fun SettingsBScreen(bindings: SettingsBindings) {
 
+  // TODO: use USF like pattern
+  var quote by remember { mutableStateOf<Quote?>(null) }
   LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
 
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
@@ -46,10 +44,11 @@ fun SettingsBScreen(
           color = Color.White,
           style = MaterialTheme.typography.headlineLarge,
           fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(bottom = 24.dp))
+          modifier = Modifier.padding(bottom = 24.dp),
+      )
 
       if (quote == null) {
-          quote = Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+        quote = Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
       }
 
       Text(
@@ -58,12 +57,15 @@ fun SettingsBScreen(
           style = MaterialTheme.typography.bodyLarge,
           fontStyle = FontStyle.Italic,
           modifier = Modifier.padding(horizontal = 32.dp),
-          textAlign = TextAlign.Center)
+          textAlign = TextAlign.Center,
+      )
+
       Text(
           text = "- ${quote!!.author}",
           color = Color.White,
           style = MaterialTheme.typography.bodyMedium,
-          fontStyle = FontStyle.Italic)
+          fontStyle = FontStyle.Italic,
+      )
     }
   }
 }
@@ -71,12 +73,12 @@ fun SettingsBScreen(
 @Preview(showBackground = true)
 @Composable
 fun SettingsBScreenPreview() {
-//  val quotesRepoImpl =
-//      object : QuotesRepo {
-//        override fun quoteForTheDay(): Quote {
-//          return Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
-//        }
-//      }
-//  val bindings = SettingsBindings("Playground", quotesRepoImpl)
-//  SettingsBScreen(bindings)
+  //  val quotesRepoImpl =
+  //      object : QuotesRepo {
+  //        override fun quoteForTheDay(): Quote {
+  //          return Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+  //        }
+  //      }
+  //  val bindings = SettingsBindings("Playground", quotesRepoImpl)
+  //  SettingsBScreen(bindings)
 }
