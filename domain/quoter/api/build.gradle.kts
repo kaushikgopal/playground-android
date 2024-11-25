@@ -1,5 +1,5 @@
 plugins {
-    id(libs.plugins.kotlin.jvm.get().pluginId)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
 }
 
