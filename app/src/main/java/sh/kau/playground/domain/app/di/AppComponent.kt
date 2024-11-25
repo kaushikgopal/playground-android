@@ -14,9 +14,6 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @SingleIn(AppScope::class)
 abstract class AppComponent(
     @get:Provides val app: App,
-    // component inheritance ↓
-    // dependencies from below will now be available to AppComponent
-//    @Component val logComponent: LogComponent,
 ): SettingsComponent.Factory {
 
     abstract val loggers: Set<LogcatLogger> // multi-bindings
