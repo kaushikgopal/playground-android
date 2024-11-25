@@ -11,7 +11,6 @@ dependencies {
     // navigation
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
-//    implementation(project(":features:settings"))
     // dependency injection
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
