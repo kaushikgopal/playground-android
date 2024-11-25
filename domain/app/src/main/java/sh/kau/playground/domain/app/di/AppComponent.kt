@@ -1,9 +1,8 @@
 package sh.kau.playground.domain.app.di
 
 import android.content.Context
-import me.tatarka.inject.annotations.Component
+import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
-import sh.kau.playground.common.log.di.LogComponent
 import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
@@ -14,16 +13,13 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @MergeComponent(AppScope::class)
 abstract class AppComponent(
     @get:Provides val app: App,
-    // component inheritance ↓
-    // dependencies from below will now be available to AppComponent
-    @Component val logComponent: LogComponent,
 ) {
 
-    @Provides
-    fun provideAppName(): @Named("appName") String = "My Playground!"
+  @Provides fun provideAppName(): @Named("appName") String = "My Playground!"
 
-    @Provides
-    fun provideDebuggableApp(): @Named("debuggableApp") Boolean = app.isDebuggable
+  @Provides fun provideDebuggableApp(): @Named("debuggableApp") Boolean = app.isDebuggable
+
+  abstract val loggers: Set<LogcatLogger> // multi-bindings
 
   companion object {
 
@@ -35,7 +31,6 @@ abstract class AppComponent(
       instance =
           AppComponent::class.create(
               context.applicationContext as App,
-              LogComponent.Companion.create(context.applicationContext as App),
           )
 
       return instance!!
