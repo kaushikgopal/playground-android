@@ -84,17 +84,7 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
       val lintChecks by configurations
       lintChecks(project(":common:lint-rules"))
 
-      /* some common dependencies you might want to add
-      // Navigation
-      implementation(libs.compose.navigation)
-      implementation(libs.kotlinx.serialization.json)
-
-      // dependency injection
-      ksp(libs.bundles.kotlin.inject.compiler)
-      implementation(libs.bundles.kotlin.inject)
-      */
-
-      //  implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+      // implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     }
   }
 }

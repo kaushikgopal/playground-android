@@ -12,6 +12,7 @@ import sh.kau.playground.domain.shared.di.ConfigComponent
 abstract class LogComponent(
     @Component val config: ConfigComponent, // loggers need @Named("debuggableApp")
 ) {
+
   @IntoSet
   @Provides
   protected fun provideAndroidLogger(logger: AndroidLogger): LogcatLogger = logger

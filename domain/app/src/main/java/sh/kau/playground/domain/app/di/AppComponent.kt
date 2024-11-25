@@ -4,11 +4,14 @@ import android.content.Context
 import me.tatarka.inject.annotations.Component
 import sh.kau.playground.common.log.di.LogComponent
 import sh.kau.playground.domain.shared.App
+import sh.kau.playground.domain.shared.di.AppScope
 import sh.kau.playground.domain.shared.di.ConfigComponent
 
+@AppScope
 @Component
 abstract class AppComponent(
     // component inheritance ↓
+    // dependencies from below will now be available to AppComponent
     @Component val configComponent: ConfigComponent,
     @Component val logComponent: LogComponent,
 ) {

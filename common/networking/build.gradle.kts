@@ -10,7 +10,17 @@ android {
 
 dependencies {
   implementation(platform((libs.ktor.bom)))
-  implementation(libs.bundles.ktor)
+  // TODO: move from api → implementation
+  //  we do this allow HttpClient access to consumers of this module
+  //  but that's only because we haven't come up with an abstraction yet
+  api(libs.bundles.ktor)
+  // navigation
+  implementation(libs.compose.navigation)
+  implementation(libs.kotlinx.serialization.json)
+  // dependency injection
+  ksp(libs.bundles.kotlin.inject.compiler)
+  implementation(libs.bundles.kotlin.inject)
 
-  implementation(project(":common:log"))
+  // --- internal dependencies
+  implementation(projects.common.log)
 }
