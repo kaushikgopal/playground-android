@@ -1,12 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("template.android")
-//    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-}
-
-android {
-    namespace = libs.versions.app.namespace.get() + ".${project.parent?.name}.${project.name}"
+    alias(libs.plugins.ksp)
 }
 
 dependencies {
