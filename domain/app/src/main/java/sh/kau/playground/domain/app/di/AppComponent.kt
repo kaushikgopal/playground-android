@@ -6,10 +6,11 @@ import sh.kau.playground.common.log.di.LogComponent
 import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.ConfigComponent
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @SingleIn(AppScope::class)
-@Component
+@MergeComponent(AppScope::class)
 abstract class AppComponent(
     // component inheritance ↓
     // dependencies from below will now be available to AppComponent
