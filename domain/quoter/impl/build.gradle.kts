@@ -14,6 +14,6 @@ dependencies {
     implementation(libs.bundles.kotlin.inject)
 
     // --- project dependencies
-    implementation(projects.domain.quoter.api)
-    api(projects.common.networking)
+    api(projects.domain.quoter.api)
+    api(projects.common.networking) // need ktor classes (outside of NetworkApi)
 }
