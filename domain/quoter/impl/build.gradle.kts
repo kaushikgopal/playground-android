@@ -16,7 +16,7 @@ dependencies {
     implementation(platform((libs.ktor.bom)))
     implementation(libs.bundles.ktor)
 
-    // --- internal dependencies
+    // --- project dependencies
     implementation(projects.domain.quoter.api)
     implementation(projects.common.networking)
 }

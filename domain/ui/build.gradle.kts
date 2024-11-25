@@ -20,6 +20,6 @@ dependencies {
   api(libs.compose.tooling.preview)  // AndroidStudio Preview support
   debugApi(libs.compose.tooling)
 
-  // --- internal dependencies
+  // --- project dependencies
   implementation(projects.domain.shared)
 }

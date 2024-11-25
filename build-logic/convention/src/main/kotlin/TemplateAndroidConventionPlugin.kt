@@ -73,7 +73,7 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
     dependencies {
       val implementation by configurations
 
-      // --- internal dependencies
+      // --- project dependencies
       // Be super super judicious about what you put here
       // more often than not, it's easier to just declare the dependencies manually again
       // You won't gain much by "reuse"

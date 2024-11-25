@@ -19,6 +19,6 @@ dependencies {
     // be judicious
     api(libs.logcat)
 
-    // --- internal dependencies
+    // --- project dependencies
 
 }
