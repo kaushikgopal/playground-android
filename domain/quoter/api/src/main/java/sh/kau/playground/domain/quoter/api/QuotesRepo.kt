@@ -1,10 +1,14 @@
 package sh.kau.playground.domain.quoter.api
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 interface QuotesRepo {
-  fun quoteForTheDay(): Quote
+  suspend fun quoteForTheDay(): Quote
 }
 
+@Serializable
 data class Quote(
-    val quote: String,
-    val author: String,
+    @SerialName("q") val quote: String,
+    @SerialName("a") val author: String,
 )

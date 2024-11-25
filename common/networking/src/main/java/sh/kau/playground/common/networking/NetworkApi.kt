@@ -19,7 +19,7 @@ import sh.kau.playground.domain.shared.di.AppScope
 @AppScope
 @Inject
 class NetworkApi() {
-  val client: Lazy<HttpClient> = lazy {
+  private val client: Lazy<HttpClient> = lazy {
     HttpClient(Android) {
       install(ContentNegotiation) {
         json(
@@ -46,6 +46,8 @@ class NetworkApi() {
       }
     }
   }
+
+  fun client(): HttpClient = client.value
 }
 
 private const val TIME_OUT: Int = 30_000

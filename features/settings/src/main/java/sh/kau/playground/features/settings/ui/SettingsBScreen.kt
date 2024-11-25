@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +35,9 @@ typealias SettingsBScreen = @Composable () -> Unit
 fun SettingsBScreen(
     bindings: SettingsBindings,
 ) {
-  val quote = remember {  bindings.quotesRepo.quoteForTheDay() }
+  var quote by remember { mutableStateOf<Quote?>(null) }
+
+  LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
 
   Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -40,22 +46,24 @@ fun SettingsBScreen(
           color = Color.White,
           style = MaterialTheme.typography.headlineLarge,
           fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(bottom = 24.dp)
-      )
+          modifier = Modifier.padding(bottom = 24.dp))
+
+      if (quote == null) {
+          quote = Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+      }
+
       Text(
-          text = "\"${quote.quote}\"",
+          text = "\"${quote!!.quote}\"",
           color = Color.White,
           style = MaterialTheme.typography.bodyLarge,
           fontStyle = FontStyle.Italic,
           modifier = Modifier.padding(horizontal = 32.dp),
-          textAlign = TextAlign.Center
-      )
+          textAlign = TextAlign.Center)
       Text(
-          text = "- ${quote.author}",
+          text = "- ${quote!!.author}",
           color = Color.White,
           style = MaterialTheme.typography.bodyMedium,
-          fontStyle = FontStyle.Italic
-      )
+          fontStyle = FontStyle.Italic)
     }
   }
 }
@@ -63,12 +71,12 @@ fun SettingsBScreen(
 @Preview(showBackground = true)
 @Composable
 fun SettingsBScreenPreview() {
-  val quotesRepoImpl =
-      object : QuotesRepo {
-        override fun quoteForTheDay(): Quote {
-          return Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
-        }
-      }
-  val bindings = SettingsBindings("Playground", quotesRepoImpl)
-  SettingsBScreen(bindings)
+//  val quotesRepoImpl =
+//      object : QuotesRepo {
+//        override fun quoteForTheDay(): Quote {
+//          return Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+//        }
+//      }
+//  val bindings = SettingsBindings("Playground", quotesRepoImpl)
+//  SettingsBScreen(bindings)
 }

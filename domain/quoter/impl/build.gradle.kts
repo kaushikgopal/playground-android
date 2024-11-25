@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("template.android")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -10,7 +11,6 @@ android {
 dependencies {
     implementation(projects.domain.quoter.api)
 
-
     // dependency injection
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
@@ -18,7 +18,7 @@ dependencies {
 
     // internal dependencies
     implementation(projects.common.networking)
-    // can be removed with kotlin-inject-anvil
+    // should be removed with kotlin-inject-anvil
     implementation(platform((libs.ktor.bom)))
     implementation(libs.bundles.ktor)
 }
