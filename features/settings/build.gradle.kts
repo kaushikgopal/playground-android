@@ -17,5 +17,5 @@ dependencies {
 
   // --- project dependencies
   api(projects.domain.quoter.api)
-  implementation(projects.domain.quoter.impl)
+  /* implementation(projects.domain.quoter.impl) */ // assembling happens in AppComponent
 }
