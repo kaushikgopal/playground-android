@@ -17,4 +17,9 @@ dependencies {
 
     // --- project dependencies
     implementation(projects.common.log)
+    implementation(projects.features.settings)
+    /**/ api(projects.domain.quoter.api)
+    /**/ androidTestApi(projects.domain.quoter.api)
+    /**/ implementation(projects.domain.quoter.impl)
+    /**/ androidTestImplementation(projects.domain.quoter.impl)
 }

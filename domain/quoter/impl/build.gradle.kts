@@ -17,6 +17,6 @@ dependencies {
     implementation(libs.bundles.ktor)
 
     // --- project dependencies
-    implementation(projects.domain.quoter.api)
-    implementation(projects.common.networking)
+    api(projects.domain.quoter.api)
+    api(projects.common.networking) // need ktor classes (outside of NetworkApi)
 }

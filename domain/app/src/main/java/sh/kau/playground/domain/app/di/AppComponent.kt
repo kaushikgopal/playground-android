@@ -5,6 +5,7 @@ import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.Named
+import sh.kau.playground.features.settings.di.SettingsComponent
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
@@ -13,7 +14,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @MergeComponent(AppScope::class)
 abstract class AppComponent(
     @get:Provides val app: App,
-) {
+): SettingsComponent.Factory {
 
   @Provides fun provideAppName(): @Named("appName") String = "My Playground!"
 
