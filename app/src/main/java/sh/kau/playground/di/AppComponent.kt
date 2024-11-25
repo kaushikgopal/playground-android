@@ -1,4 +1,4 @@
-package sh.kau.playground.domain.app.di
+package sh.kau.playground.di
 
 import android.content.Context
 import logcat.LogcatLogger

@@ -49,9 +49,12 @@ dependencies {
   implementation(libs.bundles.kotlin.inject)
 
   // --- project dependencies
-  implementation(projects.domain.app)
   implementation(projects.features.landing)
   implementation(projects.features.settings)
+  /**/ api(projects.domain.quoter.api)
+  /**/ androidTestApi(projects.domain.quoter.api)
+  /**/ implementation(projects.domain.quoter.impl)
+  /**/ androidTestImplementation(projects.domain.quoter.impl)
 
   // --- testing
   testImplementation(libs.junit)

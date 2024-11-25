@@ -10,7 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import sh.kau.playground.domain.app.di.AppComponent
+import sh.kau.playground.di.AppComponent
 import sh.kau.playground.domain.ui.PlaygroundTheme
 import sh.kau.playground.features.landing.nav.LandingScreenRoute
 import sh.kau.playground.features.landing.nav.addLandingRoute
