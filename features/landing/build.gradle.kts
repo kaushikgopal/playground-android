@@ -16,5 +16,4 @@ dependencies {
   implementation(libs.bundles.kotlin.inject)
 
   // --- project dependencies
-  implementation(projects.domain.app)
 }

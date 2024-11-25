@@ -12,9 +12,6 @@ dependencies {
     // dependency injection
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
-    // should be removed with kotlin-inject-anvil
-    implementation(platform((libs.ktor.bom)))
-    implementation(libs.bundles.ktor)
 
     // --- project dependencies
     implementation(projects.domain.quoter.api)

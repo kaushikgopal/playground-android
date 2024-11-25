@@ -16,7 +16,6 @@ dependencies {
   implementation(libs.bundles.kotlin.inject)
 
   // --- project dependencies
-//  implementation(projects.domain.app)
   api(projects.domain.quoter.api)
   // but providing implementation through settings comp
   // TODO: kotlin-inject-anvil can remove below need

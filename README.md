@@ -46,8 +46,6 @@ So modules at the bottom have lesser dependencies and are more self-contained.
 
 - new features are added to :features module
 - the core :app module itself assembles all the dependencies (and is intentionally lean)
-- :domain:app is a special module with app level dependencies but one that features can depend on
-    - without causing a cyclic dependency back to the main :app module
 - template.feature = custom gradle plugin that sets up a fully functional feature for your app
 - template.android = custom gradle plugin that has the things you need for a pure android lib
     - think jvm target, minSDK etc. that you don't want to repeat everywhere
