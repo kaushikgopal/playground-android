@@ -19,5 +19,4 @@ dependencies {
     // --- project dependencies
     implementation(projects.common.log)
     
-    implementation(projects.domain.quoter.impl)
 }

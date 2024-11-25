@@ -52,6 +52,7 @@ dependencies {
   implementation(projects.domain.app)
   implementation(projects.features.landing)
   implementation(projects.features.settings)
+  api(projects.domain.quoter.impl)
 
   // --- testing
   testImplementation(libs.junit)

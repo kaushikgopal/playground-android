@@ -2,7 +2,6 @@ package sh.kau.playground.features.settings.di
 
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.domain.quoter.api.QuotesRepo
-import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.Named
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
