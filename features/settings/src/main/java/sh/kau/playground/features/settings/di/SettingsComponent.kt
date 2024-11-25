@@ -41,5 +41,5 @@ interface SettingsComponent {
 @Inject
 class SettingsBindings(
     @Named("appName") val appName: String,
-//    val quotesRepo: QuotesRepo,
+    val quotesRepo: QuotesRepo,
 )
