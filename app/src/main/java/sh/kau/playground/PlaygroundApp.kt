@@ -25,7 +25,7 @@ class PlaygroundApp : App, Application() {
     // calling the field directly on appComponent
     // is made possible because AppComponent inherits KotlinInjectAppComponentMerged directly
     // you could alternatively provide another injection intermediate object
-    logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.configComponent.provideAppName()}" }
+    logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.provideAppName()}" }
 
     logcat { "number of loggers: ${appComponent.logComponent.loggers.size}" }
   }
