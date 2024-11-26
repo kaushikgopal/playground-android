@@ -5,7 +5,7 @@ import android.content.pm.ApplicationInfo
 import logcat.LogPriority
 import logcat.logcat
 import sh.kau.playground.common.log.CompositeLogger
-import sh.kau.playground.domain.app.di.AppComponent
+import sh.kau.playground.di.AppComponent
 import sh.kau.playground.domain.shared.App
 
 class PlaygroundApp : App, Application() {
@@ -20,13 +20,13 @@ class PlaygroundApp : App, Application() {
 
     // Log all priorities in debug builds, no-op in release builds.
     // AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
-    CompositeLogger.install(appComponent.logComponent.loggers)
+    CompositeLogger.install(appComponent.loggers)
 
     // calling the field directly on appComponent
     // is made possible because AppComponent inherits KotlinInjectAppComponentMerged directly
     // you could alternatively provide another injection intermediate object
-    logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.configComponent.provideAppName()}" }
+    logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.provideAppName()}" }
 
-    logcat { "number of loggers: ${appComponent.logComponent.loggers.size}" }
+    logcat { "number of loggers: ${appComponent.loggers.size}" }
   }
 }

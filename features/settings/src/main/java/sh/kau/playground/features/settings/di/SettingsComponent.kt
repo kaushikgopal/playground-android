@@ -1,35 +1,26 @@
 package sh.kau.playground.features.settings.di
 
-import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Inject
-import me.tatarka.inject.annotations.Provides
-import sh.kau.playground.domain.app.di.AppComponent
 import sh.kau.playground.domain.quoter.api.QuotesRepo
-import sh.kau.playground.domain.quoter.impl.QuotesRepoImpl
 import sh.kau.playground.domain.shared.di.Named
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@Component
-abstract class SettingsComponent(
-    @Component val parent: AppComponent,
-) {
+@ContributesSubcomponent(SettingsScope::class)
+@SingleIn(SettingsScope::class)
+interface SettingsComponent {
 
-  abstract val settingsAScreen: SettingsAScreen
+  val settingsAScreen: SettingsAScreen
 
   // kotlin-inject function injection (2)
-  abstract val settingsBScreen: SettingsBScreen
+  val settingsBScreen: SettingsBScreen
 
-  // i would typically shove this in a Component (if there were more deps from the quotes module)
-  // TODO: remove direct dependency on QuotesRepoImpl here
-  //    making QuotesRepoImpl directly injectable (via kotlin-inject-anvil)
-  //    will prevent us from now needing feature:settings → :common:networking
-  @Provides fun quotesRepo(quotesRepo: QuotesRepoImpl): QuotesRepo = quotesRepo
-
-  companion object {
-    fun create(appComponent: AppComponent): SettingsComponent {
-      return SettingsComponent::class.create(appComponent)
-    }
+  @ContributesSubcomponent.Factory(AppScope::class)
+  interface Factory {
+    fun createSettingsComponent(): SettingsComponent
   }
 }
 

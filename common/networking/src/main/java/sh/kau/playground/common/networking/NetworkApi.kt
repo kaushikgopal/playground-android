@@ -10,13 +10,14 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import logcat.logcat
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.shared.di.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 /**
  * This class abstracts away the implementation details for networking.
  * * It prevents direct dependency over networking libraries (like Ktor) to spread across the app
  */
-@AppScope
+@SingleIn(AppScope::class)
 @Inject
 class NetworkApi() {
   private val client: Lazy<HttpClient> = lazy {

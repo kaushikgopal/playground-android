@@ -29,15 +29,12 @@ include(
 
 // module specific to this app
 include(
-    ":domain:app", // app level functionality
-    // features depend on this module, preventing circular dependency over :app
-
     ":domain:ui", // compose theme & design system
 
     ":domain:quoter:api", // produce quotes
     ":domain:quoter:impl",
 
-    ":domain:shared", // pure kotlin module |  @Named + ConfigComponent + referenced everywhere
+    ":domain:shared", // pure kotlin module | referenced everywhere e.g. @Named
 )
 
 

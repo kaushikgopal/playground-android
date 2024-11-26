@@ -39,10 +39,6 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
         plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
 
         dependencies {
-          // below will be directly usable in feature module
-          val implementation by configurations
-          implementation(project(":domain:app"))
-
           // below will pull inner implementation as well
           // be judicious here
           val api by configurations

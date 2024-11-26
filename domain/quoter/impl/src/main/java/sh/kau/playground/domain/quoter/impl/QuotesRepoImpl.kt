@@ -9,10 +9,13 @@ import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.common.networking.NetworkApi
 import sh.kau.playground.domain.quoter.api.Quote
 import sh.kau.playground.domain.quoter.api.QuotesRepo
-import sh.kau.playground.domain.shared.di.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@AppScope
 @Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class QuotesRepoImpl(
     private val api: NetworkApi,
 ) : QuotesRepo {

@@ -14,8 +14,8 @@ ksp = "2.0.20-1.0.25"       # issue: https://github.com/google/ksp/issues/2072
 kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 
-kotlinInject = "0.7.2"
-kotlinInjectAnvil = "0.1.0"
+kotlin-inject = "0.7.2"
+kotlin-inject-anvil = "0.1.0"
 
 activityCompose = "1.9.2"
 lint = "31.7.2"  # = agp + 23.0.0
@@ -80,11 +80,11 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
 coroutines-android = { module = "org.jetbrains.kotlin:kotlinx-coroutines-android" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 
-kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlinInject" }
-kotlin-inject-runtime = { group = "me.tatarka.inject", name = "kotlin-inject-runtime", version.ref = "kotlinInject" }
-kotlin-inject-anvil-compiler = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "compiler", version.ref = "kotlinInjectAnvil" }
-kotlin-inject-anvil-runtime = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime", version.ref = "kotlinInjectAnvil" }
-kotlin-inject-anvil-runtime-utils = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime-optional", version.ref = "kotlinInjectAnvil" }
+kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
+kotlin-inject-runtime = { group = "me.tatarka.inject", name = "kotlin-inject-runtime", version.ref = "kotlin-inject" }
+kotlin-inject-anvil-compiler = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "compiler", version.ref = "kotlin-inject-anvil" }
+kotlin-inject-anvil-runtime = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime", version.ref = "kotlin-inject-anvil" }
+kotlin-inject-anvil-runtime-utils = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime-optional", version.ref = "kotlin-inject-anvil" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.3" }
 
@@ -123,12 +123,12 @@ compose-navigation = [
 ]
 kotlin-inject = [
     "kotlin-inject-runtime",
-    #    "kotlin-inject-anvil-runtime",
-    #    "kotlin-inject-anvil-runtime-utils",
+    "kotlin-inject-anvil-runtime",
+    "kotlin-inject-anvil-runtime-utils",
 ]
 kotlin-inject-compiler = [
     "kotlin-inject-compiler",
-    # "kotlin-inject-anvil-compiler",
+     "kotlin-inject-anvil-compiler",
 ]
 ktor = [
     "ktor-client-android", # ktor engine

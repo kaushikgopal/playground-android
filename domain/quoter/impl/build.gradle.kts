@@ -12,11 +12,8 @@ dependencies {
     // dependency injection
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
-    // should be removed with kotlin-inject-anvil
-    implementation(platform((libs.ktor.bom)))
-    implementation(libs.bundles.ktor)
 
     // --- project dependencies
-    implementation(projects.domain.quoter.api)
-    implementation(projects.common.networking)
+    api(projects.domain.quoter.api)
+    api(projects.common.networking) // need ktor classes (outside of NetworkApi)
 }

@@ -1,4 +1,4 @@
-package sh.kau.playground.domain.shared.di
+package sh.kau.playground.features.settings.di
 
 import me.tatarka.inject.annotations.Scope
 
@@ -8,4 +8,4 @@ import me.tatarka.inject.annotations.Scope
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
 )
-annotation class AppScope
+annotation class SettingsScope

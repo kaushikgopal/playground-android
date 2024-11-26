@@ -12,7 +12,7 @@ Some of the concepts implemented here:
 - [x] [custom lint-rules](https://github.com/kaushikgopal/playground-android/pull/5/files)
 - [x] compose-navigation between feature modules
 - [x] [Makefile](https://github.com/kaushikgopal/playground-android/blob/master/Makefile) with common cli commands
-- [x] dependency injection with kotlin-inject
+- [x] [dependency injection with kotlin-inject-anvil](https://github.com/kaushikgopal/playground-android/pull/12)
   - [x] [function-injection](https://github.com/kaushikgopal/playground-android/pull/9/commits/aad254957a003982633006fb2f350ee7a372f11d) demo in `@Composable`
 - [x] [logcat](https://github.com/square/logcat) lib and injecting [multiple loggers](https://github.com/kaushikgopal/playground-android/blob/master/common/log/src/main/java/sh/kau/playground/common/log/CompositeLogger.kt)
 - [x] basic networking with [ktor](https://ktor.io/docs/client.html) [#10](https://github.com/kaushikgopal/playground-android/pull/10/files#diff-61300620752e698467343ba4270127d0cbb3c9e3153bb001ff51102244d2c7b2)
@@ -46,8 +46,6 @@ So modules at the bottom have lesser dependencies and are more self-contained.
 
 - new features are added to :features module
 - the core :app module itself assembles all the dependencies (and is intentionally lean)
-- :domain:app is a special module with app level dependencies but one that features can depend on
-    - without causing a cyclic dependency back to the main :app module
 - template.feature = custom gradle plugin that sets up a fully functional feature for your app
 - template.android = custom gradle plugin that has the things you need for a pure android lib
     - think jvm target, minSDK etc. that you don't want to repeat everywhere
