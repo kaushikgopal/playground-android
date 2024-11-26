@@ -12,7 +12,7 @@ Some of the concepts implemented here:
 - [x] [custom lint-rules](https://github.com/kaushikgopal/playground-android/pull/5/files)
 - [x] compose-navigation between feature modules
 - [x] [Makefile](https://github.com/kaushikgopal/playground-android/blob/master/Makefile) with common cli commands
-- [x] dependency injection with kotlin-inject
+- [x] [dependency injection with kotlin-inject-anvil](https://github.com/kaushikgopal/playground-android/pull/12)
   - [x] [function-injection](https://github.com/kaushikgopal/playground-android/pull/9/commits/aad254957a003982633006fb2f350ee7a372f11d) demo in `@Composable`
 - [x] [logcat](https://github.com/square/logcat) lib and injecting [multiple loggers](https://github.com/kaushikgopal/playground-android/blob/master/common/log/src/main/java/sh/kau/playground/common/log/CompositeLogger.kt)
 - [x] basic networking with [ktor](https://ktor.io/docs/client.html) [#10](https://github.com/kaushikgopal/playground-android/pull/10/files#diff-61300620752e698467343ba4270127d0cbb3c9e3153bb001ff51102244d2c7b2)
