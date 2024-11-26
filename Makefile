@@ -20,6 +20,10 @@ kill-ksp:
 	@gum log -l info "This script will kill your kotlin daemon (useful for ksp errors)"
 	@jps | grep -E 'KotlinCompileDaemon' | awk '{print $$1}' | xargs kill -9 || true
 
+b:
+	@gum log -l info "This script will assemble the debug app (without linting)"
+	@./gradlew assembleDebug -x lint
+
 build:
 	@gum log -l info "This script will assemble the project (without linting)"
 	@./gradlew assemble -x lint
