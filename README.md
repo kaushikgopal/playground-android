@@ -4,6 +4,7 @@ This is a template project for Android development. I use it as a way
 to test new concepts or integrate libraries that are otherwise hard
 in a more complex project.
 
+
 Some of the concepts implemented here:
 
 - [x] gradle [version catalog](https://github.com/kaushikgopal/playground-android/blob/master/gradle/libs.versions.toml), BOM & Bundles (one source of truth)
@@ -50,3 +51,6 @@ So modules at the bottom have lesser dependencies and are more self-contained.
     - think jvm target, minSDK etc. that you don't want to repeat everywhere
 - :common modules are shared but can be hot-swapped with another implementation (possible)
 - :domain modules are specific to the app but also shared (but not intended to be swapped out)
+
+I talked about this in ep #252 of
+[Fragmented](https://fragmentedpodcast.com/episodes/252)
