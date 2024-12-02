@@ -3,7 +3,7 @@ sdk-compile = "35"
 sdk-min = "21"
 sdk-target = "35"
 
-app-namespace = "sh.kau.playground"
+app-namespace = "harsh.starter.playground"
 app-version-code = "1"
 app-version-name = "23.062.000"
 
