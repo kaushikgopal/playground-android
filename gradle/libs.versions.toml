@@ -21,9 +21,9 @@ activityCompose = "1.9.3"
 lint = "31.7.3"  # = agp + 23.0.0
 androidxLifecycle = "2.8.7"
 androidxTest = "1.6.2"
-composeBom = "2024.11.00" # https://developer.android.com/jetpack/compose/bom/bom-mapping
-composeNavigation = "2.8.4"
-desugarJdk = "2.1.3"
+composeBom = "2024.12.01" # https://developer.android.com/jetpack/compose/bom/bom-mapping
+composeNavigation = "2.8.5"
+desugarJdk = "2.1.4"
 espresso = "3.6.1"
 junit = "4.13.2"
 secretsGradlePlugin = "2.0.1"
