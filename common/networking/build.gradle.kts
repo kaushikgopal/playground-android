@@ -10,11 +10,11 @@ android {
 
 dependencies {
   // dependency injection
-  ksp(libs.bundles.kotlin.inject.compiler)
-  implementation(libs.bundles.kotlin.inject)
+//  ksp(libs.bundles.kotlin.inject.compiler)
+//  implementation(libs.bundles.kotlin.inject)
   // networking implementation
-  implementation(platform((libs.ktor.bom)))
-  api(libs.bundles.ktor) // need ktor classes (outside of NetworkApi)
+//  implementation(platform((libs.ktor.bom)))
+//  api(libs.bundles.ktor) // need ktor classes (outside of NetworkApi)
 
   // --- project dependencies
   implementation(projects.common.log)
