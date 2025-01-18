@@ -14,8 +14,10 @@ dependencies {
     // networking implementation
 //    implementation(platform((libs.ktor.bom)))
 //    api(libs.bundles.ktor) // need ktor classes (outside of NetworkApi)
+    implementation(platform(libs.coroutines.bom))
+    implementation(libs.coroutines.core)
 
     // --- project dependencies
     api(projects.common.usf.api)
-//    implementation(projects.common.log)
+    implementation(projects.common.log)
 }
