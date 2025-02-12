@@ -1,0 +1,10 @@
+---
+description: Rules for Android development
+globs: *.kt, *.kts
+---
+# Specific to Android
+
+- Use the UDF or USF architecture pattern
+  - manage state and events in viewmodels and trigger and render them in activities / fragments 
+- Use repository pattern for data persistence
+- Don't use xml and fragmenents when possible. Prefer Jetpack Compose UI
