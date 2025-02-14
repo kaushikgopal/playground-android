@@ -1,0 +1,67 @@
+---
+description: Feature development with (USF) Unidirectional State Flow - MVI pattern
+globs: *.kt, *.kts
+---
+# MVI-USF (Model View Intent - Unidirectional State Flow) Pattern Rules
+
+## Core Components
+
+1. Every feature must have:
+   - Event: Represents user actions/inputs
+   - Result: Internal state changes from processing events
+   - UiState: Data class representing the complete UI state
+   - Effect: One-time side effects (toast, navigation event, analytics etc.)
+   - Extends UsfImpl to process events and manage state
+
+## Implementation Rules
+
+- Say FeatureViewModel is the ViewModel, it should extend [UsfImpl.kt](mdc:common/usf/impl/src/main/kotlin/UsfImpl.kt)
+- Types should be FeatureEvent, FeatureResult, FeatureUiState & FeatureEffect 
+
+1. State Management:
+   - UiState must be immutable (data class)
+   - State updates happen through copy()
+   - No direct state mutation outside resultToViewState()
+
+2. Event Processing Pipeline:
+   - Events -> Results -> (ViewState + Effects)
+   - One event can produce multiple results
+   - Each result produces exactly one state update
+   - Results can produce zero or more effects
+
+3. Required Function Implementations:
+   - override the methods from the base viewmodel
+   - mark them as TODO:
+
+4. Error Handling:
+   - Catch and handle errors within event processing
+   - Flow continues after errors
+   - Use error effects for user feedback
+
+## Best Practices
+
+1. Events:
+   - Name as actions (UserClicked, DataLoaded)
+   - Keep payload minimal
+   - Use sealed interface/class
+
+2. Results:
+   - Internal only, not exposed to UI
+   - Represent intermediate state changes
+   - Use sealed interface/class
+
+3. UiState:
+   - Single source of truth for UI
+   - Include all UI-relevant data
+   - Use data class with meaningful defaults
+
+4. Effects:
+   - One-time actions only
+   - Navigation, toasts, analytics
+   - Use sealed interface/class
+
+5. Testing:
+   - Test event -> state transitions
+   - Verify effect emissions
+   - Test error scenarios
+   - Use TestScope for coroutines

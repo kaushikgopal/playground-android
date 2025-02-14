@@ -4,7 +4,6 @@ globs: *.kt, *.kts
 ---
 # Specific to Android
 
-- Use the UDF or USF architecture pattern
-  - manage state and events in viewmodels and trigger and render them in activities / fragments 
-- Use repository pattern for data persistence
+- Use the UDF or USF architecture pattern for creating new ViewModels refer to [mvi-usf.mdc](mdc:.cursor/rules/mvi-usf.mdc)
 - Don't use xml and fragmenents when possible. Prefer Jetpack Compose UI
+- Use repository pattern for data persistence
