@@ -8,7 +8,7 @@ android {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform { includeEngines.add("junit-jupiter") }
+    useJUnitPlatform()
 }
 
 dependencies {
