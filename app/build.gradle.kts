@@ -57,7 +57,7 @@ dependencies {
   /**/ androidTestImplementation(projects.domain.quoter.impl)
 
   // --- testing
-  testImplementation(libs.junit)
+  testImplementation(libs.bundles.testing)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.espresso.core)
   androidTestImplementation(platform(libs.compose.bom))

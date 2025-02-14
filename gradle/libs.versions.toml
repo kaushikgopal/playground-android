@@ -25,7 +25,7 @@ composeBom = "2024.12.01" # https://developer.android.com/jetpack/compose/bom/bo
 composeNavigation = "2.8.5"
 desugarJdk = "2.1.4"
 espresso = "3.6.1"
-junit = "4.13.2"
+junit = "5.10.2"
 secretsGradlePlugin = "2.0.1"
 spotless = "6.15.0"
 junitVersion = "1.2.1"
@@ -102,7 +102,9 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 logcat = { group = "com.squareup.logcat", name = "logcat", version = "0.1" }
 
 ## Testing
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+testing-junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
+testing-junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
+testing-assertj-core = { group = "org.assertj", name = "assertj-core", version = "3.25.3" }
 
 
 [bundles]
@@ -148,9 +150,15 @@ lint-api = [
     #"lint-checks",
 ]
 lint-tests = [
-    "junit",
+    #    "junit",
     "lint-cli",
     "lint-tests"
+]
+testing = [
+    "testing-junit-api",
+    #    "testing-junit-engine"
+    "testing-assertj-core",
+    "coroutines-test",
 ]
 
 
@@ -167,6 +175,8 @@ kotlin-kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin"
 kotlin-compatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlin-bcv" }
 kotlin-dataframe = { id = "org.jetbrains.kotlinx.dataframe", version.ref = "kotlin-dataframe" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }                         # compose-navigation + ktor
+
+java-test-fixtures = { id = "org.gradle.java-test-fixtures" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
