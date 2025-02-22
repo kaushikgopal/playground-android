@@ -1,0 +1,78 @@
+---
+description: Always build and test suggested changes
+globs: *.kt *.java
+---
+
+# Build and Test Requirements
+
+## Enforcement Points
+1. The AI MUST run compilation and tests BEFORE returning any code changes to the user
+2. The AI MUST NOT wait for user approval to run compilation and tests
+3. The AI MUST include test results in its response
+4. If compilation or tests fail, the AI MUST fix the issues before suggesting changes to the user
+
+## Standard Workflow
+1. Receive user request
+2. Make necessary code changes
+3. Run compilation (without waiting for approval)
+4. If compilation fails:
+   - Fix issues
+   - Recompile
+   - Repeat until successful
+5. Run tests (without waiting for approval)
+6. If tests fail:
+   - Fix issues
+   - Rerun tests
+   - Repeat until successful
+7. Only then respond to user with changes and test results
+
+## When to Test
+1. ALWAYS test after suggesting any code changes, before completing your response
+2. Test BEFORE suggesting the changes to the user if you want to verify your approach
+3. Test AFTER making changes to fix compilation/test failures
+4. Test when adding new files or modifying existing files
+5. Test when changing interfaces or method signatures that could affect multiple modules
+
+## Testing Requirements
+1. Run tests for all affected modules
+2. Run tests in the following order:
+   - Unit tests
+   - Integration tests (if available)
+   - UI tests (if available)
+3. Include test results in response:
+   - Number of tests run
+   - Pass/fail status
+   - Any relevant test output
+
+## How to Test
+1. Identify the affected modules based on your changes
+2. Run the appropriate Gradle tasks:
+   - For compilation: `./gradlew :<module>:compile<Variant>Kotlin`
+   - For tests: `./gradlew :<module>:test<Variant>UnitTest`
+   - For multiple modules: `./gradlew :<module1>:test :<module2>:test :<module3>:test`
+
+## Error Handling
+1. On compilation failure:
+   - Analyze error messages
+   - Make necessary fixes
+   - Recompile without user intervention
+2. On test failure:
+   - Review test output
+   - Fix failing tests
+   - Rerun without user intervention
+3. If unable to fix after 3 attempts:
+   - Report the issue to the user
+   - Provide detailed error information
+   - Request guidance
+
+## Permissions
+- You have permission to automatically run compile commands and unit testing commands
+- You do not need to wait for approval specifically for these types of commands
+- If compilation fails, or if the unit tests fail, fix them and recompile/test iteratively until everything passes
+
+## Best Practices
+1. Start with compilation before running tests
+2. Run tests for all affected modules, not just the directly modified ones
+3. Pay attention to deprecation warnings and fix them if possible
+4. If you can't fix all issues, explain the remaining issues to the user
+5. Don't skip testing - it's better to catch issues early than to suggest broken code

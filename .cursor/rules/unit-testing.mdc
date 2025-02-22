@@ -1,0 +1,10 @@
+---
+description: Unit testing rules and libraries
+globs: *ViewModel.kt
+---
+
+# Unit testing rules and libraries
+
+- We need unit tests to cover all new code in order for our CI to pass, usually we need at least 85% coverage on important files such as ViewModels.
+- We use Turbine and Mockito as our main testing libraries.
+- We never use Robolectric or Mockk, please do not suggest anything involving these testing libraries.

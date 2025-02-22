@@ -1,0 +1,27 @@
+---
+description: Git branching and commit messages
+globs: *
+---
+# Git branching and commit rules
+
+## General instructions
+1. never commit directly to the `master` or `main` branch
+
+
+## Branch conventions
+1. follow a branch naming convention like so `<PODS-XXXX>/<my initials>/<short-description>` 
+2. when no jira ticket number is available, use `NO-JIRA`
+
+e.g. 
+  - Kaushik Gopal adding cursor rules should use a branch `NO-JIRA/kg/cursor-rules`
+  - Michal P working on a new USF feature should use a branch `PODS-5432/mp/usf-v3`
+
+## Commit message conventions
+
+1. commit message subject should not be longer than 50 characters
+2. Wrap lines at 72 characters
+3. In the footer part, feel free to add additional information, such as references to issues or supporting links or docs that were consulted in the process of working on the code
+4. commit message should begin with the JIRA ticket name, followed by a colon.  For the above examples:
+  - Kaushik Gopal adding cursor rules could use a commit message such as: `NO-JIRA: Created some new Cursor rules`
+  - Michal P working on a new USF feature could use a commit message such as: `PODS-5432: Added framework for new USF flow`
+

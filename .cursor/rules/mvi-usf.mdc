@@ -15,7 +15,7 @@ globs: *.kt, *.kts
 
 ## Implementation Rules
 
-- Say FeatureViewModel is the ViewModel, it should extend [UsfImpl.kt](mdc:common/usf/impl/src/main/kotlin/UsfImpl.kt)
+- Say FeatureViewModel is the ViewModel, it should extend @UsfImpl.kt
 - Types should be FeatureEvent, FeatureResult, FeatureUiState & FeatureEffect 
 
 1. State Management:

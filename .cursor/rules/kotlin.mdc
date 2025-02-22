@@ -81,4 +81,4 @@ globs: *.kt, *.kts
 - Write acceptance tests for each module
   - Follow the Given-When-Then convention
 
-For Android rules  use [android.mdc](mdc:.cursor/rules/android.mdc)
+For Android rules  use @android.mdc
