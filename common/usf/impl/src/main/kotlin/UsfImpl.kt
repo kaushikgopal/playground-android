@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
+import java.time.Duration
 
 /**
  * When building features, we create <Feature>ViewModelImpl.kt classes that extend this class. and
@@ -101,10 +102,10 @@ abstract class UsfImpl<Event : Any, Result : Any, ViewState : Any, Effect : Any,
           .onEach { logger.logUiState(it) }
           .stateIn(
               scope = coroutineScope,
-              started =
+              started = // strategy that controls when sharing is started and stopped
                   SharingStarted.WhileSubscribed(
-                      stopTimeoutMillis = 0,
-                      replayExpirationMillis = 0,
+                     stopTimeoutMillis = 0, // on 0 subscribers, stop sharing immediately
+                     replayExpirationMillis = Long.MAX_VALUE, // on sharing stopped, never reset replay cache
                   ),
               initialValue = _uiState.value,
           )

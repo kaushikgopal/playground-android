@@ -1,10 +1,10 @@
 ---
 description: Rules for Android development
 globs: *.kt, *.kts
+alwaysApply: false
 ---
 # Specific to Android
 
-- Use the UDF or USF architecture pattern for creating new ViewModels 
-  - Refer to [mvi-usf.mdc](mdc:.cursor/rules/mvi-usf.mdc) for more details 
-- Don't use xml and fragments when possible. Prefer Jetpack Compose UI
+- Use the UDF or USF architecture pattern for creating new ViewModels refer to [mvi-usf.mdc](mdc:.cursor/rules/mvi-usf.mdc)
+- Don't use xml and fragmenents when possible. Prefer Jetpack Compose UI
 - Use repository pattern for data persistence
