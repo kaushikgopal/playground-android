@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.onEach
 import sh.kau.playground.usf.TestEffect.TestDelayedEffect
 import sh.kau.playground.usf.TestEvent.*
 import sh.kau.playground.usf.TestResult.*
-import java.lang.Exception
 
 class TestViewModel(
     coroutineScope: CoroutineScope,
@@ -20,7 +19,7 @@ class TestViewModel(
     initFlow: Flow<Int> = emptyFlow()
 ) :
     UsfImpl<TestEvent, TestResult, TestViewState, TestEffect, Unit>(
-        initialViewState = TestViewState("[VS] initial"),
+        initialUiState = TestViewState("[VS] initial"),
         coroutineScope = coroutineScope,
         processingDispatcher = processingDispatcher,
         logger = TestUsfLogger,
