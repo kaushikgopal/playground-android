@@ -18,7 +18,7 @@ Some of the concepts implemented here:
 - [x] compose-navigation between feature modules
 - [x] [dependency injection with kotlin-inject-anvil](https://github.com/kaushikgopal/playground-android/pull/12)
   - [x] [function-injection](https://github.com/kaushikgopal/playground-android/pull/9/commits/aad254957a003982633006fb2f350ee7a372f11d) demo in `@Composable`
-- [ ] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
+- [x] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 
 # Getting started
 - Download this repository and open the template folder on Android Studio

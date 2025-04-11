@@ -21,23 +21,18 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsfImplTest {
 
-  @RegisterExtension
-  val coroutineTestRule = CoroutineTestRule()
-
   private fun TestScope.createViewModel(
-    coroutineRule: CoroutineTestRule,
     initFlow: Flow<Int> = emptyFlow()
   ) =
     TestViewModel(
       coroutineScope = backgroundScope,
-      processingDispatcher = coroutineRule.testDispatcher,
       initFlow = initFlow,
     )
 
   @Test
   @DisplayName("core test: event -> result -> (view state + effect)")
   fun testBasicEmission() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -59,7 +54,7 @@ class UsfImplTest {
   @DisplayName("core test: event sent through init (flow)")
   fun testHotFlow() = runTest {
     val initFlow = MutableSharedFlow<Int>()
-    val viewModel = createViewModel(coroutineTestRule, initFlow)
+    val viewModel = createViewModel(initFlow)
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -78,7 +73,7 @@ class UsfImplTest {
   @Test
   @DisplayName("initial view state emitted on subscription")
   fun testInitialViewState() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -93,7 +88,7 @@ class UsfImplTest {
   @Test
   @DisplayName("core test: process multiple events in sequence")
   fun testMultipleEvents() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -119,7 +114,7 @@ class UsfImplTest {
   @Test
   @DisplayName("process multiple events together, ensure correct conflation behavior")
   fun testPreventConflation() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -144,7 +139,7 @@ class UsfImplTest {
   @Test
   @DisplayName("view state de-duped but not effects, when same event processed multiple times")
   fun testDuplicateViewState() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -172,7 +167,7 @@ class UsfImplTest {
   @Test
   @DisplayName("core test: multiple events that take different amount of time to finish")
   fun testConcurrentEventOrder() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -199,7 +194,7 @@ class UsfImplTest {
   @Test
   @DisplayName("events sent when subscribers not present, are not lost")
   fun testEventsNotLostWithoutSubscribers() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // Send two events before adding subscribers
     viewModel.processInput(TestEvent.TestEvent1)
@@ -225,7 +220,7 @@ class UsfImplTest {
   @Test
   @DisplayName("events sent when subscribers disconnect, and then reconnect, are never lost")
   fun testEffectNotLostWithoutSubscribers() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // Start collecting effects and uiState with first subscriber
     val es1 = mutableListOf<TestEffect>()
@@ -268,7 +263,7 @@ class UsfImplTest {
   @Test
   @DisplayName("5s timeout for view state, always emits the latest known value")
   fun testViewStateAlwaysLatest() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // First subscriber
     val vs = mutableListOf<TestViewState>()
@@ -314,7 +309,7 @@ class UsfImplTest {
     "5s timeout for effects, emits to first new subscriber only, if no subscribers connected"
   )
   fun testViewEffectsConsumedOnlyOnce() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // Process regular event that emits an effect
     // but no subscribers
@@ -362,7 +357,7 @@ class UsfImplTest {
   @Test
   @DisplayName("5s timeout for effects, no influence if subscriber was connected and consumed")
   fun testViewEffectsOn5sTimeout() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // First subscriber
     val es = mutableListOf<TestEffect>()
@@ -408,7 +403,7 @@ class UsfImplTest {
   @Test
   @DisplayName("error within event to result flow, flow continues processing events after")
   fun testErrorHandlingForFlowErrors() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -441,7 +436,7 @@ class UsfImplTest {
   @Test
   @DisplayName("direct error thrown in eventToResultFlow, flow continues processing events after")
   fun testErrorHandlingForDirectErrors() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -474,7 +469,7 @@ class UsfImplTest {
   @Test
   @DisplayName("error in resultToViewState, flow continues processing subsequent events")
   fun testErrorInResultToViewState() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -508,7 +503,7 @@ class UsfImplTest {
   @Test
   @DisplayName("error in resultToEffects, flow continues processing subsequent events")
   fun testErrorInResultToEffects() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -548,7 +543,7 @@ class UsfImplTest {
     "when error occurs in resultToEffects flow, flow continues processing subsequent events"
   )
   fun testErrorInResultToEffectsFlow() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     val vs = mutableListOf<TestViewState>()
     val es = mutableListOf<TestEffect>()
@@ -586,7 +581,7 @@ class UsfImplTest {
   @Test
   @DisplayName("when all subscribers are gone for 5s, jobs terminate")
   fun testJobsTerminateAfterTimeout() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // make sure no subscribers
     assertThat(viewModel.subscribers).isEqualTo(0)
@@ -620,7 +615,7 @@ class UsfImplTest {
   @Test
   @DisplayName("both uiState and effects should respect the 5s timeout before terminating")
   fun testTimeoutRespectedForBothViewStateAndEffects() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // Subscribe to uiState first
     val job1 = launch { viewModel.uiState.collect {} }
@@ -654,7 +649,7 @@ class UsfImplTest {
   @Test
   @DisplayName("VM cleans up after itself, even with multiple subscriptions")
   fun testCleanupWithMultipleSubscriptions() = runTest {
-    val viewModel = createViewModel(coroutineTestRule)
+    val viewModel = createViewModel()
 
     // Subscribe to uiState first
     val job1 = launch { viewModel.uiState.collect {} }
@@ -672,5 +667,47 @@ class UsfImplTest {
     job2.cancel()
     advanceTimeBy(5.seconds + 1.milliseconds)
     assertThat(viewModel.mainJob?.isActive ?: false).isFalse()
+  }
+
+  @Test
+  @DisplayName("second subscriber receives last emitted state, not initial state")
+  fun testSecondSubscriberReceivesLastEmittedState() = runTest {
+    val viewModel = createViewModel()
+
+    // First subscriber
+    val vs1 = mutableListOf<TestViewState>()
+    val job1 = backgroundScope.launch { viewModel.uiState.toList(vs1) }
+    runCurrent()
+
+    // Process an event to update the view state
+    viewModel.processInput(TestEvent.TestEvent1)
+    runCurrent()
+
+    // Verify first subscriber received initial state and updated state
+    assertThat(vs1)
+      .hasSize(2)
+      .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+
+    // Cancel first subscription
+    job1.cancel()
+    runCurrent()
+
+    // Second subscriber
+    val vs2 = mutableListOf<TestViewState>()
+    backgroundScope.launch { viewModel.uiState.toList(vs2) }
+    runCurrent()
+
+    // Verify second subscriber immediately receives the last emitted state (not the initial state)
+    assertThat(vs2)
+      .hasSize(1)
+      .containsExactly(TestViewState("[VS] 1 "))
+      .doesNotContain(TestViewState("[VS] initial"))
+
+    // Process another event to ensure the flow continues working
+    viewModel.processInput(TestEvent.TestEvent2)
+    runCurrent()
+
+    // Verify second subscriber receives the new state
+    assertThat(vs2).hasSize(2).containsExactly(TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
   }
 }
