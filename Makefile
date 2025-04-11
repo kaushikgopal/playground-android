@@ -1,3 +1,11 @@
+default: build-debug
+
+# Set default warning mode if not specified
+# permitted values all,none,summary
+# e.g. usage from make cli:
+#  		make build warnings=summary
+warnings ?= none
+
 # many of these commands are specific to my macOS setup
 # so you may need to install some of these tools like fd, gum
 
@@ -20,17 +28,17 @@ kill-ksp:
 	@gum log -l info "This script will kill your kotlin daemon (useful for ksp errors)"
 	@jps | grep -E 'KotlinCompileDaemon' | awk '{print $$1}' | xargs kill -9 || true
 
-b:
+build-debug:
 	@gum log -l info "This script will assemble the debug app (without linting)"
-	@./gradlew assembleDebug -x lint
+	@./gradlew assembleDebug -x lint --warning-mode $(warnings)
 
 build:
-	@gum log -l info "This script will assemble the project (without linting)"
-	@./gradlew assemble -x lint
+	@gum log -l info "This script will assemble the full project (without linting)"
+	@./gradlew assemble -x lint --warning-mode $(warnings)
 
 lint:
 	@gum log -l info "This script will run lint checks"
-	@./gradlew lint
+	@./gradlew lint --warning-mode $(warnings)
 
 lint-update:
 	@gum log -l info "Update the baseline for lint"
@@ -38,11 +46,11 @@ lint-update:
 
 tests:
 	@echo "Run all unit tests without linting"
-	./gradlew tests -x lint
+	@./gradlew tests -x lint --warning-mode $(warnings)
 
 #tests-screenshots:
 #	@echo "Verify all screenshots"
-#	./gradlew verifyPaparazziDebug
+#	./gradlew verifyPaparazziDebug --warning-mode $(warnings)
 #
 #record-screenshots:
 #	@echo "Record all screenshots"
