@@ -8,7 +8,7 @@ import sh.kau.playground.common.log.CompositeLogger
 import sh.kau.playground.di.AppComponent
 import sh.kau.playground.domain.shared.App
 
-class PlaygroundApp : App, Application() {
+class AppImpl : App, Application() {
 
   private val appComponent by lazy(LazyThreadSafetyMode.NONE) { AppComponent.from(this) }
 
