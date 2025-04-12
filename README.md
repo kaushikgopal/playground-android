@@ -28,13 +28,17 @@ git clone https://github.com/kaushikgopal/playground-android.git android
 cd android
 # assuming you are already tracking in git
 trash .git
-trash .idea 
+trash .idea
 ```
 
 2. Run the package rename script
 ```shell
  ./rename_package.sh app.awesome.android
 ```
+
+3. Change project name
+- in `settings.gradle.kts` change `rootProject.name = "MyApp"`
+- in .idea/.name add entry `MyApp`
 
 3. Clean & Rebuild app
 ```shell
