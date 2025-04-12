@@ -21,15 +21,27 @@ Some of the concepts implemented here:
 - [x] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 
 # Getting started
-- Download this repository and open the template folder on Android Studio
-- in libs.versions.toml change app-namespace to your desired package name
-- in AndroidStudio rename the app package sh.kau.playground
-- Check if the manifest package was renamed along with the package
-- In app/build.gradle.kts, change the applicationId to the new app package
 
+1. Clone the repo in your android folder
+```shell
+git clone https://github.com/kaushikgopal/playground-android.git android
+cd android
+# assuming you are already tracking in git
+trash .git
+trash .idea 
+```
 
-Ready to Use and you're ready to start working on your new app!
+2. Run the package rename script
+```shell
+ ./rename_package.sh app.awesome.android
+```
 
+3. Clean & Rebuild app
+```shell
+make clean
+make
+```
+Ready to go!
 
 # App module diagram (multi-module setup)
 
