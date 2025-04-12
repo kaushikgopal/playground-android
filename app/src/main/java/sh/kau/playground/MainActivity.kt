@@ -31,11 +31,12 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
         ) { innerPadding ->
           val navController = rememberNavController()
+
+          // building the main nav graph
           NavHost(
               navController = navController,
-              startDestination = LandingScreenRoute,
+              startDestination = LandingScreenRoute, // starting screen
           ) {
-            // building the main nav graph
             addLandingRoute(
                 modifier = Modifier.padding(innerPadding),
                 onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
                 navHostController = navController,
             )
           }
+
         }
       }
     }
