@@ -1,4 +1,4 @@
-package sh.kau.playground.common.log
+package sh.kau.playground.log
 
 import logcat.LogPriority
 import logcat.LogcatLogger

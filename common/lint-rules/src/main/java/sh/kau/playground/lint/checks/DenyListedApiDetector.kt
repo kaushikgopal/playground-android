@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Moxy Mouse, Inc.
 // Copyright (C) 2022 Square, Inc.
 // SPDX-License-Identifier: Apache-2.0
-package sh.kau.playground.common.lint.checks
+package sh.kau.playground.lint.checks
 
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.Category.Companion.CORRECTNESS

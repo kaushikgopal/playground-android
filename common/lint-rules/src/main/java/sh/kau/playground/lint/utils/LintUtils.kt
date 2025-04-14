@@ -1,6 +1,6 @@
 // Copyright (C) 2024 Moxy Mouse Inc.
 // SPDX-License-Identifier: Apache-2.0
-package sh.kau.playground.common.lint.utils
+package sh.kau.playground.lint.utils
 
 import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation

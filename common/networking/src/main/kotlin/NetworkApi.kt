@@ -1,4 +1,4 @@
-package sh.kau.playground.common.networking
+package sh.kau.playground.networking
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android

@@ -1,6 +1,6 @@
 // Copyright (C) 2021 Slack Technologies, LLC
 // SPDX-License-Identifier: Apache-2.0
-package sh.kau.playground.common.lint.checks
+package sh.kau.playground.lint.checks
 
 import com.android.tools.lint.client.api.UElementHandler
 import com.android.tools.lint.detector.api.Category
@@ -15,9 +15,9 @@ import com.intellij.psi.PsiTypes
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UMethod
 import org.jetbrains.uast.sourcePsiElement
-import sh.kau.playground.common.lint.utils.removeNode
-import sh.kau.playground.common.lint.utils.safeReturnType
-import sh.kau.playground.common.lint.utils.sourceImplementation
+import sh.kau.playground.lint.utils.removeNode
+import sh.kau.playground.lint.utils.safeReturnType
+import sh.kau.playground.lint.utils.sourceImplementation
 
 /**
  * A simple detector that validates basic Retrofit usage.

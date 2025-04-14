@@ -1,4 +1,4 @@
-package sh.kau.playground.common.lint.checks
+package sh.kau.playground.lint.checks
 
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.client.api.Vendor

@@ -1,6 +1,6 @@
 // Copyright (C) 2024 The Android Open Source Project
 // SPDX-License-Identifier: Apache-2.0
-package sh.kau.playground.common.lint.checks
+package sh.kau.playground.lint.checks
 
 import com.android.tools.lint.detector.api.Category
 import com.android.tools.lint.detector.api.Detector
