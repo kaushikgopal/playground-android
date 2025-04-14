@@ -1,8 +1,9 @@
-package sh.kau.playground.di
+package sh.kau.playground.app.di
 
 import android.content.Context
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
+import sh.kau.playground.di.create
 import sh.kau.playground.domain.shared.App
 import sh.kau.playground.domain.shared.di.Named
 import sh.kau.playground.features.settings.di.SettingsComponent
