@@ -48,6 +48,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-material = { module = "androidx.compose.material3:material3" }
+compose-material-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 
 compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -114,6 +115,7 @@ compose = [
     "androidx-activity-compose",
     "compose-ui", #  main APIs for the underlying toolkit systems
     "compose-material", #  material 3 design system
+    # "compose-material-icons" # don't add this directly (large dep)
     # "compose-tools",
     # "compose-material-window",
     # "accompanist-swiperefresh",
