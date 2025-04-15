@@ -40,10 +40,10 @@ import sh.kau.playground.usf.api.UsfLogger
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, VMState : Any?>(
-  initialUiState: UiState,
-  private val coroutineScope: CoroutineScope,
-  //    private val processingDispatcher: CoroutineDispatcher = Dispatchers.IO,
-  val logger: UsfLogger,
+    initialUiState: UiState,
+    private val coroutineScope: CoroutineScope,
+    //    private val processingDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    val logger: UsfLogger,
 ) : Usf<Event, UiState, Effect> {
 
   private val concurrencyLimit = 100
@@ -71,8 +71,8 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
    *   [Result]s transforming each [Result] to the respective [UiState]
    */
   protected abstract suspend fun resultToViewState(
-    currentViewState: UiState,
-    result: Result
+      currentViewState: UiState,
+      result: Result
   ): UiState
 
   /**
@@ -95,63 +95,64 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
    */
   private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(initialUiState)
   override val uiState: StateFlow<UiState> =
-    _uiState
-      .manageSubscription(subscriberCount, ::startPipeline, ::schedulePipelineTermination)
-      .onEach { logger.logUiState(it) }
-      .stateIn(
-        scope = coroutineScope,
-        started = // strategy that controls when sharing is started and stopped
-        SharingStarted.Companion.WhileSubscribed(
-            stopTimeoutMillis = 0, // on 0 subscribers, stop sharing immediately
-            replayExpirationMillis = Long.MAX_VALUE, // on sharing stopped, never reset replay cache
-          ),
-        initialValue = _uiState.value,
-      )
+      _uiState
+          .manageSubscription(subscriberCount, ::startPipeline, ::schedulePipelineTermination)
+          .onEach { logger.logUiState(it) }
+          .stateIn(
+              scope = coroutineScope,
+              started = // strategy that controls when sharing is started and stopped
+              SharingStarted.Companion.WhileSubscribed(
+                      stopTimeoutMillis = 0, // on 0 subscribers, stop sharing immediately
+                      replayExpirationMillis =
+                          Long.MAX_VALUE, // on sharing stopped, never reset replay cache
+                  ),
+              initialValue = _uiState.value,
+          )
 
   /*
    * - Using a `Channel` ensures once a value is exhausted, it won't be consumed again.
    */
   private val _effects = Channel<Effect>()
   override val effects: Flow<Effect> =
-    _effects
-      .receiveAsFlow()
-      .manageSubscription(subscriberCount, ::startPipeline, ::schedulePipelineTermination)
+      _effects
+          .receiveAsFlow()
+          .manageSubscription(subscriberCount, ::startPipeline, ::schedulePipelineTermination)
 
   @VisibleForTesting internal var mainJob: Job? = null
   private val pipeline =
-    _events
-      .receiveAsFlow()
-      .flatMapMerge(
-        concurrencyLimit,
-      ) { event ->
-        try {
-          eventToResultFlow(event).catch { logger.logError(it, "[ev →  r] flow") }
-        } catch (e: Exception) {
-          if (e is CancellationException) throw e // propagate cancellation
-          logger.logError(e, "[ev → r]")
-          emptyFlow()
-        }
-      }
-      .onCompletion { logger.verbose("[ev →  r] ⏹") }
-      //          .flowOn(processingDispatcher) // ↑ upstream will be executed in
-      // processingDispatcher
-      // ↓ downstream will be executed in current coroutineScope.plus(handler),
-      // ↓ in app this will be the ViewModel scope [Dispatchers.Main.immediate]
-      // ↓ in test this will be the scope passed in to the constructor
-      .onEach { result ->
-        coroutineScope.launch {
-          try {
-            _uiState.update { resultToViewState(it, result) }
-            resultToEffects(result).collect {
-              _effects.send(it)
-              logger.logEffect(it)
+      _events
+          .receiveAsFlow()
+          .flatMapMerge(
+              concurrencyLimit,
+          ) { event ->
+            try {
+              eventToResultFlow(event).catch { logger.logError(it, "[ev →  r] flow") }
+            } catch (e: Exception) {
+              if (e is CancellationException) throw e // propagate cancellation
+              logger.logError(e, "[ev → r]")
+              emptyFlow()
             }
-          } catch (e: Exception) {
-            if (e is CancellationException) throw e // propagate cancellation
-            logger.logError(e, "[r → ve]")
           }
-        }
-      }
+          .onCompletion { logger.verbose("[ev →  r] ⏹") }
+          //          .flowOn(processingDispatcher) // ↑ upstream will be executed in
+          // processingDispatcher
+          // ↓ downstream will be executed in current coroutineScope.plus(handler),
+          // ↓ in app this will be the ViewModel scope [Dispatchers.Main.immediate]
+          // ↓ in test this will be the scope passed in to the constructor
+          .onEach { result ->
+            coroutineScope.launch {
+              try {
+                _uiState.update { resultToViewState(it, result) }
+                resultToEffects(result).collect {
+                  _effects.send(it)
+                  logger.logEffect(it)
+                }
+              } catch (e: Exception) {
+                if (e is CancellationException) throw e // propagate cancellation
+                logger.logError(e, "[r → ve]")
+              }
+            }
+          }
 
   init {
     logger.debug("[-----VM] \uD83D\uDC76 on ${Thread.currentThread().name}")
@@ -177,14 +178,14 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
 
   private fun schedulePipelineTermination() {
     terminationJob =
-      coroutineScope.launch {
-        delay(timeoutValues)
-        if (subscriberCount.get() == 0) {
-          mainJob?.cancel()
-          mainJob = null
-          logger.verbose("[-----VM] ⏹")
+        coroutineScope.launch {
+          delay(timeoutValues)
+          if (subscriberCount.get() == 0) {
+            mainJob?.cancel()
+            mainJob = null
+            logger.verbose("[-----VM] ⏹")
+          }
         }
-      }
   }
 }
 
@@ -197,18 +198,18 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
  * @return Flow with subscription management
  */
 private fun <T> Flow<T>.manageSubscription(
-  subscriberCount: AtomicInteger,
-  startPipeline: () -> Unit,
-  schedulePipelineTermination: () -> Unit
+    subscriberCount: AtomicInteger,
+    startPipeline: () -> Unit,
+    schedulePipelineTermination: () -> Unit
 ): Flow<T> {
   return this.onStart {
-      if (subscriberCount.incrementAndGet() == 1) {
-        startPipeline()
+        if (subscriberCount.incrementAndGet() == 1) {
+          startPipeline()
+        }
       }
-    }
-    .onCompletion {
-      if (subscriberCount.decrementAndGet() == 0) {
-        schedulePipelineTermination()
+      .onCompletion {
+        if (subscriberCount.decrementAndGet() == 0) {
+          schedulePipelineTermination()
+        }
       }
-    }
 }

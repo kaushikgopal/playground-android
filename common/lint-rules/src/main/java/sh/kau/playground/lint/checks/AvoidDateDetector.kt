@@ -18,64 +18,63 @@ import org.jetbrains.uast.UCallExpression
  * - https://github.com/googlesamples/android-custom-lint-rules/blob/main/checks/src/main/java/com/example/lint/checks/AvoidDateDetector.kt
  */
 class AvoidDateDetector : Detector(), SourceCodeScanner {
-    companion object Issues {
-        private val IMPLEMENTATION =
-            Implementation(AvoidDateDetector::class.java, Scope.JAVA_FILE_SCOPE)
+  companion object Issues {
+    private val IMPLEMENTATION =
+        Implementation(AvoidDateDetector::class.java, Scope.JAVA_FILE_SCOPE)
 
-        @JvmField
-        val ISSUE =
-            Issue.create(
-                id = "OldDate",
-                briefDescription = "Avoid Date and Calendar",
-                explanation =
+    @JvmField
+    val ISSUE =
+        Issue.create(
+            id = "OldDate",
+            briefDescription = "Avoid Date and Calendar",
+            explanation =
                 """
           The `java.util.Date` and `java.util.Calendar` classes should not be used; instead \
           use the `java.time` package, such as `LocalDate` and `LocalTime`.
           """,
-                category = Category.CORRECTNESS,
-                priority = 6,
-                severity = Severity.ERROR,
-                androidSpecific = true,
-                implementation = IMPLEMENTATION,
-            )
-    }
-
-    // java.util.Date()
-    override fun getApplicableConstructorTypes(): List<String> = listOf("java.util.Date")
-
-    override fun visitConstructor(
-        context: JavaContext,
-        node: UCallExpression,
-        constructor: PsiMethod,
-    ) {
-        context.report(
-            ISSUE,
-            node,
-            context.getLocation(node),
-            "Don't use `Date`; use `java.time.*` instead",
-            fix()
-                .alternatives(
-                    fix().replace().all().with("java.time.LocalTime.now()").shortenNames().build(),
-                    fix().replace().all().with("java.time.LocalDate.now()").shortenNames().build(),
-                    fix().replace().all().with("java.time.LocalDateTime.now()").shortenNames()
-                        .build(),
-                ),
+            category = Category.CORRECTNESS,
+            priority = 6,
+            severity = Severity.ERROR,
+            androidSpecific = true,
+            implementation = IMPLEMENTATION,
         )
-    }
+  }
 
-    // java.util.Calendar.getInstance()
-    override fun getApplicableMethodNames(): List<String> = listOf("getInstance")
+  // java.util.Date()
+  override fun getApplicableConstructorTypes(): List<String> = listOf("java.util.Date")
 
-    override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
-        val evaluator = context.evaluator
-        if (!evaluator.isMemberInClass(method, "java.util.Calendar")) {
-            return
-        }
-        context.report(
-            ISSUE,
-            node,
-            context.getLocation(node),
-            "Don't use `Calendar.getInstance`; use `java.time.*` instead",
-        )
+  override fun visitConstructor(
+      context: JavaContext,
+      node: UCallExpression,
+      constructor: PsiMethod,
+  ) {
+    context.report(
+        ISSUE,
+        node,
+        context.getLocation(node),
+        "Don't use `Date`; use `java.time.*` instead",
+        fix()
+            .alternatives(
+                fix().replace().all().with("java.time.LocalTime.now()").shortenNames().build(),
+                fix().replace().all().with("java.time.LocalDate.now()").shortenNames().build(),
+                fix().replace().all().with("java.time.LocalDateTime.now()").shortenNames().build(),
+            ),
+    )
+  }
+
+  // java.util.Calendar.getInstance()
+  override fun getApplicableMethodNames(): List<String> = listOf("getInstance")
+
+  override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
+    val evaluator = context.evaluator
+    if (!evaluator.isMemberInClass(method, "java.util.Calendar")) {
+      return
     }
+    context.report(
+        ISSUE,
+        node,
+        context.getLocation(node),
+        "Don't use `Calendar.getInstance`; use `java.time.*` instead",
+    )
+  }
 }

@@ -27,8 +27,8 @@ fun NavGraphBuilder.addSettingsGraph(
       settingsComponent.settingsAScreen { navHostController.navigate(SettingsRoutes.ScreenBRoute) }
     }
     composable<SettingsRoutes.ScreenBRoute> {
-        // kotlin-inject function injection (3)
-        settingsComponent.settingsBScreen()
+      // kotlin-inject function injection (3)
+      settingsComponent.settingsBScreen()
     }
   }
 }

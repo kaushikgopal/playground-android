@@ -18,6 +18,7 @@ import com.android.tools.lint.detector.api.XmlScanner
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethod
 import java.util.EnumSet
+import kotlin.collections.get
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
@@ -26,7 +27,6 @@ import org.jetbrains.uast.ULiteralExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.util.isConstructorCall
 import org.w3c.dom.Element
-import kotlin.collections.get
 
 /**
  * Deny-listed APIs that we don't want people to use.
@@ -105,7 +105,8 @@ internal class DenyListedApiDetector : Detector(), SourceCodeScanner, XmlScanner
 
             val deniedFunctions =
                 typeConfig.functionEntries.getOrDefault(functionName, emptyList()) +
-                    typeConfig.functionEntries.getOrDefault(DenyListedEntry.Companion.MatchAll, emptyList())
+                    typeConfig.functionEntries.getOrDefault(
+                        DenyListedEntry.Companion.MatchAll, emptyList())
 
             deniedFunctions.forEach { denyListEntry ->
               if (denyListEntry.allowInTests && context.isTestSource) {
@@ -138,7 +139,8 @@ internal class DenyListedApiDetector : Detector(), SourceCodeScanner, XmlScanner
             val referenceName = reference.name
             val deniedFunctions =
                 typeConfig.referenceEntries.getOrDefault(referenceName, emptyList()) +
-                    typeConfig.referenceEntries.getOrDefault(DenyListedEntry.Companion.MatchAll, emptyList())
+                    typeConfig.referenceEntries.getOrDefault(
+                        DenyListedEntry.Companion.MatchAll, emptyList())
 
             deniedFunctions.forEach { denyListEntry ->
               if (denyListEntry.allowInTests && context.isTestSource) {
@@ -338,12 +340,13 @@ internal class DenyListedApiDetector : Detector(), SourceCodeScanner, XmlScanner
                     ),
                 arguments = listOf("*"),
             ),
-//            DenyListedEntry(
-//                className = "java.util.Date",
-//                functionName = MatchAll,
-//                errorMessage =
-//                    "Use java.time.Instant or java.time.ZonedDateTime instead. There is no reason to use java.util.Date in Java 8+.",
-//            ),
+            //            DenyListedEntry(
+            //                className = "java.util.Date",
+            //                functionName = MatchAll,
+            //                errorMessage =
+            //                    "Use java.time.Instant or java.time.ZonedDateTime instead. There
+            // is no reason to use java.util.Date in Java 8+.",
+            //            ),
             DenyListedEntry(
                 className = "java.text.DateFormat",
                 fieldName = DenyListedEntry.Companion.MatchAll,

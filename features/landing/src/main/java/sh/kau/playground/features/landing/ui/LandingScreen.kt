@@ -15,36 +15,36 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import sh.kau.playground.ui.Primary
-import sh.kau.playground.ui.Secondary
 import sh.kau.playground.ui.Teritiary
 
 @Composable
 fun LandingScreen(
-  name: String,
-  modifier: Modifier = Modifier,
-  onNavigateToSettings: () -> Unit,
+    name: String,
+    modifier: Modifier = Modifier,
+    onNavigateToSettings: () -> Unit,
 ) {
   Box(modifier = Modifier.fillMaxSize().background(Primary), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
-        text = "Hello $name!",
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = modifier,
+          text = "Hello $name!",
+          style = MaterialTheme.typography.bodyMedium,
+          modifier = modifier,
       )
       Text(
-        text = "Landing Screen",
-        style = MaterialTheme.typography.headlineLarge,
-        fontWeight = FontWeight.Bold,
+          text = "Landing Screen",
+          style = MaterialTheme.typography.headlineLarge,
+          fontWeight = FontWeight.Bold,
       )
       OutlinedButton(
-        colors = ButtonColors(
-          containerColor = Teritiary,
-          contentColor = Color.Black,
-          disabledContainerColor = Primary,
-          disabledContentColor = Color.White,
-        ),
-        onClick = onNavigateToSettings,
-        modifier = Modifier.align(Alignment.CenterHorizontally),
+          colors =
+              ButtonColors(
+                  containerColor = Teritiary,
+                  contentColor = Color.Black,
+                  disabledContainerColor = Primary,
+                  disabledContentColor = Color.White,
+              ),
+          onClick = onNavigateToSettings,
+          modifier = Modifier.align(Alignment.CenterHorizontally),
       ) {
         Text(text = "Go to Settings")
       }

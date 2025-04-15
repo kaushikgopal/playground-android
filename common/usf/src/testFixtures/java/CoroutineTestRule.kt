@@ -29,31 +29,30 @@ class CoroutineTestRule(
     private val scheduler: TestCoroutineScheduler? =
         null, // if you want multiple types of dispatchers
     private val dispatcher: TestDispatcher? = null,
-) : BeforeEachCallback,
-    AfterEachCallback {
+) : BeforeEachCallback, AfterEachCallback {
 
-    val testDispatcher by lazy {
-        when {
-            dispatcher != null -> dispatcher
-            scheduler != null -> StandardTestDispatcher(scheduler)
-            else -> StandardTestDispatcher()
-        }
+  val testDispatcher by lazy {
+    when {
+      dispatcher != null -> dispatcher
+      scheduler != null -> StandardTestDispatcher(scheduler)
+      else -> StandardTestDispatcher()
     }
+  }
 
-    override fun beforeEach(p0: ExtensionContext?) {
-        // ⚠️ Calling this with a TestDispatcher has special behavior:
-        // subsequently-called runTest, as well as TestScope and test dispatcher constructors,
-        // will use the TestCoroutineScheduler of the provided dispatcher.
+  override fun beforeEach(p0: ExtensionContext?) {
+    // ⚠️ Calling this with a TestDispatcher has special behavior:
+    // subsequently-called runTest, as well as TestScope and test dispatcher constructors,
+    // will use the TestCoroutineScheduler of the provided dispatcher.
 
-        // This means in runTest you don't have to
-        Dispatchers.setMain(testDispatcher)
-    }
+    // This means in runTest you don't have to
+    Dispatchers.setMain(testDispatcher)
+  }
 
-    override fun afterEach(p0: ExtensionContext?) {
-        Dispatchers.resetMain()
-    }
+  override fun afterEach(p0: ExtensionContext?) {
+    Dispatchers.resetMain()
+  }
 
-    fun currentTestTime(): Long {
-        return testDispatcher.scheduler.currentTime
-    }
+  fun currentTestTime(): Long {
+    return testDispatcher.scheduler.currentTime
+  }
 }

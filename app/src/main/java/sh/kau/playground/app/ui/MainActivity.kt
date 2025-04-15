@@ -22,14 +22,14 @@ class MainActivity : ComponentActivity() {
     setContent {
       AppTheme {
         Scaffold(
-          modifier = Modifier.Companion.fillMaxSize(),
+            modifier = Modifier.Companion.fillMaxSize(),
         ) { innerPadding ->
           // important to pass and use the [innerPadding]
           // as adding top/bottom bar will be accounted for
           // in nested elements (as they will use the right padding value)
           AppNavHost(
-            appComponent = appComponent,
-            innerPadding = innerPadding,
+              appComponent = appComponent,
+              innerPadding = innerPadding,
           )
         }
       }

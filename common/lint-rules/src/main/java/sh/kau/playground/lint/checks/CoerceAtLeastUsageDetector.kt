@@ -14,53 +14,45 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import org.jetbrains.uast.UCallExpression
 
 class CoerceAtLeastUsageDetector : Detector(), SourceCodeScanner {
-    companion object {
-        val ISSUE =
-            Issue.create(
-                id = "CoerceAtLeastUsage",
-                briefDescription = "Prefer maxOf over coerceAtLeast",
-                explanation =
+  companion object {
+    val ISSUE =
+        Issue.create(
+            id = "CoerceAtLeastUsage",
+            briefDescription = "Prefer maxOf over coerceAtLeast",
+            explanation =
                 "The `coerceAtLeast` method can be replaced with the simpler `maxOf` function.",
-                category = Category.CORRECTNESS,
-                priority = 6,
-                severity = Severity.ERROR,
-                implementation =
-                Implementation(CoerceAtLeastUsageDetector::class.java, Scope.JAVA_FILE_SCOPE)
-            )
-    }
+            category = Category.CORRECTNESS,
+            priority = 6,
+            severity = Severity.ERROR,
+            implementation =
+                Implementation(CoerceAtLeastUsageDetector::class.java, Scope.JAVA_FILE_SCOPE))
+  }
 
-    override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
+  override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
 
+  override fun createUastHandler(context: JavaContext) =
+      object : UElementHandler() {
+        override fun visitCallExpression(node: UCallExpression) {
+          if (node.methodName == "coerceAtLeast") {
 
-    override fun createUastHandler(context: JavaContext) =
-        object : UElementHandler() {
-            override fun visitCallExpression(node: UCallExpression) {
-                if (node.methodName == "coerceAtLeast") {
+            // Get the receiver (the value before .coerceAtLeast)
+            val receiver = node.receiver?.asSourceString() ?: ""
 
-                    // Get the receiver (the value before .coerceAtLeast)
-                    val receiver = node.receiver?.asSourceString() ?: ""
+            // Get the argument (the value inside .coerceAtLeast)
+            val argument = node.valueArguments.firstOrNull()?.asSourceString() ?: ""
 
-                    // Get the argument (the value inside .coerceAtLeast)
-                    val argument = node.valueArguments.firstOrNull()?.asSourceString() ?: ""
+            // Build the replacement string
+            val replacement = "maxOf($receiver, $argument)"
 
-                    // Build the replacement string
-                    val replacement = "maxOf($receiver, $argument)"
+            val fix =
+                fix()
+                    .replace()
+                    .all() // Replace the entire call expression, not just the method name
+                    .with(replacement)
+                    .build()
 
-                    val fix =
-                        fix()
-                            .replace()
-                            .all() // Replace the entire call expression, not just the method name
-                            .with(replacement)
-                            .build()
-
-                    context.report(
-                        ISSUE,
-                        node,
-                        context.getLocation(node),
-                        "Prefer using `maxOf`",
-                        fix
-                    )
-                }
-            }
+            context.report(ISSUE, node, context.getLocation(node), "Prefer using `maxOf`", fix)
+          }
         }
+      }
 }

@@ -1,10 +1,10 @@
 package sh.kau.playground.features.settings.di
 
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.quoter.api.QuotesRepo
-import sh.kau.playground.shared.di.Named
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
+import sh.kau.playground.quoter.api.QuotesRepo
+import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn

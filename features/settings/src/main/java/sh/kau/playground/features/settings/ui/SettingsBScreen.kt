@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,34 +36,36 @@ fun SettingsBScreen(bindings: SettingsBindings) {
   var quote by remember { mutableStateOf<Quote?>(null) }
   LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
 
-  Box(modifier = Modifier.fillMaxSize().background(Secondary), contentAlignment = Alignment.Center) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(
-        text = "Settings B Screen",
-        style = MaterialTheme.typography.headlineLarge,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 24.dp),
-      )
+  Box(
+      modifier = Modifier.fillMaxSize().background(Secondary),
+      contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Text(
+              text = "Settings B Screen",
+              style = MaterialTheme.typography.headlineLarge,
+              fontWeight = FontWeight.Bold,
+              modifier = Modifier.padding(bottom = 24.dp),
+          )
 
-      if (quote == null) {
-        quote = Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+          if (quote == null) {
+            quote = Quote("Get to the CHOPPER!!!", "Arnold Schwarzenegger")
+          }
+
+          Text(
+              text = "\"${quote!!.quote}\"",
+              style = MaterialTheme.typography.bodyLarge,
+              fontStyle = FontStyle.Italic,
+              modifier = Modifier.padding(horizontal = 32.dp),
+              textAlign = TextAlign.Center,
+          )
+
+          Text(
+              text = "- ${quote!!.author}",
+              style = MaterialTheme.typography.bodyMedium,
+              fontStyle = FontStyle.Italic,
+          )
+        }
       }
-
-      Text(
-        text = "\"${quote!!.quote}\"",
-        style = MaterialTheme.typography.bodyLarge,
-        fontStyle = FontStyle.Italic,
-        modifier = Modifier.padding(horizontal = 32.dp),
-        textAlign = TextAlign.Center,
-      )
-
-      Text(
-        text = "- ${quote!!.author}",
-        style = MaterialTheme.typography.bodyMedium,
-        fontStyle = FontStyle.Italic,
-      )
-    }
-  }
 }
 
 @Preview(showBackground = true)

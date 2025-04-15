@@ -1,5 +1,7 @@
 package sh.kau.playground.usf.impl
 
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,14 +19,10 @@ import sh.kau.playground.usf.TestEffect
 import sh.kau.playground.usf.TestEvent
 import sh.kau.playground.usf.TestEvent.TestErrorInResultToViewStateEvent
 import sh.kau.playground.usf.TestViewState
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsfImplTest {
-  private fun TestScope.createViewModel(
-    initFlow: Flow<Int> = emptyFlow()
-  ) =
+  private fun TestScope.createViewModel(initFlow: Flow<Int> = emptyFlow()) =
       TestViewModel(
           coroutineScope = backgroundScope,
           initFlow = initFlow,
@@ -47,8 +45,8 @@ class UsfImplTest {
     assertThat(es).hasSize(1).containsExactly(TestEffect.TestEffect1)
 
     assertThat(vs)
-      .hasSize(2)
-      .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+        .hasSize(2)
+        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
   }
 
   @Test
@@ -106,10 +104,9 @@ class UsfImplTest {
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
     assertThat(vs)
-      .hasSize(3)
-      .containsExactly(
-        TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 ")
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
   }
 
   @Test
@@ -131,8 +128,8 @@ class UsfImplTest {
 
     // view state can be conflated (since we only want the last one)
     assertThat(vs)
-      .hasSize(2)
-      .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 2 "))
+        .hasSize(2)
+        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 2 "))
 
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
   }
@@ -161,8 +158,8 @@ class UsfImplTest {
 
     // ViewState should only emit once for duplicate state
     assertThat(vs)
-      .hasSize(2) // Initial state + one update
-      .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+        .hasSize(2) // Initial state + one update
+        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
   }
 
   @Test
@@ -184,12 +181,12 @@ class UsfImplTest {
 
     // Verify that effects are processed in order of completion, not submission
     assertThat(es)
-      .hasSize(3)
-      .containsExactly(
-        TestEffect.TestDelayedEffect(25),
-        TestEffect.TestDelayedEffect(50),
-        TestEffect.TestDelayedEffect(100),
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestEffect.TestDelayedEffect(25),
+            TestEffect.TestDelayedEffect(50),
+            TestEffect.TestDelayedEffect(100),
+        )
   }
 
   @Test
@@ -214,8 +211,8 @@ class UsfImplTest {
     assertThat(vs.last()).isEqualTo(TestViewState("[VS] 3 ", number = 42))
 
     assertThat(es)
-      .hasSize(2)
-      .containsExactly(TestEffect.TestEffect1, TestEffect.TestNumberEffect(42))
+        .hasSize(2)
+        .containsExactly(TestEffect.TestEffect1, TestEffect.TestNumberEffect(42))
   }
 
   @Test
@@ -235,8 +232,8 @@ class UsfImplTest {
     runCurrent()
     assertThat(es1).hasSize(1)
     assertThat(vs1)
-      .hasSize(2)
-      .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+        .hasSize(2)
+        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
 
     // Cancel subscriptions
     jobEs1.cancel()
@@ -307,8 +304,7 @@ class UsfImplTest {
 
   @Test
   @DisplayName(
-    "5s timeout for effects, emits to first new subscriber only, if no subscribers connected"
-  )
+      "5s timeout for effects, emits to first new subscriber only, if no subscribers connected")
   fun testViewEffectsConsumedOnlyOnce() = runTest {
     val viewModel = createViewModel()
 
@@ -428,10 +424,9 @@ class UsfImplTest {
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
     assertThat(vs)
-      .hasSize(3)
-      .containsExactly(
-        TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 ")
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
   }
 
   @Test
@@ -461,10 +456,9 @@ class UsfImplTest {
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
     assertThat(vs)
-      .hasSize(3)
-      .containsExactly(
-        TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 ")
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
   }
 
   @Test
@@ -495,10 +489,9 @@ class UsfImplTest {
 
     // Verify that view states from valid events were processed, and the error did not stop the flow
     assertThat(vs)
-      .hasSize(3)
-      .containsExactly(
-        TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 ")
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
   }
 
   @Test
@@ -530,19 +523,17 @@ class UsfImplTest {
     // Verify that view states from all events were processed, including the one with error in
     // effects
     assertThat(vs)
-      .hasSize(3)
-      .containsExactly(
-        TestViewState("[VS] initial"),
-        TestViewState("[VS] 1 "),
-        // TestViewState("[VS] 1 "), // distinctUntilChanged will filter this out
-        TestViewState("[VS] 2 ")
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestViewState("[VS] initial"),
+            TestViewState("[VS] 1 "),
+            // TestViewState("[VS] 1 "), // distinctUntilChanged will filter this out
+            TestViewState("[VS] 2 "))
   }
 
   @Test
   @DisplayName(
-    "when error occurs in resultToEffects flow, flow continues processing subsequent events"
-  )
+      "when error occurs in resultToEffects flow, flow continues processing subsequent events")
   fun testErrorInResultToEffectsFlow() = runTest {
     val viewModel = createViewModel()
 
@@ -570,13 +561,12 @@ class UsfImplTest {
     // Verify that view states from all events were processed, including the one with error in
     // effects
     assertThat(vs)
-      .hasSize(3)
-      .containsExactly(
-        TestViewState("[VS] initial"),
-        TestViewState("[VS] 1 "),
-        // TestViewState("[VS] 1 "), // distinctUntilChanged will filter this out
-        TestViewState("[VS] 2 ")
-      )
+        .hasSize(3)
+        .containsExactly(
+            TestViewState("[VS] initial"),
+            TestViewState("[VS] 1 "),
+            // TestViewState("[VS] 1 "), // distinctUntilChanged will filter this out
+            TestViewState("[VS] 2 "))
   }
 
   @Test
@@ -686,8 +676,8 @@ class UsfImplTest {
 
     // Verify first subscriber received initial state and updated state
     assertThat(vs1)
-      .hasSize(2)
-      .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+        .hasSize(2)
+        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
 
     // Cancel first subscription
     job1.cancel()
@@ -700,9 +690,9 @@ class UsfImplTest {
 
     // Verify second subscriber immediately receives the last emitted state (not the initial state)
     assertThat(vs2)
-      .hasSize(1)
-      .containsExactly(TestViewState("[VS] 1 "))
-      .doesNotContain(TestViewState("[VS] initial"))
+        .hasSize(1)
+        .containsExactly(TestViewState("[VS] 1 "))
+        .doesNotContain(TestViewState("[VS] initial"))
 
     // Process another event to ensure the flow continues working
     viewModel.processInput(TestEvent.TestEvent2)

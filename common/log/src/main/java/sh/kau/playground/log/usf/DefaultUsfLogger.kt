@@ -19,5 +19,5 @@ object DefaultUsfLogger : UsfLogger {
   override fun warning(message: String) = logcat(WARN) { message }
 
   override fun error(error: Throwable?, message: String) =
-    logcat(ERROR) { (error ?: RuntimeException("Error in USF land")).asLog() }
+      logcat(ERROR) { (error ?: RuntimeException("Error in USF land")).asLog() }
 }

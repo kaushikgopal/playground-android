@@ -15,23 +15,23 @@ import sh.kau.playground.features.settings.nav.addSettingsGraph
 
 @Composable
 fun ComponentActivity.AppNavHost(
-  appComponent: AppComponent,
-  innerPadding: PaddingValues,
+    appComponent: AppComponent,
+    innerPadding: PaddingValues,
 ) {
   // building the main nav graph
   val navController = rememberNavController()
   NavHost(
-    navController = navController,
-    startDestination = LandingScreenRoute, // starting screen
+      navController = navController,
+      startDestination = LandingScreenRoute, // starting screen
   ) {
     addLandingRoute(
-      modifier = Modifier.padding(innerPadding),
-      onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
+        modifier = Modifier.padding(innerPadding),
+        onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
     )
     addSettingsGraph(
-      settingsComponent = appComponent.createSettingsComponent(),
-      navGraphBuilder = this,
-      navHostController = navController,
+        settingsComponent = appComponent.createSettingsComponent(),
+        navGraphBuilder = this,
+        navHostController = navController,
     )
   }
 }

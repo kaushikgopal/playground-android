@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import logcat.logcat
@@ -29,21 +28,23 @@ fun SettingsAScreen(
 ) {
   logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
-  Box(modifier = Modifier.fillMaxSize().background(Teritiary), contentAlignment = Alignment.Center) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(
-          text = "Settings A Screen",
-          style = MaterialTheme.typography.headlineLarge,
-          fontWeight = FontWeight.Bold,
-      )
-      Button(
-          onClick = navToSettingsB,
-          modifier = Modifier.align(Alignment.CenterHorizontally),
-      ) {
-        Text(text = "Settings B")
+  Box(
+      modifier = Modifier.fillMaxSize().background(Teritiary),
+      contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Text(
+              text = "Settings A Screen",
+              style = MaterialTheme.typography.headlineLarge,
+              fontWeight = FontWeight.Bold,
+          )
+          Button(
+              onClick = navToSettingsB,
+              modifier = Modifier.align(Alignment.CenterHorizontally),
+          ) {
+            Text(text = "Settings B")
+          }
+        }
       }
-    }
-  }
 }
 
 @Preview(showBackground = true)

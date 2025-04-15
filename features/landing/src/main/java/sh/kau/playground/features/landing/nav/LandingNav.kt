@@ -14,10 +14,10 @@ fun NavGraphBuilder.addLandingRoute(
     onNavigateToSettings: () -> Unit,
 ) {
   composable<LandingScreenRoute> {
-      LandingScreen(
-          name = name,
-          modifier = modifier,
-          onNavigateToSettings = onNavigateToSettings,
-      )
+    LandingScreen(
+        name = name,
+        modifier = modifier,
+        onNavigateToSettings = onNavigateToSettings,
+    )
   }
 }
