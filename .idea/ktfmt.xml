@@ -3,6 +3,5 @@
   <component name="KtfmtSettings">
     <option name="customContinuationIndent" value="2" />
     <option name="enableKtfmt" value="Enabled" />
-    <option name="uiFormatterStyle" value="Custom" />
   </component>
 </project>
