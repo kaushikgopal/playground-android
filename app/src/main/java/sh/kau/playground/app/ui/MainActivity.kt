@@ -1,4 +1,4 @@
-package sh.kau.playground
+package sh.kau.playground.app.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,12 +17,12 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
 
-    val appComponent = AppComponent.from(this)
+    val appComponent = AppComponent.Companion.from(this)
 
     setContent {
       AppTheme {
         Scaffold(
-          modifier = Modifier.fillMaxSize(),
+          modifier = Modifier.Companion.fillMaxSize(),
         ) { innerPadding ->
           // important to pass and use the [innerPadding]
           // as adding top/bottom bar will be accounted for

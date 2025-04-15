@@ -39,6 +39,7 @@ trash .idea
 3. Change project name
 - in `settings.gradle.kts` change `rootProject.name = "MyApp"`
 - in .idea/.name add entry `MyApp`
+- in your strings.xml change `app_name` from Playground to MyApp
 
 3. Clean & Rebuild app
 ```shell
