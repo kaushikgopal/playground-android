@@ -52,6 +52,19 @@ tests: 			## run unit tests (without lint)
 	@echo "Run all unit tests without linting"
 	@./gradlew --warning-mode $(warnings) tests -x lint
 
+ktfmt:              ## ktfmt changed files on this branch
+	@echo "--- This script will run ktfmt on all changed files"
+	@MERGE_BASE=$$(git merge-base HEAD origin/master); \
+	MODIFIED_FILES=$$(git diff $$MERGE_BASE --diff-filter=ACMR --name-only -- '*.kt'); \
+	for FILE in $$MODIFIED_FILES; do \
+		echo "Formatting $$FILE"; \
+		ktfmt -F "$$FILE"; \
+	done
+
+ktfmt-all:
+	@echo "--- This script will run ktfmt on all files"
+	@ktfmt -F $(shell find . -name '*.kt')
+
 #tests-screenshots:
 #	@echo "Verify all screenshots"
 #	./gradlew --warning-mode $(warnings) verifyPaparazziDebug
