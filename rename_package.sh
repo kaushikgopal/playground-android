@@ -39,8 +39,14 @@ for SRC_DIR in $SRC_DIRS; do
     # Create new package directory structure if it doesn't exist
     mkdir -p "$SRC_DIR/$NEW_PACKAGE_DIR"
 
-    # Move files from old package directory to new package directory
-    find "$SRC_DIR/$OLD_PACKAGE_DIR" -type f -exec cp {} "$SRC_DIR/$NEW_PACKAGE_DIR/" \;
+    # Copy entire directory structure with subdirectories preserved
+    if [ "$(uname)" == "Darwin" ]; then
+      # macOS version
+      cp -R "$SRC_DIR/$OLD_PACKAGE_DIR"/* "$SRC_DIR/$NEW_PACKAGE_DIR/" 2>/dev/null || true
+    else
+      # Linux version
+      cp -R "$SRC_DIR/$OLD_PACKAGE_DIR"/* "$SRC_DIR/$NEW_PACKAGE_DIR/" 2>/dev/null || :
+    fi
 
     # Remove old package directory
     rm -rf "$SRC_DIR/$OLD_PACKAGE_DIR"
