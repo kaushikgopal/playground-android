@@ -9,7 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import sh.kau.playground.app.AppNavHost
 import sh.kau.playground.app.di.AppComponent
-import sh.kau.playground.domain.ui.PlaygroundTheme
+import sh.kau.playground.ui.AppTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -20,10 +20,13 @@ class MainActivity : ComponentActivity() {
     val appComponent = AppComponent.from(this)
 
     setContent {
-      PlaygroundTheme {
+      AppTheme {
         Scaffold(
           modifier = Modifier.fillMaxSize(),
         ) { innerPadding ->
+          // important to pass and use the [innerPadding]
+          // as adding top/bottom bar will be accounted for
+          // in nested elements (as they will use the right padding value)
           AppNavHost(
             appComponent = appComponent,
             innerPadding = innerPadding,

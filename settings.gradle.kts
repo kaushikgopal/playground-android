@@ -43,7 +43,5 @@ include(
     ":common:log", // android module
     ":common:lint-rules",
     ":common:networking",
-
-    ":common:usf:api",
-    ":common:usf:impl",
+    ":common:usf",
 )

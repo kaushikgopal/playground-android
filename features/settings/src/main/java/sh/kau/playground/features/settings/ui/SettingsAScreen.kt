@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import logcat.logcat
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.ui.Pink40
+import sh.kau.playground.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
 
 typealias SettingsAScreen = @Composable (navToSettingsB: () -> Unit) -> Unit

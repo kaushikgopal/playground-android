@@ -3,8 +3,8 @@ package sh.kau.playground.app.di
 import android.content.Context
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
-import sh.kau.playground.domain.shared.App
-import sh.kau.playground.domain.shared.di.Named
+import sh.kau.playground.shared.App
+import sh.kau.playground.shared.di.Named
 import sh.kau.playground.features.settings.di.SettingsComponent
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent

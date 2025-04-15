@@ -22,8 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.quoter.api.Quote
-import sh.kau.playground.domain.ui.Pink40
+import sh.kau.playground.quoter.api.Quote
+import sh.kau.playground.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
 
 // kotlin-inject function injection (1)

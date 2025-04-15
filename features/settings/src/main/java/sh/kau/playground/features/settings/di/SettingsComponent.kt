@@ -1,8 +1,8 @@
 package sh.kau.playground.features.settings.di
 
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.domain.quoter.api.QuotesRepo
-import sh.kau.playground.domain.shared.di.Named
+import sh.kau.playground.quoter.api.QuotesRepo
+import sh.kau.playground.shared.di.Named
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope

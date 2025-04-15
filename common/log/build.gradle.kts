@@ -11,6 +11,7 @@ dependencies {
     // navigation
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
+
     // dependency injection
     ksp(libs.bundles.kotlin.inject.compiler)
     implementation(libs.bundles.kotlin.inject)
@@ -20,5 +21,5 @@ dependencies {
     api(libs.logcat)
 
     // --- project dependencies
-
+    implementation(projects.common.usf) // for usf logging alone
 }
