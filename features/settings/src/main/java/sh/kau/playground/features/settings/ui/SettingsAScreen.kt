@@ -16,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import logcat.logcat
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
+import sh.kau.playground.ui.Teritiary
 
 typealias SettingsAScreen = @Composable (navToSettingsB: () -> Unit) -> Unit
 
@@ -29,11 +29,10 @@ fun SettingsAScreen(
 ) {
   logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
-  Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
+  Box(modifier = Modifier.fillMaxSize().background(Teritiary), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
           text = "Settings A Screen",
-          color = Color.White,
           style = MaterialTheme.typography.headlineLarge,
           fontWeight = FontWeight.Bold,
       )
@@ -41,7 +40,7 @@ fun SettingsAScreen(
           onClick = navToSettingsB,
           modifier = Modifier.align(Alignment.CenterHorizontally),
       ) {
-        Text(text = "Settings B", color = Color.White)
+        Text(text = "Settings B")
       }
     }
   }

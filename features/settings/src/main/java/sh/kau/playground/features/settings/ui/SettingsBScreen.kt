@@ -22,9 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.quoter.api.Quote
-import sh.kau.playground.ui.Pink40
 import sh.kau.playground.features.settings.di.SettingsBindings
+import sh.kau.playground.quoter.api.Quote
+import sh.kau.playground.ui.Secondary
 
 // kotlin-inject function injection (1)
 typealias SettingsBScreen = @Composable () -> Unit
@@ -37,14 +37,13 @@ fun SettingsBScreen(bindings: SettingsBindings) {
   var quote by remember { mutableStateOf<Quote?>(null) }
   LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
 
-  Box(modifier = Modifier.fillMaxSize().background(Pink40), contentAlignment = Alignment.Center) {
+  Box(modifier = Modifier.fillMaxSize().background(Secondary), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
-          text = "Settings B Screen",
-          color = Color.White,
-          style = MaterialTheme.typography.headlineLarge,
-          fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(bottom = 24.dp),
+        text = "Settings B Screen",
+        style = MaterialTheme.typography.headlineLarge,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(bottom = 24.dp),
       )
 
       if (quote == null) {
@@ -52,19 +51,17 @@ fun SettingsBScreen(bindings: SettingsBindings) {
       }
 
       Text(
-          text = "\"${quote!!.quote}\"",
-          color = Color.White,
-          style = MaterialTheme.typography.bodyLarge,
-          fontStyle = FontStyle.Italic,
-          modifier = Modifier.padding(horizontal = 32.dp),
-          textAlign = TextAlign.Center,
+        text = "\"${quote!!.quote}\"",
+        style = MaterialTheme.typography.bodyLarge,
+        fontStyle = FontStyle.Italic,
+        modifier = Modifier.padding(horizontal = 32.dp),
+        textAlign = TextAlign.Center,
       )
 
       Text(
-          text = "- ${quote!!.author}",
-          color = Color.White,
-          style = MaterialTheme.typography.bodyMedium,
-          fontStyle = FontStyle.Italic,
+        text = "- ${quote!!.author}",
+        style = MaterialTheme.typography.bodyMedium,
+        fontStyle = FontStyle.Italic,
       )
     }
   }
