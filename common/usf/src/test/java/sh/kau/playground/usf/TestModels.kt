@@ -1,55 +1,55 @@
 package sh.kau.playground.usf
 
-sealed class TestEvent {
-  data object TestEvent1 : TestEvent()
+sealed class TestInput {
+  data object TestInput1 : TestInput()
 
-  data object TestEvent2 : TestEvent()
+  data object TestInput2 : TestInput()
 
-  data object TestEvent3 : TestEvent()
+  data object TestInput3 : TestInput()
 
-  data class TestNumberEvent(val value: Int) : TestEvent()
+  data class TestNumberInput(val value: Int) : TestInput()
 
-  data class TestErrorThrowEvent(val error: Throwable = RuntimeException("error directly thrown")) :
-      TestEvent()
+  data class TestErrorThrowInput(val error: Throwable = RuntimeException("error directly thrown")) :
+      TestInput()
 
-  data class TestErrorFlowEvent(val error: Throwable = RuntimeException("error from within flow")) :
-      TestEvent()
+  data class TestErrorFlowInput(val error: Throwable = RuntimeException("error from within flow")) :
+      TestInput()
 
-  data class TestDelayedEvent(val delayMs: Long) : TestEvent()
+  data class TestDelayedInput(val delayMs: Long) : TestInput()
 
-  data object TestNullableEffectEvent : TestEvent()
+  data object TestNullableEffectInput : TestInput()
 
-  data class TestErrorInResultToViewStateEvent(
+  data class TestErrorInOutputToUiStateInput(
       val error: Throwable = RuntimeException("error from within flow")
-  ) : TestEvent()
+  ) : TestInput()
 
-  data object TestErrorInResultToEffectsEvent : TestEvent()
+  data object TestErrorInOutputToEffectsInput : TestInput()
 
-  data object TestErrorInResultToEffectsFlow : TestEvent()
+  data object TestErrorInOutputToEffectsFlow : TestInput()
 }
 
-sealed class TestResult {
-  data object TestResult1 : TestResult()
+sealed class TestOutput {
+  data object TestOutput1 : TestOutput()
 
-  data object TestResult2 : TestResult()
+  data object TestOutput2 : TestOutput()
 
-  data object TestResult3 : TestResult()
+  data object TestOutput3 : TestOutput()
 
-  data class TestNumberResult(val value: Int) : TestResult()
+  data class TestNumberOutput(val value: Int) : TestOutput()
 
-  data class TestErrorThrowResult(val error: Throwable) : TestResult()
+  data class TestErrorThrowOutput(val error: Throwable) : TestOutput()
 
-  data class TestErrorFlowResult(val error: Throwable) : TestResult()
+  data class TestErrorFlowOutput(val error: Throwable) : TestOutput()
 
-  data class TestDelayedResult(val delayMs: Long) : TestResult()
+  data class TestDelayedOutput(val delayMs: Long) : TestOutput()
 
-  data object TestNullableEffectResult : TestResult()
+  data object TestNullableEffectOutput : TestOutput()
 
-  data object TestErrorInResultToViewStateResult : TestResult()
+  data object TestErrorInOutputToUiStateOutput : TestOutput()
 
-  data object TestErrorInResultToEffectsResult : TestResult()
+  data object TestErrorInOutputToEffectsOutput : TestOutput()
 
-  data object TestErrorInResultToEffectsFlowResult : TestResult()
+  data object TestErrorInOutputToEffectsFlowOutput : TestOutput()
 }
 
 sealed class TestEffect {
@@ -62,7 +62,7 @@ sealed class TestEffect {
   data class TestDelayedEffect(val delayMs: Long) : TestEffect()
 }
 
-data class TestViewState(
+data class TestUiState(
     val text: String,
     val number: Int = -1,
 )

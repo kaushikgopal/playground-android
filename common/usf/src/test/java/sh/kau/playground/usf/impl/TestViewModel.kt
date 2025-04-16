@@ -10,72 +10,72 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import sh.kau.playground.usf.TestEffect
 import sh.kau.playground.usf.TestEffect.TestDelayedEffect
-import sh.kau.playground.usf.TestEvent
-import sh.kau.playground.usf.TestEvent.*
-import sh.kau.playground.usf.TestResult
-import sh.kau.playground.usf.TestResult.*
+import sh.kau.playground.usf.TestInput
+import sh.kau.playground.usf.TestInput.*
+import sh.kau.playground.usf.TestOutput
+import sh.kau.playground.usf.TestOutput.*
+import sh.kau.playground.usf.TestUiState
 import sh.kau.playground.usf.TestUsfLogger
-import sh.kau.playground.usf.TestViewState
 import sh.kau.playground.usf.UsfImpl
 
 class TestViewModel(coroutineScope: CoroutineScope, initFlow: Flow<Int> = emptyFlow()) :
-    UsfImpl<TestEvent, TestResult, TestViewState, TestEffect, Unit>(
-        initialUiState = TestViewState("[VS] initial"),
+    UsfImpl<TestInput, TestOutput, TestUiState, TestEffect, Unit>(
+        initialUiState = TestUiState("[US] initial"),
         coroutineScope = coroutineScope,
         logger = TestUsfLogger,
     ) {
 
   init {
-    initFlow.onEach { processInput(TestNumberEvent(it)) }.launchIn(coroutineScope)
+    initFlow.onEach { processInput(TestNumberInput(it)) }.launchIn(coroutineScope)
   }
 
-  override fun eventToResultFlow(event: TestEvent): Flow<TestResult> =
-      when (event) {
-        TestEvent1 -> flowOf(TestResult1)
-        TestEvent2 -> flowOf(TestResult2)
-        TestEvent3 -> flowOf(TestResult3)
-        is TestNumberEvent -> flowOf(TestNumberResult(event.value))
-        is TestErrorThrowEvent -> throw event.error
-        is TestErrorFlowEvent -> flow { throw event.error }
-        is TestDelayedEvent ->
-            flowOf(TestDelayedResult(event.delayMs)).onEach { delay(event.delayMs) }
+  override fun inputToOutputFlow(input: TestInput): Flow<TestOutput> =
+      when (input) {
+        TestInput1 -> flowOf(TestOutput1)
+        TestInput2 -> flowOf(TestOutput2)
+        TestInput3 -> flowOf(TestOutput3)
+        is TestNumberInput -> flowOf(TestNumberOutput(input.value))
+        is TestErrorThrowInput -> throw input.error
+        is TestErrorFlowInput -> flow { throw input.error }
+        is TestDelayedInput ->
+            flowOf(TestDelayedOutput(input.delayMs)).onEach { delay(input.delayMs) }
 
-        TestNullableEffectEvent -> flowOf(TestNullableEffectResult)
-        is TestErrorInResultToViewStateEvent -> flow { throw event.error }
-        is TestErrorInResultToEffectsEvent -> flowOf(TestErrorInResultToEffectsResult)
-        is TestErrorInResultToEffectsFlow -> flowOf(TestErrorInResultToEffectsFlowResult)
+        TestNullableEffectInput -> flowOf(TestNullableEffectOutput)
+        is TestErrorInOutputToUiStateInput -> flow { throw input.error }
+        is TestErrorInOutputToEffectsInput -> flowOf(TestErrorInOutputToEffectsOutput)
+        is TestErrorInOutputToEffectsFlow -> flowOf(TestErrorInOutputToEffectsFlowOutput)
       }
 
-  override suspend fun resultToViewState(
-      currentViewState: TestViewState,
-      result: TestResult
-  ): TestViewState =
-      when (result) {
-        TestResult1 -> currentViewState.copy(text = "[VS] 1 ")
-        TestResult2 -> currentViewState.copy(text = "[VS] 2 ")
-        TestResult3 -> currentViewState.copy(text = "[VS] 3 ")
-        is TestNumberResult -> currentViewState.copy(number = result.value)
-        is TestErrorThrowResult -> currentViewState
-        is TestErrorFlowResult -> currentViewState
-        is TestDelayedResult -> currentViewState.copy(text = "[VS] delayed ${result.delayMs}")
-        TestNullableEffectResult -> currentViewState.copy(text = "[VS] nullable effect")
-        TestErrorInResultToViewStateResult -> throw Exception("Error in resultToViewState")
-        TestErrorInResultToEffectsResult -> currentViewState
-        TestErrorInResultToEffectsFlowResult -> currentViewState
+  override suspend fun outputToUiState(
+      currentUiState: TestUiState,
+      output: TestOutput
+  ): TestUiState =
+      when (output) {
+        TestOutput1 -> currentUiState.copy(text = "[US] 1 ")
+        TestOutput2 -> currentUiState.copy(text = "[US] 2 ")
+        TestOutput3 -> currentUiState.copy(text = "[US] 3 ")
+        is TestNumberOutput -> currentUiState.copy(number = output.value)
+        is TestErrorThrowOutput -> currentUiState
+        is TestErrorFlowOutput -> currentUiState
+        is TestDelayedOutput -> currentUiState.copy(text = "[US] delayed ${output.delayMs}")
+        TestNullableEffectOutput -> currentUiState.copy(text = "[US] nullable effect")
+        TestErrorInOutputToUiStateOutput -> throw Exception("Error in resultToUiState")
+        TestErrorInOutputToEffectsOutput -> currentUiState
+        TestErrorInOutputToEffectsFlowOutput -> currentUiState
       }
 
-  override fun resultToEffects(result: TestResult): Flow<TestEffect> =
-      when (result) {
-        TestResult1 -> flowOf(TestEffect.TestEffect1)
-        TestResult2 -> flowOf(TestEffect.TestEffect2)
-        TestResult3 -> emptyFlow()
-        is TestNumberResult -> flowOf(TestEffect.TestNumberEffect(result.value))
-        is TestErrorThrowResult -> emptyFlow()
-        is TestErrorFlowResult -> emptyFlow()
-        is TestDelayedResult -> flowOf(TestDelayedEffect(result.delayMs))
-        TestErrorInResultToEffectsResult -> flow { throw Exception("Error in resultToEffects") }
-        TestNullableEffectResult -> emptyFlow()
-        TestErrorInResultToViewStateResult -> emptyFlow()
-        TestErrorInResultToEffectsFlowResult -> flow { throw Exception("Error in resultToEffects") }
+  override fun outputToEffects(output: TestOutput): Flow<TestEffect> =
+      when (output) {
+        TestOutput1 -> flowOf(TestEffect.TestEffect1)
+        TestOutput2 -> flowOf(TestEffect.TestEffect2)
+        TestOutput3 -> emptyFlow()
+        is TestNumberOutput -> flowOf(TestEffect.TestNumberEffect(output.value))
+        is TestErrorThrowOutput -> emptyFlow()
+        is TestErrorFlowOutput -> emptyFlow()
+        is TestDelayedOutput -> flowOf(TestDelayedEffect(output.delayMs))
+        TestErrorInOutputToEffectsOutput -> flow { throw Exception("Error in resultToEffects") }
+        TestNullableEffectOutput -> emptyFlow()
+        TestErrorInOutputToUiStateOutput -> emptyFlow()
+        TestErrorInOutputToEffectsFlowOutput -> flow { throw Exception("Error in resultToEffects") }
       }
 }

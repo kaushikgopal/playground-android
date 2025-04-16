@@ -39,12 +39,12 @@ import sh.kau.playground.usf.api.UsfLogger
  * automatically triggered for every Event and
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, VMState : Any?>(
+abstract class UsfImpl<Input : Any, Output : Any, UiState : Any, Effect : Any, VMState : Any?>(
     initialUiState: UiState,
     private val coroutineScope: CoroutineScope,
     //    private val processingDispatcher: CoroutineDispatcher = Dispatchers.IO,
     val logger: UsfLogger,
-) : Usf<Event, UiState, Effect> {
+) : Usf<Input, UiState, Effect> {
 
   private val concurrencyLimit = 100
   private var terminationJob: Job? = null
@@ -58,29 +58,26 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
   }
 
   /**
-   * @param event every input is processed into an [Event]
-   * @return [Flow]<[Result]> a single [Event] can result in multiple [Result]s for e.g. emit a
-   *   Result for loading and another for the actual result
+   * @param input every input is processed into an [Input]
+   * @return [Flow]<[Output]> a single [Input] can result in multiple [Output]s for e.g. emit an
+   *   [Output] for loading and another for the actual result
    */
-  protected abstract fun eventToResultFlow(event: Event): Flow<Result>
+  protected abstract fun inputToOutputFlow(input: Input): Flow<Output>
 
   /**
-   * @param currentViewState the current [UiState] of the view (.copy it for the returned [UiState])
-   * @return [UiState] Curiously, we don't return a [Flow]<[UiState]> here every [Result] will only
+   * @param currentUiState the current [UiState] of the view (.copy it for the returned [UiState])
+   * @return [UiState] Curiously, we don't return a [Flow]<[UiState]> here every [Output] will only
    *   ever be transformed into a single [UiState] if you want multiple [UiState]s emit multiple
-   *   [Result]s transforming each [Result] to the respective [UiState]
+   *   [Output]s transforming each [Output] to the respective [UiState]
    */
-  protected abstract suspend fun resultToViewState(
-      currentViewState: UiState,
-      result: Result
-  ): UiState
+  protected abstract suspend fun outputToUiState(currentUiState: UiState, output: Output): UiState
 
   /**
-   * @param result a single [Result] can result in multiple [Effect]s for e.g. emit a VE for
+   * @param output a single [Output] can result in multiple [Effect]s for e.g. emit a VE for
    *   navigation and another for an analytics call hence a return type of [Flow]<[Effect]>
    * @return [Flow] of [Effect]s where null emissions will be ignored automatically
    */
-  protected abstract fun resultToEffects(result: Result): Flow<Effect>
+  protected abstract fun outputToEffects(output: Output): Flow<Effect>
 
   /*
    * - Using a `Channel` allows us to buffer events emitted before the flow has started collecting.
@@ -88,10 +85,10 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
    *  This setup ensures that events are not lost if they are sent before the internal collector
    *   starts, and multiple events can be buffered until they are processed.
    */
-  private val _events = Channel<Event>(10)
+  private val _inputs = Channel<Input>(10)
 
   /*
-   * The `_viewState` holds the latest `ViewState` and replays it to new subscribers.
+   * [_uiState] holds the latest [UiState]  and replays it to new subscribers.
    */
   private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(initialUiState)
   override val uiState: StateFlow<UiState> =
@@ -120,13 +117,13 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
 
   @VisibleForTesting internal var mainJob: Job? = null
   private val pipeline =
-      _events
+      _inputs
           .receiveAsFlow()
           .flatMapMerge(
               concurrencyLimit,
-          ) { event ->
+          ) { input ->
             try {
-              eventToResultFlow(event).catch { logger.logError(it, "[ev →  r] flow") }
+              inputToOutputFlow(input).catch { logger.logError(it, "[ev →  r] flow") }
             } catch (e: Exception) {
               if (e is CancellationException) throw e // propagate cancellation
               logger.logError(e, "[ev → r]")
@@ -139,11 +136,11 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
           // ↓ downstream will be executed in current coroutineScope.plus(handler),
           // ↓ in app this will be the ViewModel scope [Dispatchers.Main.immediate]
           // ↓ in test this will be the scope passed in to the constructor
-          .onEach { result ->
+          .onEach { output ->
             coroutineScope.launch {
               try {
-                _uiState.update { resultToViewState(it, result) }
-                resultToEffects(result).collect {
+                _uiState.update { outputToUiState(it, output) }
+                outputToEffects(output).collect {
                   _effects.send(it)
                   logger.logEffect(it)
                 }
@@ -160,10 +157,10 @@ abstract class UsfImpl<Event : Any, Result : Any, UiState : Any, Effect : Any, V
 
   open fun viewModelState(): VMState? = null
 
-  override fun processInput(event: Event) {
+  override fun processInput(input: Input) {
     coroutineScope.launch(handler) {
-      _events.send(event)
-      withContext(Dispatchers.IO) { logger.logEvent(event) }
+      _inputs.send(input)
+      withContext(Dispatchers.IO) { logger.logEvent(input) }
     }
   }
 

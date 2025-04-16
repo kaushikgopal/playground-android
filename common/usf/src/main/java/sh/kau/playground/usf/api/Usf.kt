@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
  * this as an interface allows us to possibly avoid using of [AndroidViewModel] or [ViewModel] if we
  * don't need it.
  *
- * [Any] type used because of a Kotlin Compiler bug that won't take in @NotNull event: E
- * https://youtrack.jetbrains.com/issue/KT-36770
+ * We use `: Any` on the Type declarations because generics standalone are considered nullable so
+ * they would be the equivalent of `: Any?` by default which is not what we want.
  */
-interface Usf<Event : Any, UiState : Any, Effect : Any> {
+interface Usf<Input : Any, UiState : Any, Effect : Any> {
 
-  fun processInput(event: Event)
+  fun processInput(input: Input)
 
   val uiState: StateFlow<UiState>
 

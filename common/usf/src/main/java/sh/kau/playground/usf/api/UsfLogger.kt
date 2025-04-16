@@ -13,11 +13,11 @@ interface UsfLogger {
 
   // Consistently formatted logs for USF
 
-  fun logEvent(event: Any) = verbose("[ev →   ] ${event.javaClass.simpleName}")
+  fun logEvent(event: Any) = verbose("[ i →   ] ${event.javaClass.simpleName}")
 
-  fun logResult(result: Any) = verbose("[ev →  r] ${result.javaClass.simpleName}")
+  fun logResult(result: Any) = verbose("[ i →  o] ${result.javaClass.simpleName}")
 
-  fun logUiState(viewState: Any) = verbose("[vs →   ] ${viewState.javaClass.simpleName}")
+  fun logUiState(viewState: Any) = verbose("[us →   ] ${viewState.javaClass.simpleName}")
 
   fun logEffect(effect: Any) = verbose("[ef →   ] ${effect.javaClass.simpleName}")
 

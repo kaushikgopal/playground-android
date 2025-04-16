@@ -16,9 +16,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import sh.kau.playground.usf.TestEffect
-import sh.kau.playground.usf.TestEvent
-import sh.kau.playground.usf.TestEvent.TestErrorInResultToViewStateEvent
-import sh.kau.playground.usf.TestViewState
+import sh.kau.playground.usf.TestInput
+import sh.kau.playground.usf.TestInput.TestErrorInOutputToUiStateInput
+import sh.kau.playground.usf.TestUiState
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsfImplTest {
@@ -29,33 +29,31 @@ class UsfImplTest {
       )
 
   @Test
-  @DisplayName("core test: event -> result -> (view state + effect)")
+  @DisplayName("core test: input -> output -> (ui state + effect)")
   fun testBasicEmission() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent() // actually make the subscription connection
 
-    viewModel.processInput(TestEvent.TestEvent1)
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
     assertThat(es).hasSize(1).containsExactly(TestEffect.TestEffect1)
 
-    assertThat(vs)
-        .hasSize(2)
-        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+    assertThat(vs).hasSize(2).containsExactly(TestUiState("[US] initial"), TestUiState("[US] 1 "))
   }
 
   @Test
-  @DisplayName("core test: event sent through init (flow)")
+  @DisplayName("core test: input sent through init (flow)")
   fun testHotFlow() = runTest {
     val initFlow = MutableSharedFlow<Int>()
     val viewModel = createViewModel(initFlow)
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
@@ -66,39 +64,39 @@ class UsfImplTest {
 
     assertThat(es).hasSize(1).containsExactly(TestEffect.TestNumberEffect(42))
 
-    assertThat(vs).last().isEqualTo(TestViewState("[VS] initial", number = 42))
+    assertThat(vs).last().isEqualTo(TestUiState("[US] initial", number = 42))
   }
 
   @Test
-  @DisplayName("initial view state emitted on subscription")
+  @DisplayName("initial ui state emitted on subscription")
   fun testInitialViewState() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
     assertThat(es).isEmpty()
-    assertThat(vs).hasSize(1).containsExactly(TestViewState("[VS] initial"))
+    assertThat(vs).hasSize(1).containsExactly(TestUiState("[US] initial"))
   }
 
   @Test
-  @DisplayName("core test: process multiple events in sequence")
+  @DisplayName("core test: process multiple inputs in sequence")
   fun testMultipleEvents() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    viewModel.processInput(TestEvent.TestEvent1)
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    viewModel.processInput(TestEvent.TestEvent2)
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
@@ -106,15 +104,15 @@ class UsfImplTest {
     assertThat(vs)
         .hasSize(3)
         .containsExactly(
-            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
+            TestUiState("[US] initial"), TestUiState("[US] 1 "), TestUiState("[US] 2 "))
   }
 
   @Test
-  @DisplayName("process multiple events together, ensure correct conflation behavior")
-  fun testPreventConflation() = runTest {
+  @DisplayName("process multiple inputs together, ensure correct conflation behavior")
+  fun testPrinputConflation() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
 
     backgroundScope.launch { viewModel.effects.toList(es) }
@@ -122,61 +120,59 @@ class UsfImplTest {
     // kicking off the subscription (otherwise the processInput will always get conflated)
     runCurrent() // single runCurrent() here could trigger a conflation problem
 
-    viewModel.processInput(TestEvent.TestEvent1)
-    viewModel.processInput(TestEvent.TestEvent2)
-    runCurrent() // runCurrent() after both events in one shot (increasing chances of conflation)
+    viewModel.processInput(TestInput.TestInput1)
+    viewModel.processInput(TestInput.TestInput2)
+    runCurrent() // runCurrent() after both inputs in one shot (increasing chances of conflation)
 
-    // view state can be conflated (since we only want the last one)
-    assertThat(vs)
-        .hasSize(2)
-        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 2 "))
+    // ui state can be conflated (since we only want the last one)
+    assertThat(vs).hasSize(2).containsExactly(TestUiState("[US] initial"), TestUiState("[US] 2 "))
 
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
   }
 
   @Test
-  @DisplayName("view state de-duped but not effects, when same event processed multiple times")
+  @DisplayName("ui state de-duped but not effects, when same input processed multiple times")
   fun testDuplicateViewState() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // Send same event twice
-    viewModel.processInput(TestEvent.TestEvent1)
-    viewModel.processInput(TestEvent.TestEvent1)
-    viewModel.processInput(TestEvent.TestEvent1)
-    viewModel.processInput(TestEvent.TestEvent1)
+    // Send same input twice
+    viewModel.processInput(TestInput.TestInput1)
+    viewModel.processInput(TestInput.TestInput1)
+    viewModel.processInput(TestInput.TestInput1)
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    // Effects should be emitted for both events
+    // Effects should be emitted for both inputs
     assertThat(es).hasSize(4)
     assertThat(es.distinct()).containsExactly(TestEffect.TestEffect1)
 
     // ViewState should only emit once for duplicate state
     assertThat(vs)
         .hasSize(2) // Initial state + one update
-        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+        .containsExactly(TestUiState("[US] initial"), TestUiState("[US] 1 "))
   }
 
   @Test
-  @DisplayName("core test: multiple events that take different amount of time to finish")
+  @DisplayName("core test: multiple inputs that take different amount of time to finish")
   fun testConcurrentEventOrder() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // Send multiple delayed events rapidly
-    viewModel.processInput(TestEvent.TestDelayedEvent(100))
-    viewModel.processInput(TestEvent.TestDelayedEvent(50))
-    viewModel.processInput(TestEvent.TestDelayedEvent(25))
+    // Send multiple delayed inputs rapidly
+    viewModel.processInput(TestInput.TestDelayedInput(100))
+    viewModel.processInput(TestInput.TestDelayedInput(50))
+    viewModel.processInput(TestInput.TestDelayedInput(25))
     advanceTimeBy(101)
 
     // Verify that effects are processed in order of completion, not submission
@@ -190,25 +186,25 @@ class UsfImplTest {
   }
 
   @Test
-  @DisplayName("events sent when subscribers not present, are not lost")
+  @DisplayName("inputs sent when subscribers not present, are not lost")
   fun testEventsNotLostWithoutSubscribers() = runTest {
     val viewModel = createViewModel()
 
-    // Send two events before adding subscribers
-    viewModel.processInput(TestEvent.TestEvent1)
-    viewModel.processInput(TestEvent.TestNumberEvent(42))
-    viewModel.processInput(TestEvent.TestEvent3)
+    // Send two inputs before adding subscribers
+    viewModel.processInput(TestInput.TestInput1)
+    viewModel.processInput(TestInput.TestNumberInput(42))
+    viewModel.processInput(TestInput.TestInput3)
     runCurrent()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
 
-    // Add subscribers after event was processed
+    // Add subscribers after input was processed
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    assertThat(vs.last()).isEqualTo(TestViewState("[VS] 3 ", number = 42))
+    assertThat(vs.last()).isEqualTo(TestUiState("[US] 3 ", number = 42))
 
     assertThat(es)
         .hasSize(2)
@@ -216,60 +212,58 @@ class UsfImplTest {
   }
 
   @Test
-  @DisplayName("events sent when subscribers disconnect, and then reconnect, are never lost")
+  @DisplayName("inputs sent when subscribers disconnect, and then reconnect, are never lost")
   fun testEffectNotLostWithoutSubscribers() = runTest {
     val viewModel = createViewModel()
 
     // Start collecting effects and uiState with first subscriber
     val es1 = mutableListOf<TestEffect>()
-    val vs1 = mutableListOf<TestViewState>()
+    val vs1 = mutableListOf<TestUiState>()
     val jobEs1 = backgroundScope.launch { viewModel.effects.toList(es1) }
     val jobVs1 = backgroundScope.launch { viewModel.uiState.toList(vs1) }
     runCurrent()
 
-    // Process events with first subscriber connected
-    viewModel.processInput(TestEvent.TestEvent1)
+    // Process inputs with first subscriber connected
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
     assertThat(es1).hasSize(1)
-    assertThat(vs1)
-        .hasSize(2)
-        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+    assertThat(vs1).hasSize(2).containsExactly(TestUiState("[US] initial"), TestUiState("[US] 1 "))
 
     // Cancel subscriptions
     jobEs1.cancel()
     jobVs1.cancel()
     runCurrent()
 
-    // Process events while no subscribers are connected
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Process inputs while no subscribers are connected
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
     // Start collecting effects and uiState with second subscriber
     val es2 = mutableListOf<TestEffect>()
-    val vs2 = mutableListOf<TestViewState>()
+    val vs2 = mutableListOf<TestUiState>()
     backgroundScope.launch { viewModel.effects.toList(es2) }
     backgroundScope.launch { viewModel.uiState.toList(vs2) }
     runCurrent()
 
     // Second subscription should see latest state and replayed effect
-    assertThat(vs2).last().isEqualTo(TestViewState("[VS] 2 "))
+    assertThat(vs2).last().isEqualTo(TestUiState("[US] 2 "))
 
     // Verify that second subscriber received the effects emitted during disconnection
     assertThat(es2).hasSize(1).containsExactly(TestEffect.TestEffect2)
   }
 
   @Test
-  @DisplayName("5s timeout for view state, always emits the latest known value")
+  @DisplayName("5s timeout for ui state, always emits the latest known value")
   fun testViewStateAlwaysLatest() = runTest {
     val viewModel = createViewModel()
 
     // First subscriber
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val job1A = backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // Process regular event
-    viewModel.processInput(TestEvent.TestEvent1)
+    // Process regular input
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
     // Cancel first subscription
@@ -283,8 +277,8 @@ class UsfImplTest {
     // New subscription
     val job2A = backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
-    // should receive the latest view state
-    assertThat(vs.last()).isEqualTo(TestViewState("[VS] 1 "))
+    // should receive the latest ui state
+    assertThat(vs.last()).isEqualTo(TestUiState("[US] 1 "))
 
     // Cancel second subscription
     job2A.cancel()
@@ -298,8 +292,8 @@ class UsfImplTest {
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // should still see latest view state
-    assertThat(vs).last().isEqualTo(TestViewState("[VS] 1 "))
+    // should still see latest ui state
+    assertThat(vs).last().isEqualTo(TestUiState("[US] 1 "))
   }
 
   @Test
@@ -308,9 +302,9 @@ class UsfImplTest {
   fun testViewEffectsConsumedOnlyOnce() = runTest {
     val viewModel = createViewModel()
 
-    // Process regular event that emits an effect
+    // Process regular input that emits an effect
     // but no subscribers
-    viewModel.processInput(TestEvent.TestEvent1)
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
     // First subscriber joins
@@ -361,8 +355,8 @@ class UsfImplTest {
     val job1B = backgroundScope.launch { viewModel.effects.toList(es) }
     runCurrent()
 
-    // Process regular event
-    viewModel.processInput(TestEvent.TestEvent1)
+    // Process regular input
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
     // Effect consumed by first subscriber
     assertThat(es).hasSize(1).containsExactly(TestEffect.TestEffect1)
@@ -398,175 +392,175 @@ class UsfImplTest {
   }
 
   @Test
-  @DisplayName("error within event to result flow, flow continues processing events after")
+  @DisplayName("error within input to output flow, flow continues processing inputs after")
   fun testErrorHandlingForFlowErrors() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // First send an event that will succeed
-    viewModel.processInput(TestEvent.TestEvent1)
+    // First send an input that will succeed
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    // Then send an event that will cause an error
-    viewModel.processInput(TestEvent.TestErrorFlowEvent())
+    // Then send an input that will cause an error
+    viewModel.processInput(TestInput.TestErrorFlowInput())
     runCurrent()
 
-    // Finally send another valid event
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Finally send another valid input
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
-    // Verify that effects and view states from valid events were processed
+    // Verify that effects and ui states from valid inputs were processed
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
     assertThat(vs)
         .hasSize(3)
         .containsExactly(
-            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
+            TestUiState("[US] initial"), TestUiState("[US] 1 "), TestUiState("[US] 2 "))
   }
 
   @Test
-  @DisplayName("direct error thrown in eventToResultFlow, flow continues processing events after")
+  @DisplayName("direct error thrown in inputToOutputFlow, flow continues processing inputs after")
   fun testErrorHandlingForDirectErrors() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // First send an event that will succeed
-    viewModel.processInput(TestEvent.TestEvent1)
+    // First send an input that will succeed
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    // Then send an event that will cause an error
-    viewModel.processInput(TestEvent.TestErrorThrowEvent())
+    // Then send an input that will cause an error
+    viewModel.processInput(TestInput.TestErrorThrowInput())
     runCurrent()
 
-    // Finally send another valid event
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Finally send another valid input
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
-    // Verify that effects and view states from valid events were processed
+    // Verify that effects and ui states from valid inputs were processed
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
     assertThat(vs)
         .hasSize(3)
         .containsExactly(
-            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
+            TestUiState("[US] initial"), TestUiState("[US] 1 "), TestUiState("[US] 2 "))
   }
 
   @Test
-  @DisplayName("error in resultToViewState, flow continues processing subsequent events")
-  fun testErrorInResultToViewState() = runTest {
+  @DisplayName("error in outputToViewState, flow continues processing subsequent inputs")
+  fun testErrorInOutputToUiState() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // First send an event that will succeed
-    viewModel.processInput(TestEvent.TestEvent1)
+    // First send an input that will succeed
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    // Then send an event that will cause an error in resultToViewState
-    viewModel.processInput(TestErrorInResultToViewStateEvent())
+    // Then send an input that will cause an error in outputToViewState
+    viewModel.processInput(TestErrorInOutputToUiStateInput())
     runCurrent()
 
-    // Finally send another valid event
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Finally send another valid input
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
-    // Verify that effects from valid events were processed
+    // Verify that effects from valid inputs were processed
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
-    // Verify that view states from valid events were processed, and the error did not stop the flow
+    // Verify that ui states from valid inputs were processed, and the error did not stop the flow
     assertThat(vs)
         .hasSize(3)
         .containsExactly(
-            TestViewState("[VS] initial"), TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
+            TestUiState("[US] initial"), TestUiState("[US] 1 "), TestUiState("[US] 2 "))
   }
 
   @Test
-  @DisplayName("error in resultToEffects, flow continues processing subsequent events")
-  fun testErrorInResultToEffects() = runTest {
+  @DisplayName("error in OutputToEffects, flow continues processing subsequent inputs")
+  fun testErrorInOutputToEffects() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // First send an event that will succeed
-    viewModel.processInput(TestEvent.TestEvent1)
+    // First send an input that will succeed
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    // Then send an event that will cause an error in resultToEffects
-    viewModel.processInput(TestEvent.TestErrorInResultToEffectsEvent)
+    // Then send an input that will cause an error in OutputToEffects
+    viewModel.processInput(TestInput.TestErrorInOutputToEffectsInput)
     runCurrent()
 
-    // Finally send another valid event
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Finally send another valid input
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
-    // Verify that effects from valid events were processed
+    // Verify that effects from valid inputs were processed
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
-    // Verify that view states from all events were processed, including the one with error in
+    // Verify that ui states from all inputs were processed, including the one with error in
     // effects
     assertThat(vs)
         .hasSize(3)
         .containsExactly(
-            TestViewState("[VS] initial"),
-            TestViewState("[VS] 1 "),
-            // TestViewState("[VS] 1 "), // distinctUntilChanged will filter this out
-            TestViewState("[VS] 2 "))
+            TestUiState("[US] initial"),
+            TestUiState("[US] 1 "),
+            // TestViewState("[US] 1 "), // distinctUntilChanged will filter this out
+            TestUiState("[US] 2 "))
   }
 
   @Test
   @DisplayName(
-      "when error occurs in resultToEffects flow, flow continues processing subsequent events")
-  fun testErrorInResultToEffectsFlow() = runTest {
+      "when error occurs in OutputToEffects flow, flow continues processing subsequent inputs")
+  fun testErrorInOutputToEffectsFlow() = runTest {
     val viewModel = createViewModel()
 
-    val vs = mutableListOf<TestViewState>()
+    val vs = mutableListOf<TestUiState>()
     val es = mutableListOf<TestEffect>()
     backgroundScope.launch { viewModel.effects.toList(es) }
     backgroundScope.launch { viewModel.uiState.toList(vs) }
     runCurrent()
 
-    // First send an event that will succeed
-    viewModel.processInput(TestEvent.TestEvent1)
+    // First send an input that will succeed
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
-    // Then send an event that will cause an error in resultToEffects
-    viewModel.processInput(TestEvent.TestErrorInResultToEffectsFlow)
+    // Then send an input that will cause an error in OutputToEffects
+    viewModel.processInput(TestInput.TestErrorInOutputToEffectsFlow)
     runCurrent()
 
-    // Finally send another valid event
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Finally send another valid input
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
-    // Verify that effects from valid events were processed
+    // Verify that effects from valid inputs were processed
     assertThat(es).hasSize(2).containsExactly(TestEffect.TestEffect1, TestEffect.TestEffect2)
 
-    // Verify that view states from all events were processed, including the one with error in
+    // Verify that ui states from all inputs were processed, including the one with error in
     // effects
     assertThat(vs)
         .hasSize(3)
         .containsExactly(
-            TestViewState("[VS] initial"),
-            TestViewState("[VS] 1 "),
-            // TestViewState("[VS] 1 "), // distinctUntilChanged will filter this out
-            TestViewState("[VS] 2 "))
+            TestUiState("[US] initial"),
+            TestUiState("[US] 1 "),
+            // TestViewState("[US] 1 "), // distinctUntilChanged will filter this out
+            TestUiState("[US] 2 "))
   }
 
   @Test
@@ -619,7 +613,7 @@ class UsfImplTest {
     advanceTimeBy(4.seconds)
     assertThat(viewModel.mainJob?.isActive ?: false).isTrue()
 
-    // subscribe to effects now (1 s left for view state to timeout)
+    // subscribe to effects now (1 s left for ui state to timeout)
     val job2 = launch { viewModel.effects.collect {} }
     runCurrent()
     assertThat(viewModel.mainJob?.isActive ?: false).isTrue()
@@ -666,39 +660,37 @@ class UsfImplTest {
     val viewModel = createViewModel()
 
     // First subscriber
-    val vs1 = mutableListOf<TestViewState>()
+    val vs1 = mutableListOf<TestUiState>()
     val job1 = backgroundScope.launch { viewModel.uiState.toList(vs1) }
     runCurrent()
 
-    // Process an event to update the view state
-    viewModel.processInput(TestEvent.TestEvent1)
+    // Process an input to update the ui state
+    viewModel.processInput(TestInput.TestInput1)
     runCurrent()
 
     // Verify first subscriber received initial state and updated state
-    assertThat(vs1)
-        .hasSize(2)
-        .containsExactly(TestViewState("[VS] initial"), TestViewState("[VS] 1 "))
+    assertThat(vs1).hasSize(2).containsExactly(TestUiState("[US] initial"), TestUiState("[US] 1 "))
 
     // Cancel first subscription
     job1.cancel()
     runCurrent()
 
     // Second subscriber
-    val vs2 = mutableListOf<TestViewState>()
+    val vs2 = mutableListOf<TestUiState>()
     backgroundScope.launch { viewModel.uiState.toList(vs2) }
     runCurrent()
 
     // Verify second subscriber immediately receives the last emitted state (not the initial state)
     assertThat(vs2)
         .hasSize(1)
-        .containsExactly(TestViewState("[VS] 1 "))
-        .doesNotContain(TestViewState("[VS] initial"))
+        .containsExactly(TestUiState("[US] 1 "))
+        .doesNotContain(TestUiState("[US] initial"))
 
-    // Process another event to ensure the flow continues working
-    viewModel.processInput(TestEvent.TestEvent2)
+    // Process another input to ensure the flow continues working
+    viewModel.processInput(TestInput.TestInput2)
     runCurrent()
 
     // Verify second subscriber receives the new state
-    assertThat(vs2).hasSize(2).containsExactly(TestViewState("[VS] 1 "), TestViewState("[VS] 2 "))
+    assertThat(vs2).hasSize(2).containsExactly(TestUiState("[US] 1 "), TestUiState("[US] 2 "))
   }
 }
