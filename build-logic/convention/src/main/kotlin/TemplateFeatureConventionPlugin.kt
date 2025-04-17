@@ -39,8 +39,19 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
         plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
 
         dependencies {
+          val implementation by configurations
+
+          // navigation
+          implementation(libs.compose.navigation)
+          implementation(libs.kotlinx.serialization.json)
+
+          // dependency injection
+          val ksp by configurations
+          ksp(libs.bundles.kotlin.inject.compiler)
+          implementation(libs.bundles.kotlin.inject)
+
           // below will pull inner implementation as well
-          // be judicious here
+          // be extra judicious here
           val api by configurations
           api(project(":common:log"))
           api(project(":domain:ui")) // brings in compose

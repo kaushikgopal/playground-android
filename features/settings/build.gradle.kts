@@ -8,13 +8,6 @@ android {
 }
 
 dependencies {
-  // navigation
-  implementation(libs.compose.navigation)
-  implementation(libs.kotlinx.serialization.json)
-  // dependency injection
-  ksp(libs.bundles.kotlin.inject.compiler)
-  implementation(libs.bundles.kotlin.inject)
-
   // --- project dependencies
   api(projects.domain.quoter.api)
   /* implementation(projects.domain.quoter.impl) */ // assembling happens in AppComponent
