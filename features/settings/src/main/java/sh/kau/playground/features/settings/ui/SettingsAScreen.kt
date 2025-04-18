@@ -24,7 +24,9 @@ typealias SettingsAScreen = @Composable (navToSettingsB: () -> Unit) -> Unit
 @Composable
 fun SettingsAScreen(
     bindings: SettingsBindings,
-    @Assisted navToSettingsB: () -> Unit, // kotlin-inject assisted injection
+    // example of using kotlin-inject assisted injection
+    // when you need to pass something from the main module "in" to this otherwise injected class
+    @Assisted navToSettingsB: () -> Unit,
 ) {
   logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
