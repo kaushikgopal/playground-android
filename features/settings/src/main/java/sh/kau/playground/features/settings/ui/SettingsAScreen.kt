@@ -18,12 +18,14 @@ import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
 import sh.kau.playground.ui.Teritiary
 
-typealias SettingsAScreen = @Composable (navToSettingsB: () -> Unit) -> Unit
+typealias SettingsAScreen =
+    @Composable (modifier: Modifier, navToSettingsB: () -> Unit) -> Unit // assisted injection (2)
 
 @Inject
 @Composable
 fun SettingsAScreen(
     bindings: SettingsBindings,
+    @Assisted modifier: Modifier, // assisted injection (3)
     // example of using kotlin-inject assisted injection
     // when you need to pass something from the main module "in" to this otherwise injected class
     @Assisted navToSettingsB: () -> Unit,
@@ -31,7 +33,7 @@ fun SettingsAScreen(
   logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
   Box(
-      modifier = Modifier.fillMaxSize().background(Teritiary),
+      modifier = modifier.fillMaxSize().background(Teritiary),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
           Text(

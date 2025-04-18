@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
                 settingsComponent = appComponent.createSettingsComponent(),
                 navGraphBuilder = this,
                 navHostController = navController,
+                modifier = Modifier.padding(innerPadding), // assisted injection (0)
             )
           }
         }
