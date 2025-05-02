@@ -34,11 +34,11 @@ kill-ksp: 		## kill kotlin daemon (useful for ksp errors)
 build-debug: 		## assemble debug app (without lint)
              ## 		make build-debug warnings=summary
 	@echo "--- This script will assemble the debug app (without linting)"
-	@./gradlew --warning-mode $(warnings) assembleDebug -x lint
+	@./gradlew -x lint --warning-mode $(warnings) assembleDebug
 
 build: 			## assemble full project (without linting)
 	@echo "--- This script will assemble the full project (without linting)"
-	@./gradlew --warning-mode $(warnings) assemble -x lint
+	@./gradlew -x lint --warning-mode $(warnings) assemble
 
 lint: 			## run lint checks
 	@echo "--- This script will run lint checks"
@@ -50,7 +50,7 @@ lint-update: 		## update lint baseline
 
 tests: 			## run unit tests (without lint)
 	@echo "Run all unit tests without linting"
-	@./gradlew --warning-mode $(warnings) tests -x lint
+	@./gradlew -x lint --warning-mode $(warnings) tests
 
 ktfmt:              ## ktfmt changed files on this branch
 	@echo "--- This script will run ktfmt on all changed files"
