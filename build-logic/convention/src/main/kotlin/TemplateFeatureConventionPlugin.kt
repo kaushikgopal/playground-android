@@ -55,6 +55,9 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
           val api by configurations
           api(project(":common:log"))
           api(project(":domain:ui")) // brings in compose
+
+          // Project dependencies
+          implementation(project(":common:usf"))
         }
       }
     }
