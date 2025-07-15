@@ -48,6 +48,26 @@ lint-update: 		## update lint baseline
 	@echo "--- Update the baseline for lint"
 	@./gradlew updateLintBaseline
 
+test: 			## run single unit test or all tests (without lint)
+	@if [ "$(name)" = "" ]; then \
+		echo "--- running all tests because you didn't provide name"; \
+		make tests; \
+	else \
+		echo "--- Finding module and package for test: $(name)"; \
+		TEST_FILE=$$(find . -name "$(name).kt" -type f | head -1); \
+		if [ "$$TEST_FILE" = "" ]; then \
+			echo "Error: Test file $(name).kt not found"; \
+			exit 1; \
+		fi; \
+		echo "Found test file: $$TEST_FILE"; \
+		MODULE=$$(echo "$$TEST_FILE" | sed 's|./||' | sed 's|/src/.*||' | sed 's|/|:|g'); \
+		PACKAGE=$$(grep "^package " "$$TEST_FILE" | head -1 | sed 's/package //g'); \
+		echo "• Module identified: $$MODULE"; \
+		echo "• Package: $$PACKAGE"; \
+		echo "• Running test: $$PACKAGE.$(name)"; \
+		./gradlew -x lint --warning-mode $(warnings) $$MODULE:testDebugUnitTest --tests $$PACKAGE.$(name); \
+	fi
+
 tests: 			## run unit tests (without lint)
 	@echo "Run all unit tests without linting"
 	@./gradlew -x lint --warning-mode $(warnings) tests
