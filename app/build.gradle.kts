@@ -51,10 +51,17 @@ dependencies {
   // --- project dependencies
   implementation(projects.features.landing)
   implementation(projects.features.settings)
+
   /**/ implementation(projects.domain.quoter.api)
-  /**/ androidTestImplementation(projects.domain.quoter.api)
   /**/ implementation(projects.domain.quoter.impl)
+  /**/ androidTestImplementation(projects.domain.quoter.api)
   /**/ androidTestImplementation(projects.domain.quoter.impl)
+
+//  implementation(projects.common.coroutines.api)
+//  implementation(projects.common.coroutines.impl)
+  api(projects.common.coroutines.impl)
+
+
 
   // --- testing
   testImplementation(libs.bundles.testing)

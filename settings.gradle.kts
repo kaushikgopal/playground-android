@@ -30,13 +30,10 @@ include(
 // module specific to this app
 include(
     ":domain:ui", // compose theme & design system
-
     ":domain:quoter:api", // produce quotes
     ":domain:quoter:impl",
-
     ":domain:shared", // pure kotlin module | referenced everywhere e.g. @Named
 )
-
 
 // common modules (shared across the app) but swappable with other implementations
 include(
@@ -44,4 +41,7 @@ include(
     ":common:lint-rules",
     ":common:networking",
     ":common:usf",
+
+    ":common:coroutines:api",   // coroutines (demonstrating api + impl encapsulation)
+    ":common:coroutines:impl",
 )
