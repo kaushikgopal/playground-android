@@ -8,9 +8,9 @@ app-version-code = "2"
 app-version-name = "25.08.100"
 
 agp = "8.9.1"  # android-gradle-plugin
-kotlin = "2.1.21"
+kotlin = "2.0.20"
 
-ksp = "2.1.21-2.0.2"       # Updated for Kotlin 2.1.21 compatibility
+ksp = "2.0.20-1.0.25"      # Updated for Kotlin 2.1.21 compatibility
 kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 kotlinxSerializationCore = "1.8.1"
