@@ -92,20 +92,65 @@ integrate libraries. Built with Kotlin, Jetpack Compose, and follows clean archi
 ## Architecture Patterns
 
 ### USF Pattern (Required for ViewModels)
-All ViewModels must extend `UsfImpl<Input, Output, UiState, Effect, VMState>`:
+
+All ViewModels must use the modern USF architecture with pipeline-based lifecycle management:
+
+#### UsfViewModel (Standard Approach)
+Use `UsfViewModel<Event, UiState, Effect>` for all ViewModels:
 
 **Core Components:**
-- **Input**: User actions/inputs (sealed interface)
-- **Output**: Internal state changes
+- **Event**: User actions/inputs (sealed interface)
 - **UiState**: Complete UI state (immutable data class)
 - **Effect**: One-time side effects (navigation, toasts)
-- **VMState**: ViewModel internal state (optional)
+- **ResultScope**: Context for state updates and effect emissions
 
 **Key Principles:**
+- Direct event-to-state/effect processing
+- Pipeline-based lifecycle management
+- Automatic resource cleanup with timeout
 - Unidirectional data flow
 - Immutable state
 - Single source of truth
 - Testable business logic
+
+**Pipeline Architecture:**
+- **Subscription Management**: Pipeline activates when first subscriber starts collecting
+- **Timeout-based Cleanup**: 5-second timeout before shutting down when no subscribers remain
+- **Scope Management**: Separate view model scope (persistent) and pipeline scope (lifecycle-aware)
+- **Channel-based Events**: Events processed through channels for reliable delivery
+- **State Dispatcher**: Dedicated single-threaded dispatcher for thread-safe state updates
+
+#### UsfPlugin Architecture (For Complex Features)
+For complex ViewModels, compose `UsfPluginInterface<Event, State, Effect>` with `UsfViewModel`:
+
+**Core Components:**
+- **UsfViewModel**: Enhanced ViewModel with pipeline and plugin support
+- **UsfPluginInterface**: Contract for plugin implementations
+- **UsfPlugin**: Base plugin implementation with standard functionality
+- **Plugin Adapters**: Type-safe event/state/effect conversion
+- **ResultScope**: Scoped context for state updates and effect emissions
+- **Internal State**: Isolated state management within plugins
+
+**Benefits:**
+- Modular and reusable UI logic
+- Better separation of concerns
+- Easier testing and maintenance
+- Plugin composition for complex features
+- Automatic lifecycle management
+- Resource efficiency through pipeline management
+
+**Usage Decision:**
+- **Simple ViewModels**: Use `UsfViewModel` directly
+- **Complex ViewModels**: Use `UsfViewModel` with `UsfPluginInterface` composition
+- **Reusable Logic**: Create `UsfPlugin` components
+
+**Pipeline Integration:**
+- Plugins registered/unregistered automatically with pipeline lifecycle
+- Plugin events processed in parallel with ViewModel events
+- Shared timeout and cleanup behavior
+- Unified subscription counting across all flows
+
+See `.ai/docs/usf-plugin-architecture.md` for detailed implementation guide.
 
 ### Dependency Injection (kotlin-inject-anvil)
 - Use `@Inject` constructor injection
@@ -159,6 +204,7 @@ All ViewModels must extend `UsfImpl<Input, Output, UiState, Effect, VMState>`:
 
 ### Module Dependencies
 - All modules get `common:log` automatically
+- `common:usf` provides both standard USF and USF Plugin architecture
 - Check existing usage before adding dependencies
 - Follow patterns in neighboring modules
 
@@ -170,10 +216,12 @@ All ViewModels must extend `UsfImpl<Input, Output, UiState, Effect, VMState>`:
 ## Repository Structure
 
 - `app/`: Main application module
-- `features/`: Feature modules (landing, settings)
+- `features/`: Feature modules (landing, settings, discover)
 - `domain/`: Business logic (quoter, shared, ui)
 - `common/`: Shared utilities (log, networking, usf, lint-rules)
 - `build-logic/`: Gradle convention plugins
 - `gradle/`: Gradle wrapper and version catalog
 - `Makefile`: Common development commands
 - `.ai/`: AI assistant documentation
+  - `.ai/docs/usf-plugin-architecture.md`: Comprehensive USF Plugin architecture guide
+  - `.ai/history/`: Session history and implementation notes
