@@ -42,6 +42,7 @@ include(
 include(
     ":common:log", // android module
     ":common:lint-rules",
+    ":common:navigation",
     ":common:networking",
     ":common:usf",
 )

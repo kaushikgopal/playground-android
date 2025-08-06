@@ -50,14 +50,15 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
           ksp(libs.bundles.kotlin.inject.compiler)
           implementation(libs.bundles.kotlin.inject)
 
+          // Project dependencies
+          implementation(project(":common:usf"))
+          implementation(project(":common:navigation"))
+
           // below will pull inner implementation as well
           // be extra judicious here
           val api by configurations
           api(project(":common:log"))
           api(project(":domain:ui")) // brings in compose
-
-          // Project dependencies
-          implementation(project(":common:usf"))
         }
       }
     }
