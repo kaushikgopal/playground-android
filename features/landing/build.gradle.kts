@@ -9,4 +9,6 @@ android {
 
 dependencies {
   // --- project dependencies
+  implementation(project(":common:navigation"))
+  implementation(project(":features:settings")) // for navigation to settings
 }

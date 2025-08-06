@@ -3,7 +3,11 @@ package sh.kau.playground.app.di
 import android.content.Context
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
+import sh.kau.playground.features.landing.nav.LandingScreenRoute
 import sh.kau.playground.features.settings.di.SettingsComponent
+import sh.kau.playground.navigation.EntryProviderInstaller
+import sh.kau.playground.navigation.NavRoute
+import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.shared.App
 import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
@@ -19,8 +23,14 @@ abstract class AppComponent(
   @Provides fun provideAppName(): @Named("appName") String = "My Playground!"
 
   @Provides fun provideDebuggableApp(): @Named("debuggableApp") Boolean = app.isDebuggable
+  
+  @Provides
+  @Named("startDestination")
+  fun provideStartDestination(): NavRoute = LandingScreenRoute
 
   abstract val loggers: Set<LogcatLogger> // multi-bindings
+  abstract val navigator: Navigator
+  abstract val entryProviderInstallers: Set<EntryProviderInstaller>
 
   companion object {
 

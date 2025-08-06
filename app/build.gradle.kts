@@ -42,7 +42,8 @@ android {
 
 dependencies {
   // navigation
-  implementation(libs.compose.navigation)
+  implementation(project(":common:navigation"))
+  implementation(libs.bundles.jetpack.navigation)
   implementation(libs.kotlinx.serialization.json)
   // dependency injection
   ksp(libs.bundles.kotlin.inject.compiler)

@@ -8,13 +8,14 @@ import androidx.navigation.compose.navigation
 import kotlinx.serialization.Serializable
 import sh.kau.playground.features.settings.di.SettingsComponent
 import sh.kau.playground.features.settings.nav.SettingsRoutes.SettingsGraphRoute
+import sh.kau.playground.navigation.NavRoute
 
 sealed class SettingsRoutes {
-  @Serializable data object SettingsGraphRoute
+  @Serializable data object SettingsGraphRoute : NavRoute
 
-  @Serializable data object ScreenARoute
+  @Serializable data object ScreenARoute : NavRoute
 
-  @Serializable data object ScreenBRoute
+  @Serializable data object ScreenBRoute : NavRoute
 }
 
 fun NavGraphBuilder.addSettingsGraph(

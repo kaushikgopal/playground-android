@@ -9,6 +9,7 @@ android {
 
 dependencies {
   // --- project dependencies
+  implementation(project(":common:navigation"))
   api(projects.domain.quoter.api)
   /* implementation(projects.domain.quoter.impl) */ // assembling happens in AppComponent
 }
