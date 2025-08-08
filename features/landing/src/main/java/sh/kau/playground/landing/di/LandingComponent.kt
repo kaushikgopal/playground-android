@@ -3,6 +3,7 @@ package sh.kau.playground.landing.di
 import androidx.navigation3.runtime.entry
 import me.tatarka.inject.annotations.IntoSet
 import me.tatarka.inject.annotations.Provides
+import sh.kau.playground.features.settings.nav.SettingsRoutes
 import sh.kau.playground.landing.nav.LandingRoutes.LandingScreenRoute
 import sh.kau.playground.landing.ui.LandingScreen
 import sh.kau.playground.navigation.EntryProviderInstaller
@@ -28,7 +29,7 @@ interface LandingComponent {
             val settingsComponent = landingComponentFactory.create()
             entry<LandingScreenRoute> {
                 LandingScreen {
-//                    navigator.goTo(SettingsRout()
+                    navigator.goTo(SettingsRoutes.ScreenARoute)
                 }
             }
 

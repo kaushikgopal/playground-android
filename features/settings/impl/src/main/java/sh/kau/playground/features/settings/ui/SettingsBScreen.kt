@@ -26,7 +26,7 @@ import sh.kau.playground.quoter.api.Quote
 import sh.kau.playground.ui.Secondary
 
 // kotlin-inject function injection (1)
-typealias SettingsBScreen = @Composable () -> Unit
+//typealias SettingsBScreen = @Composable () -> Unit
 
 @Inject
 @Composable

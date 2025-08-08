@@ -13,28 +13,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import logcat.logcat
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
 import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Teritiary
 
-typealias SettingsAScreen = @Composable (modifier: Modifier) -> Unit // assisted injection (2)
+// typealias SettingsAScreen = @Composable (modifier: Modifier) -> Unit // assisted injection (2)
 
-@Inject
 @Composable
 fun SettingsAScreen(
     bindings: SettingsBindings,
     navigator: Navigator,
     // example of using kotlin-inject assisted injection
     // when you need to pass something from the main module "in" to this otherwise injected class
-    @Assisted modifier: Modifier, // assisted injection (3)
+    //    @Assisted modifier: Modifier, // assisted injection (3)
 ) {
   logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
   Box(
-      modifier = modifier.fillMaxSize().background(Teritiary),
+      modifier = Modifier.fillMaxSize().background(Teritiary),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
           Text(

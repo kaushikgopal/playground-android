@@ -48,7 +48,7 @@ dependencies {
   implementation(projects.common.navigation)
   // --- project dependencies
   implementation(projects.features.landing)
-  implementation(projects.features.settings)
+  implementation(projects.features.settings.impl)
   /**/ implementation(projects.domain.quoter.api)
   /**/ androidTestImplementation(projects.domain.quoter.api)
   /**/ implementation(projects.domain.quoter.impl)

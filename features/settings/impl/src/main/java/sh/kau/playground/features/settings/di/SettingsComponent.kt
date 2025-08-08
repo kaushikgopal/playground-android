@@ -9,6 +9,7 @@ import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
 import sh.kau.playground.navigation.EntryProviderInstaller
+import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.quoter.api.QuotesRepo
 import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
@@ -21,9 +22,11 @@ interface SettingsComponent {
 
   val settingsBindings: SettingsBindings
 
-  val settingsAScreen: SettingsAScreen
-  // kotlin-inject function injection (2)
-  val settingsBScreen: SettingsBScreen
+  val navigator: Navigator
+
+  //  val settingsAScreen: SettingsAScreen
+  //  // kotlin-inject function injection (2)
+  //  val settingsBScreen: SettingsBScreen
 
   @ContributesSubcomponent.Factory(AppScope::class)
   interface Factory {
@@ -33,11 +36,15 @@ interface SettingsComponent {
     @IntoSet // kotlin-inject multi-bindings (1)
     fun provideSettingsEntryProvider(settingsComponentFactory: Factory): EntryProviderInstaller = {
       val settingsComponent = settingsComponentFactory.createSettingsComponent()
-      entry<ScreenARoute> { settingsComponent.settingsAScreen }
+      entry<ScreenARoute> {
+        SettingsAScreen(
+            bindings = settingsComponent.settingsBindings,
+            navigator = settingsComponent.navigator,
+        )
+      }
 
       entry<ScreenBRoute> {
         SettingsBScreen(bindings = settingsComponent.settingsBindings)
-        settingsComponent.settingsBScreen
       }
     }
   }

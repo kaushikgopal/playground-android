@@ -24,7 +24,8 @@ include(":app")
 // features of this app; each standalone
 include(
     ":features:landing", // typical feature
-    ":features:settings",
+    ":features:settings:api",
+    ":features:settings:impl",
 )
 
 // module specific to this app

@@ -9,4 +9,5 @@ android {
 
 dependencies {
   // --- project dependencies
+  implementation(projects.features.settings.api)
 }
