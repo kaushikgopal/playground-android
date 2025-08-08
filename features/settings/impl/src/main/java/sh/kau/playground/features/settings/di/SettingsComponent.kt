@@ -9,7 +9,7 @@ import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
 import sh.kau.playground.navigation.EntryProviderInstaller
-import sh.kau.playground.quoter.api.QuotesRepo
+import sh.kau.playground.quoter.QuotesRepo
 import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent

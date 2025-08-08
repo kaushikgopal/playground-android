@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
 import sh.kau.playground.features.settings.di.SettingsScope
-import sh.kau.playground.quoter.api.Quote
+import sh.kau.playground.quoter.Quote
 import sh.kau.playground.ui.Secondary
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 

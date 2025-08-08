@@ -1,4 +1,4 @@
-package sh.kau.playground.domain.quoter.impl
+package sh.kau.playground.quoter
 
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -7,8 +7,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.networking.NetworkApi
-import sh.kau.playground.quoter.api.Quote
-import sh.kau.playground.quoter.api.QuotesRepo
+import sh.kau.playground.quoter.Quote
+import sh.kau.playground.quoter.QuotesRepo
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
