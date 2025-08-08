@@ -1,4 +1,4 @@
-package sh.kau.playground.features.landing.ui
+package sh.kau.playground.landing.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,16 +19,15 @@ import sh.kau.playground.ui.Teritiary
 
 @Composable
 fun LandingScreen(
-    name: String,
-    modifier: Modifier = Modifier,
+//    @Assisted modifier: Modifier,
     onNavigateToSettings: () -> Unit,
 ) {
   Box(modifier = Modifier.fillMaxSize().background(Primary), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
-          text = "Hello $name!",
+          text = "Hello there!",
           style = MaterialTheme.typography.bodyMedium,
-          modifier = modifier,
+//          modifier = modifier,
       )
       Text(
           text = "Landing Screen",
@@ -55,5 +54,5 @@ fun LandingScreen(
 @Preview(showBackground = true)
 @Composable
 fun LandingScreenPreview() {
-  LandingScreen(name = "Landing Screen") {}
+//  LandingScreen(name = "Landing Screen") {}
 }

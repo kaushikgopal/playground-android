@@ -41,10 +41,6 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
         dependencies {
           val implementation by configurations
 
-          // navigation
-          implementation(libs.compose.navigation)
-          implementation(libs.kotlinx.serialization.json)
-
           // dependency injection
           val ksp by configurations
           ksp(libs.bundles.kotlin.inject.compiler)

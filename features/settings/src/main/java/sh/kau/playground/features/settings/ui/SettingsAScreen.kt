@@ -16,19 +16,20 @@ import logcat.logcat
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
+import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
+import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Teritiary
 
-typealias SettingsAScreen =
-    @Composable (modifier: Modifier, navToSettingsB: () -> Unit) -> Unit // assisted injection (2)
+typealias SettingsAScreen = @Composable (modifier: Modifier) -> Unit // assisted injection (2)
 
 @Inject
 @Composable
 fun SettingsAScreen(
     bindings: SettingsBindings,
-    @Assisted modifier: Modifier, // assisted injection (3)
+    navigator: Navigator,
     // example of using kotlin-inject assisted injection
     // when you need to pass something from the main module "in" to this otherwise injected class
-    @Assisted navToSettingsB: () -> Unit,
+    @Assisted modifier: Modifier, // assisted injection (3)
 ) {
   logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
@@ -42,7 +43,8 @@ fun SettingsAScreen(
               fontWeight = FontWeight.Bold,
           )
           Button(
-              onClick = navToSettingsB,
+              // TODO: with Nav3 we can just do this in VM
+              onClick = { navigator.goTo(ScreenBRoute) },
               modifier = Modifier.align(Alignment.CenterHorizontally),
           ) {
             Text(text = "Settings B")

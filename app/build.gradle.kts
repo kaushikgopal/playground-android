@@ -41,13 +41,11 @@ android {
 }
 
 dependencies {
-  // navigation
-  implementation(libs.compose.navigation)
-  implementation(libs.kotlinx.serialization.json)
   // dependency injection
   ksp(libs.bundles.kotlin.inject.compiler)
   implementation(libs.bundles.kotlin.inject)
 
+  implementation(projects.common.navigation)
   // --- project dependencies
   implementation(projects.features.landing)
   implementation(projects.features.settings)
