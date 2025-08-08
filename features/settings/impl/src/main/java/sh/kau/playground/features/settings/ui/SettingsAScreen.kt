@@ -13,41 +13,46 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import logcat.logcat
+import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
+import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Teritiary
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-// typealias SettingsAScreen = @Composable (modifier: Modifier) -> Unit // assisted injection (2)
-
-@Composable
-fun SettingsAScreen(
-    bindings: SettingsBindings,
-    navigator: Navigator,
-    // example of using kotlin-inject assisted injection
-    // when you need to pass something from the main module "in" to this otherwise injected class
-    //    @Assisted modifier: Modifier, // assisted injection (3)
+@Inject
+@SingleIn(SettingsScope::class)
+class SettingsAScreen(
+  private val bindings: SettingsBindings,
+  private val navigator: Navigator,
 ) {
-  logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
+  @Composable
+  fun Content() {
+    logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
-  Box(
-      modifier = Modifier.fillMaxSize().background(Teritiary),
-      contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-          Text(
-              text = "Settings A Screen",
-              style = MaterialTheme.typography.headlineLarge,
-              fontWeight = FontWeight.Bold,
-          )
-          Button(
-              // TODO: with Nav3 we can just do this in VM
-              onClick = { navigator.goTo(ScreenBRoute) },
-              modifier = Modifier.align(Alignment.CenterHorizontally),
-          ) {
-            Text(text = "Settings B")
-          }
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Teritiary),
+      contentAlignment = Alignment.Center
+    ) {
+      Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+          text = "Settings A Screen",
+          style = MaterialTheme.typography.headlineLarge,
+          fontWeight = FontWeight.Bold,
+        )
+        Button(
+          // TODO: with Nav3 we can just do this in VM
+          onClick = { navigator.goTo(ScreenBRoute) },
+          modifier = Modifier.align(Alignment.CenterHorizontally),
+        ) {
+          Text(text = "Settings B")
         }
       }
+    }
+  }
 }
 
 @Preview(showBackground = true)

@@ -9,7 +9,6 @@ import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
 import sh.kau.playground.navigation.EntryProviderInstaller
-import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.quoter.api.QuotesRepo
 import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
@@ -20,37 +19,28 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @SingleIn(SettingsScope::class)
 interface SettingsComponent {
 
-  val settingsBindings: SettingsBindings
-
-  val navigator: Navigator
-
-  //  val settingsAScreen: SettingsAScreen
-  //  // kotlin-inject function injection (2)
-  //  val settingsBScreen: SettingsBScreen
+  val settingsAScreen: SettingsAScreen
+  // kotlin-inject function injection (3)
+  val settingsBScreen: SettingsBScreen
 
   @ContributesSubcomponent.Factory(AppScope::class)
   interface Factory {
     fun createSettingsComponent(): SettingsComponent
 
     @Provides
-    @IntoSet // kotlin-inject multi-bindings (1)
-    fun provideSettingsEntryProvider(settingsComponentFactory: Factory): EntryProviderInstaller = {
-      val settingsComponent = settingsComponentFactory.createSettingsComponent()
-      entry<ScreenARoute> {
-        SettingsAScreen(
-            bindings = settingsComponent.settingsBindings,
-            navigator = settingsComponent.navigator,
-        )
-      }
-
-      entry<ScreenBRoute> {
-        SettingsBScreen(bindings = settingsComponent.settingsBindings)
-      }
+    @IntoSet
+    fun provideSettingsEntryProvider(factory: Factory): EntryProviderInstaller = {
+      // create component on first navigation
+      // remember factory here is the AppComponent itself (it implements the interface)
+      val settingsComponent by lazy { factory.createSettingsComponent() }
+      entry<ScreenARoute> { settingsComponent.settingsAScreen.Content() }
+      entry<ScreenBRoute> { settingsComponent.settingsBScreen() }
     }
   }
 }
 
 @Inject
+@SingleIn(SettingsScope::class)
 class SettingsBindings(
     @Named("appName") val appName: String,
     val quotesRepo: QuotesRepo,

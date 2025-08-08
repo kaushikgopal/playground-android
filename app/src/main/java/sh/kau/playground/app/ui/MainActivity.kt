@@ -38,21 +38,6 @@ class MainActivity : ComponentActivity() {
               onBack = { if (!navigator.goBack()) finish() },
               entryProvider = entryProvider { entryProviders.forEach { it() } },
           )
-          //          NavHost(
-          //              navController = navController,
-          //              startDestination = LandingScreenRoute, // starting screen
-          //          ) {
-          //            addLandingRoute(
-          //                modifier = Modifier.padding(innerPadding),
-          //                onNavigateToSettings = { navController.navigate(SettingsGraphRoute) },
-          //            )
-          //            addSettingsGraph(
-          //                settingsComponent = appComponent.createSettingsComponent(),
-          //                navGraphBuilder = this,
-          //                navHostController = navController,
-          //                modifier = Modifier.padding(innerPadding), // assisted injection (0)
-          //            )
-          //          }
         }
       }
     }

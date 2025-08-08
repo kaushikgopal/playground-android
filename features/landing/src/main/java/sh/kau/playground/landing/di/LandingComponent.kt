@@ -18,7 +18,7 @@ interface LandingComponent {
 
     @ContributesSubcomponent.Factory(AppScope::class)
     interface Factory {
-        fun create(): LandingComponent
+        fun createLandingComponent(): LandingComponent
 
         @Provides
         @IntoSet // kotlin-inject multi-bindings (1)
@@ -26,7 +26,6 @@ interface LandingComponent {
             navigator: Navigator,
             landingComponentFactory: Factory,
             ): EntryProviderInstaller = {
-            val settingsComponent = landingComponentFactory.create()
             entry<LandingScreenRoute> {
                 LandingScreen {
                     navigator.goTo(SettingsRoutes.ScreenARoute)

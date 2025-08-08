@@ -22,13 +22,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
+import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.quoter.api.Quote
 import sh.kau.playground.ui.Secondary
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+
+// kotlin-inject function injection (2)
+typealias SettingsBScreen = @Composable () -> Unit
 
 // kotlin-inject function injection (1)
-//typealias SettingsBScreen = @Composable () -> Unit
-
 @Inject
+@SingleIn(SettingsScope::class)
 @Composable
 fun SettingsBScreen(bindings: SettingsBindings) {
 
@@ -37,7 +41,9 @@ fun SettingsBScreen(bindings: SettingsBindings) {
   LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
 
   Box(
-      modifier = Modifier.fillMaxSize().background(Secondary),
+      modifier = Modifier
+        .fillMaxSize()
+        .background(Secondary),
       contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
           Text(
