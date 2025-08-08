@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
               backStack = navigator.backStack,
               modifier = Modifier.fillMaxSize().padding(innerPadding),
               onBack = { if (!navigator.goBack()) finish() },
-              entryProvider = entryProvider { entryProviders.forEach { it() } },
+              entryProvider = entryProvider { entryProviders.value.forEach { it() } },
           )
         }
       }

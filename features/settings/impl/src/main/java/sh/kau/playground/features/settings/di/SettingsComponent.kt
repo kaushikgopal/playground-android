@@ -19,9 +19,9 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @SingleIn(SettingsScope::class)
 interface SettingsComponent {
 
-  val settingsAScreen: SettingsAScreen
+  val settingsAScreen: Lazy<SettingsAScreen>
   // kotlin-inject function injection (3)
-  val settingsBScreen: SettingsBScreen
+  val settingsBScreen: Lazy<SettingsBScreen>
 
   @ContributesSubcomponent.Factory(AppScope::class)
   interface Factory {
@@ -33,8 +33,8 @@ interface SettingsComponent {
       // create component on first navigation
       // remember factory here is the AppComponent itself (it implements the interface)
       val settingsComponent by lazy { factory.createSettingsComponent() }
-      entry<ScreenARoute> { settingsComponent.settingsAScreen.Content() }
-      entry<ScreenBRoute> { settingsComponent.settingsBScreen() }
+      entry<ScreenARoute> { settingsComponent.settingsAScreen.value.Content() }
+      entry<ScreenBRoute> { settingsComponent.settingsBScreen.value() }
     }
   }
 }
@@ -43,5 +43,5 @@ interface SettingsComponent {
 @SingleIn(SettingsScope::class)
 class SettingsBindings(
     @Named("appName") val appName: String,
-    val quotesRepo: QuotesRepo,
+    val quotesRepo: Lazy<QuotesRepo>,
 )

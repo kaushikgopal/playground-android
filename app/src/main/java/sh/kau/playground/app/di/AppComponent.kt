@@ -24,7 +24,7 @@ abstract class AppComponent(
 
   @Provides fun provideDebuggableApp(): @Named("debuggableApp") Boolean = app.isDebuggable
 
-  abstract val loggers: Set<LogcatLogger>
+  abstract val loggers: Lazy<Set<LogcatLogger>>
 
   // region navigation
   @Provides
@@ -34,7 +34,7 @@ abstract class AppComponent(
   abstract val navigator: Navigator
 
   // kotlin-inject multi-bindings (0)
-  abstract val entryProviderInstallers: Set<EntryProviderInstaller>
+  abstract val entryProviderInstallers: Lazy<Set<EntryProviderInstaller>>
 
   // endregion
 

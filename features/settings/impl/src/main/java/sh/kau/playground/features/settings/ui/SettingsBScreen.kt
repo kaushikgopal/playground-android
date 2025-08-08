@@ -38,7 +38,7 @@ fun SettingsBScreen(bindings: SettingsBindings) {
 
   // TODO: use USF like pattern
   var quote by remember { mutableStateOf<Quote?>(null) }
-  LaunchedEffect(Unit) { quote = bindings.quotesRepo.quoteForTheDay() }
+  LaunchedEffect(Unit) { quote = bindings.quotesRepo.value.quoteForTheDay() }
 
   Box(
       modifier = Modifier

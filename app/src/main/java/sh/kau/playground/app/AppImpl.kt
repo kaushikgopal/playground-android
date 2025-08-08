@@ -20,13 +20,13 @@ class AppImpl : App, Application() {
 
     // Log all priorities in debug builds, no-op in release builds.
     // AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
-    CompositeLogger.Companion.install(appComponent.loggers)
+    CompositeLogger.Companion.install(appComponent.loggers.value)
 
     // calling the field directly on appComponent
     // is made possible because AppComponent inherits KotlinInjectAppComponentMerged directly
     // you could alternatively provide another injection intermediate object
     logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.provideAppName()}" }
 
-    logcat { "number of loggers: ${appComponent.loggers.size}" }
+    logcat { "number of loggers: ${appComponent.loggers.value.size}" }
   }
 }

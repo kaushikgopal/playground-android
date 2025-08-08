@@ -17,7 +17,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class QuotesRepoImpl(
-    private val api: NetworkApi,
+    private val api: Lazy<NetworkApi>,
 ) : QuotesRepo {
 
   override suspend fun quoteForTheDay(): Quote {
@@ -26,7 +26,7 @@ class QuotesRepoImpl(
 
   private suspend fun fetchQuote(): Quote {
     val response: HttpResponse =
-        api.client().get("https://zenquotes.io/api/today") {
+        api.value.client().get("https://zenquotes.io/api/today") {
           contentType(ContentType.Application.Json)
         }
     return response.body<List<Quote>>()[0]
