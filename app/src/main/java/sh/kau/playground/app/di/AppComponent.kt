@@ -24,7 +24,7 @@ abstract class AppComponent(
 
   @Provides fun provideDebuggableApp(): @Named("debuggableApp") Boolean = app.isDebuggable
 
-  abstract val loggers: Set<LogcatLogger> // multi-bindings
+  abstract val loggers: Set<LogcatLogger>
 
   // region navigation
   @Provides
