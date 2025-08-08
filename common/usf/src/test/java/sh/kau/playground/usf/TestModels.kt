@@ -1,68 +1,29 @@
 package sh.kau.playground.usf
 
-sealed class TestInput {
-  data object TestInput1 : TestInput()
+sealed class TestEvent {
+  object IncrementCounter : TestEvent()
 
-  data object TestInput2 : TestInput()
+  data class UpdateName(val name: String) : TestEvent()
 
-  data object TestInput3 : TestInput()
+  object EmitEffect : TestEvent()
 
-  data class TestNumberInput(val value: Int) : TestInput()
+  data class ComplexEvent(val value: Int, val label: String) : TestEvent()
 
-  data class TestErrorThrowInput(val error: Throwable = RuntimeException("error directly thrown")) :
-      TestInput()
+  object EventThatCausesError : TestEvent()
 
-  data class TestErrorFlowInput(val error: Throwable = RuntimeException("error from within flow")) :
-      TestInput()
-
-  data class TestDelayedInput(val delayMs: Long) : TestInput()
-
-  data object TestNullableEffectInput : TestInput()
-
-  data class TestErrorInOutputToUiStateInput(
-      val error: Throwable = RuntimeException("error from within flow")
-  ) : TestInput()
-
-  data object TestErrorInOutputToEffectsInput : TestInput()
-
-  data object TestErrorInOutputToEffectsFlow : TestInput()
+  data class AsyncOperationEvent(
+      val delayMillis: Long,
+      val targetCounter: Int,
+      val newName: String? = null,
+      val effectToEmit: TestEffect? = null,
+      val shouldThrowError: Boolean = false
+  ) : TestEvent()
 }
 
-sealed class TestOutput {
-  data object TestOutput1 : TestOutput()
-
-  data object TestOutput2 : TestOutput()
-
-  data object TestOutput3 : TestOutput()
-
-  data class TestNumberOutput(val value: Int) : TestOutput()
-
-  data class TestErrorThrowOutput(val error: Throwable) : TestOutput()
-
-  data class TestErrorFlowOutput(val error: Throwable) : TestOutput()
-
-  data class TestDelayedOutput(val delayMs: Long) : TestOutput()
-
-  data object TestNullableEffectOutput : TestOutput()
-
-  data object TestErrorInOutputToUiStateOutput : TestOutput()
-
-  data object TestErrorInOutputToEffectsOutput : TestOutput()
-
-  data object TestErrorInOutputToEffectsFlowOutput : TestOutput()
-}
+data class TestState(val name: String = "Initial State", val counter: Int = 0)
 
 sealed class TestEffect {
-  data object TestEffect1 : TestEffect()
+  object SimpleEffect : TestEffect()
 
-  data object TestEffect2 : TestEffect()
-
-  data class TestNumberEffect(val value: Int) : TestEffect()
-
-  data class TestDelayedEffect(val delayMs: Long) : TestEffect()
+  data class NamedEffect(val name: String) : TestEffect()
 }
-
-data class TestUiState(
-    val text: String,
-    val number: Int = -1,
-)

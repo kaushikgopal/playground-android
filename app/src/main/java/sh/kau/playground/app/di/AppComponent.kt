@@ -3,8 +3,8 @@ package sh.kau.playground.app.di
 import android.content.Context
 import logcat.LogcatLogger
 import me.tatarka.inject.annotations.Provides
-import sh.kau.playground.landing.nav.LandingRoutes
 import sh.kau.playground.features.settings.di.SettingsComponent
+import sh.kau.playground.landing.nav.LandingRoutes
 import sh.kau.playground.navigation.EntryProviderInstaller
 import sh.kau.playground.navigation.NavRoute
 import sh.kau.playground.navigation.Navigator

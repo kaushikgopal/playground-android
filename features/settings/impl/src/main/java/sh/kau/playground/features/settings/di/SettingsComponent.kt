@@ -1,6 +1,9 @@
 package sh.kau.playground.features.settings.di
 
 import androidx.navigation3.runtime.entry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import me.tatarka.inject.annotations.Inject
 import me.tatarka.inject.annotations.IntoSet
 import me.tatarka.inject.annotations.Provides
@@ -9,7 +12,6 @@ import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
 import sh.kau.playground.navigation.EntryProviderInstaller
-import sh.kau.playground.quoter.QuotesRepo
 import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
@@ -22,6 +24,11 @@ interface SettingsComponent {
   val settingsAScreen: Lazy<SettingsAScreen>
   // kotlin-inject function injection (3)
   val settingsBScreen: Lazy<SettingsBScreen>
+
+  @Provides
+  @SingleIn(SettingsScope::class)
+  fun provideCoroutineScope(): CoroutineScope =
+      CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
   @ContributesSubcomponent.Factory(AppScope::class)
   interface Factory {
@@ -43,5 +50,4 @@ interface SettingsComponent {
 @SingleIn(SettingsScope::class)
 class SettingsBindings(
     @Named("appName") val appName: String,
-    val quotesRepo: Lazy<QuotesRepo>,
 )

@@ -9,6 +9,6 @@ interface QuotesRepo {
 
 @Serializable
 data class Quote(
-  @SerialName("q") val quote: String,
-  @SerialName("a") val author: String,
+    @SerialName("q") val quote: String,
+    @SerialName("a") val author: String,
 )

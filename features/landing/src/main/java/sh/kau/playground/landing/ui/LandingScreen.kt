@@ -9,28 +9,44 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import sh.kau.playground.landing.viewmodel.LandingEffect
+import sh.kau.playground.landing.viewmodel.LandingEvent
+import sh.kau.playground.landing.viewmodel.LandingViewModel
 import sh.kau.playground.ui.Primary
 import sh.kau.playground.ui.Teritiary
 
 @Composable
 fun LandingScreen(
-//    @Assisted modifier: Modifier,
+    viewModel: LandingViewModel,
     onNavigateToSettings: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-  Box(modifier = Modifier.fillMaxSize().background(Primary), contentAlignment = Alignment.Center) {
+  val uiState by viewModel.state.collectAsState()
+
+  LaunchedEffect(viewModel) {
+    viewModel.effects.collect { effect ->
+      when (effect) {
+        is LandingEffect.NavigateToSettings -> onNavigateToSettings()
+      }
+    }
+  }
+
+  Box(modifier = modifier.fillMaxSize().background(Primary), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
-          text = "Hello there!",
+          text = uiState.subtitle,
           style = MaterialTheme.typography.bodyMedium,
-//          modifier = modifier,
       )
       Text(
-          text = "Landing Screen",
+          text = uiState.title,
           style = MaterialTheme.typography.headlineLarge,
           fontWeight = FontWeight.Bold,
       )
@@ -42,7 +58,7 @@ fun LandingScreen(
                   disabledContainerColor = Primary,
                   disabledContentColor = Color.White,
               ),
-          onClick = onNavigateToSettings,
+          onClick = { viewModel.input(LandingEvent.NavigateToSettingsClicked) },
           modifier = Modifier.align(Alignment.CenterHorizontally),
       ) {
         Text(text = "Go to Settings")
@@ -54,5 +70,5 @@ fun LandingScreen(
 @Preview(showBackground = true)
 @Composable
 fun LandingScreenPreview() {
-//  LandingScreen(name = "Landing Screen") {}
+  //  LandingScreen(name = "Landing Screen") {}
 }

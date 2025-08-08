@@ -1,81 +1,83 @@
 package sh.kau.playground.usf.impl
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import sh.kau.playground.usf.TestEffect
-import sh.kau.playground.usf.TestEffect.TestDelayedEffect
-import sh.kau.playground.usf.TestInput
-import sh.kau.playground.usf.TestInput.*
-import sh.kau.playground.usf.TestOutput
-import sh.kau.playground.usf.TestOutput.*
-import sh.kau.playground.usf.TestUiState
-import sh.kau.playground.usf.TestUsfLogger
-import sh.kau.playground.usf.UsfImpl
+import sh.kau.playground.usf.TestEvent
+import sh.kau.playground.usf.TestState
+import sh.kau.playground.usf.inspector.NoOpInspector
+import sh.kau.playground.usf.inspector.UsfInspector
+import sh.kau.playground.usf.scope.ResultScope
+import sh.kau.playground.usf.viewmodel.UsfViewModel
 
-class TestViewModel(coroutineScope: CoroutineScope, initFlow: Flow<Int> = emptyFlow()) :
-    UsfImpl<TestInput, TestOutput, TestUiState, TestEffect, Unit>(
-        initialUiState = TestUiState("[US] initial"),
+open class TestViewModel(
+    private val customInitialStateProvider: (() -> TestState)? = null,
+    private val testInspector: UsfInspector = NoOpInspector,
+    coroutineScope: CoroutineScope,
+    processingDispatcher: CoroutineDispatcher
+) :
+    UsfViewModel<TestEvent, TestState, TestEffect>(
+        inspector = testInspector,
         coroutineScope = coroutineScope,
-        logger = TestUsfLogger,
+        processingDispatcher = processingDispatcher,
     ) {
+  var throwErrorInProcessEvent = false
 
-  init {
-    initFlow.onEach { processInput(TestNumberInput(it)) }.launchIn(coroutineScope)
+  override fun initialState(): TestState {
+    return customInitialStateProvider?.invoke() ?: TestState()
   }
 
-  override fun inputToOutputFlow(input: TestInput): Flow<TestOutput> =
-      when (input) {
-        TestInput1 -> flowOf(TestOutput1)
-        TestInput2 -> flowOf(TestOutput2)
-        TestInput3 -> flowOf(TestOutput3)
-        is TestNumberInput -> flowOf(TestNumberOutput(input.value))
-        is TestErrorThrowInput -> throw input.error
-        is TestErrorFlowInput -> flow { throw input.error }
-        is TestDelayedInput ->
-            flowOf(TestDelayedOutput(input.delayMs)).onEach { delay(input.delayMs) }
+  @Suppress("UseCheckOrError")
+  override suspend fun ResultScope<TestState, TestEffect>.process(event: TestEvent) {
+    if (throwErrorInProcessEvent && event is TestEvent.EventThatCausesError) {
+      throw IllegalStateException("Test error in processEvent (synchronous part)")
+    }
 
-        TestNullableEffectInput -> flowOf(TestNullableEffectOutput)
-        is TestErrorInOutputToUiStateInput -> flow { throw input.error }
-        is TestErrorInOutputToEffectsInput -> flowOf(TestErrorInOutputToEffectsOutput)
-        is TestErrorInOutputToEffectsFlow -> flowOf(TestErrorInOutputToEffectsFlowOutput)
+    when (event) {
+      is TestEvent.IncrementCounter -> {
+        updateState { it.copy(counter = it.counter + 1) }
+      }
+      is TestEvent.UpdateName -> {
+        updateState { it.copy(name = event.name) }
       }
 
-  override suspend fun outputToUiState(
-      currentUiState: TestUiState,
-      output: TestOutput
-  ): TestUiState =
-      when (output) {
-        TestOutput1 -> currentUiState.copy(text = "[US] 1 ")
-        TestOutput2 -> currentUiState.copy(text = "[US] 2 ")
-        TestOutput3 -> currentUiState.copy(text = "[US] 3 ")
-        is TestNumberOutput -> currentUiState.copy(number = output.value)
-        is TestErrorThrowOutput -> currentUiState
-        is TestErrorFlowOutput -> currentUiState
-        is TestDelayedOutput -> currentUiState.copy(text = "[US] delayed ${output.delayMs}")
-        TestNullableEffectOutput -> currentUiState.copy(text = "[US] nullable effect")
-        TestErrorInOutputToUiStateOutput -> throw Exception("Error in resultToUiState")
-        TestErrorInOutputToEffectsOutput -> currentUiState
-        TestErrorInOutputToEffectsFlowOutput -> currentUiState
+      is TestEvent.EmitEffect -> {
+        emitEffect(TestEffect.SimpleEffect)
       }
 
-  override fun outputToEffects(output: TestOutput): Flow<TestEffect> =
-      when (output) {
-        TestOutput1 -> flowOf(TestEffect.TestEffect1)
-        TestOutput2 -> flowOf(TestEffect.TestEffect2)
-        TestOutput3 -> emptyFlow()
-        is TestNumberOutput -> flowOf(TestEffect.TestNumberEffect(output.value))
-        is TestErrorThrowOutput -> emptyFlow()
-        is TestErrorFlowOutput -> emptyFlow()
-        is TestDelayedOutput -> flowOf(TestDelayedEffect(output.delayMs))
-        TestErrorInOutputToEffectsOutput -> flow { throw Exception("Error in resultToEffects") }
-        TestNullableEffectOutput -> emptyFlow()
-        TestErrorInOutputToUiStateOutput -> emptyFlow()
-        TestErrorInOutputToEffectsFlowOutput -> flow { throw Exception("Error in resultToEffects") }
+      is TestEvent.ComplexEvent -> {
+        updateState { it.copy(counter = it.counter + event.value) }
+        emitEffect(TestEffect.NamedEffect(event.label))
       }
+
+      is TestEvent.EventThatCausesError -> {
+        updateState { it.copy(name = "Error Event Processed (sync)") }
+      }
+
+      is TestEvent.AsyncOperationEvent -> {
+        coroutineScope.launch {
+          try {
+            delay(event.delayMillis)
+            if (event.shouldThrowError) {
+              throw IllegalStateException("Simulated error in async operation")
+            }
+            updateState { it.copy(counter = event.targetCounter) }
+            event.newName?.let { name -> updateState { it.copy(name = name) } }
+            event.effectToEmit?.let { emitEffect(it) }
+          } catch (e: IllegalStateException) {
+            if (e.message == "Simulated error in async operation") {
+              testInspector.error(
+                  e,
+                  "[TestViewModel] Caught simulated async error as expected.",
+              )
+            } else {
+              throw e
+            }
+          }
+        }
+      }
+    }
+  }
 }

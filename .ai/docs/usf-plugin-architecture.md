@@ -223,23 +223,51 @@ class ComplexViewModel(
 
 ## Key Patterns
 
-### UI Callbacks
-Always define UI callbacks in the state using helper functions:
+### UI Callbacks vs Direct Events
+
+#### When to Avoid inputCallback (Recommended)
+For simple navigation and effects, prefer calling `viewModel.input()` directly from the UI:
+
 ```kotlin
+// ✅ PREFERRED: Direct event dispatch for simple effects
+@Composable
+fun MyScreen(viewModel: MyViewModel) {
+    Button(onClick = { viewModel.input(MyEvent.NavigateClicked) }) {
+        Text("Navigate")
+    }
+}
+
+// In ViewModel - Simple, no state needed
 data class MyUiState(
-    val onButtonClick: () -> Unit,              // No parameters
-    val onTextChange: (String) -> Unit,         // With parameters
-    val onItemSelect: (id: Int, selected: Boolean) -> Unit,  // Multiple parameters
+    val title: String = "My Screen",
+    // No callback needed for navigation
+)
+```
+
+#### When to Use inputCallback
+Use callbacks when the UI state needs to provide functions that encapsulate complex logic or when state values need to be captured:
+
+```kotlin
+// ✅ USE CALLBACKS: When state values are involved
+data class MyUiState(
+    val searchText: String = "",
+    val onSearchTextChanged: (String) -> Unit,  // Needs the text parameter
+    val onItemSelected: (id: Int, selected: Boolean) -> Unit,  // Multiple parameters
 )
 
 override fun initialState() = MyUiState(
-    onButtonClick = inputCallback(MyEvent.ButtonClicked),
-    onTextChange = inputCallbackWithParam(MyEvent::TextChanged),
-    onItemSelect = { id, selected -> 
+    onSearchTextChanged = inputCallbackWithParam(MyEvent::SearchTextChanged),
+    onItemSelected = { id, selected -> 
         input(MyEvent.ItemSelected(id, selected))
     },
 )
 ```
+
+**Guidelines:**
+- **Simple effects** (navigation, showing toasts): Use direct `viewModel.input()` calls
+- **State-dependent actions**: Use callbacks in UiState
+- **Forms and inputs**: Use callbacks for onChange handlers
+- **Pure navigation buttons**: Avoid callbacks, use direct event dispatch
 
 ### State Updates
 Always use immutable updates within ResultScope:

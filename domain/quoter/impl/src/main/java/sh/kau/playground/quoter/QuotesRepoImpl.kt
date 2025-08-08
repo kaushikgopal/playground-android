@@ -7,8 +7,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.networking.NetworkApi
-import sh.kau.playground.quoter.Quote
-import sh.kau.playground.quoter.QuotesRepo
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
