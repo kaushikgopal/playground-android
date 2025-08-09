@@ -1,4 +1,4 @@
-package sh.kau.playground.landing.viewmodel
+package sh.kau.playground.landing.ui
 
 import kotlinx.coroutines.CoroutineScope
 import me.tatarka.inject.annotations.Inject
@@ -10,7 +10,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 @ContributesBinding(LandingScope::class, boundType = LandingViewModel::class)
 @Inject
 class LandingViewModelImpl(
-    coroutineScope: CoroutineScope,
+  coroutineScope: CoroutineScope,
 ) :
     LandingViewModel,
     UsfViewModel<LandingEvent, LandingUiState, LandingEffect>(

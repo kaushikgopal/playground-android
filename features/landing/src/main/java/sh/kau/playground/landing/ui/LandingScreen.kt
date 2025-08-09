@@ -17,9 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import sh.kau.playground.landing.viewmodel.LandingEffect
-import sh.kau.playground.landing.viewmodel.LandingEvent
-import sh.kau.playground.landing.viewmodel.LandingViewModel
 import sh.kau.playground.ui.Primary
 import sh.kau.playground.ui.Teritiary
 

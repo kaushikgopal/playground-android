@@ -1,4 +1,4 @@
-package sh.kau.playground.landing.viewmodel
+package sh.kau.playground.landing.ui
 
 import sh.kau.playground.usf.api.Usf
 

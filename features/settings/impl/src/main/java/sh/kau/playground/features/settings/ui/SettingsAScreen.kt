@@ -1,6 +1,5 @@
 package sh.kau.playground.features.settings.ui
 
-import android.R.attr.onClick
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

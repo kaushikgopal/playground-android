@@ -9,7 +9,7 @@ import me.tatarka.inject.annotations.Provides
 import sh.kau.playground.features.settings.nav.SettingsRoutes
 import sh.kau.playground.landing.nav.LandingRoutes.LandingScreenRoute
 import sh.kau.playground.landing.ui.LandingScreen
-import sh.kau.playground.landing.viewmodel.LandingViewModel
+import sh.kau.playground.landing.ui.LandingViewModel
 import sh.kau.playground.navigation.EntryProviderInstaller
 import sh.kau.playground.navigation.Navigator
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
