@@ -40,7 +40,7 @@ interface SettingsComponent {
       // create component on first navigation
       // remember factory here is the AppComponent itself (it implements the interface)
       val settingsComponent by lazy { factory.createSettingsComponent() }
-      entry<ScreenARoute> { settingsComponent.settingsAScreen.value.Content() }
+      entry<ScreenARoute> { settingsComponent.settingsAScreen.value() }
       entry<ScreenBRoute> { settingsComponent.settingsBScreen.value() }
     }
   }

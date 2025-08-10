@@ -17,26 +17,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import me.tatarka.inject.annotations.Inject
+import sh.kau.playground.features.settings.nav.SettingsRoutes
+import sh.kau.playground.landing.di.LandingScope
+import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Primary
 import sh.kau.playground.ui.Teritiary
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
+typealias LandingScreen = @Composable () -> Unit
+
+@Inject
+@SingleIn(LandingScope::class)
 @Composable
 fun LandingScreen(
     viewModel: LandingViewModel,
-    onNavigateToSettings: () -> Unit,
-    modifier: Modifier = Modifier,
+    navigator: Navigator,
 ) {
   val uiState by viewModel.state.collectAsState()
 
   LaunchedEffect(viewModel) {
     viewModel.effects.collect { effect ->
       when (effect) {
-        is LandingEffect.NavigateToSettings -> onNavigateToSettings()
+        is LandingEffect.NavigateToSettings -> navigator.goTo(SettingsRoutes.ScreenARoute)
       }
     }
   }
 
-  Box(modifier = modifier.fillMaxSize().background(Primary), contentAlignment = Alignment.Center) {
+  Box(modifier = Modifier.fillMaxSize().background(Primary), contentAlignment = Alignment.Center) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(
           text = uiState.subtitle,

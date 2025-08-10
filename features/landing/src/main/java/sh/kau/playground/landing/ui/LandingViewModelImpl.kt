@@ -6,11 +6,13 @@ import sh.kau.playground.landing.di.LandingScope
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @ContributesBinding(LandingScope::class, boundType = LandingViewModel::class)
+@SingleIn(LandingScope::class)
 @Inject
 class LandingViewModelImpl(
-  coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope,
 ) :
     LandingViewModel,
     UsfViewModel<LandingEvent, LandingUiState, LandingEffect>(

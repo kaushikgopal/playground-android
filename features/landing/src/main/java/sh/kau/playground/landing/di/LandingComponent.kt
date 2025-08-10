@@ -6,12 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.tatarka.inject.annotations.IntoSet
 import me.tatarka.inject.annotations.Provides
-import sh.kau.playground.features.settings.nav.SettingsRoutes
 import sh.kau.playground.landing.nav.LandingRoutes.LandingScreenRoute
 import sh.kau.playground.landing.ui.LandingScreen
-import sh.kau.playground.landing.ui.LandingViewModel
 import sh.kau.playground.navigation.EntryProviderInstaller
-import sh.kau.playground.navigation.Navigator
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
@@ -20,12 +17,12 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @SingleIn(LandingScope::class)
 interface LandingComponent {
 
+  val landingScreen: Lazy<LandingScreen>
+
   @Provides
   @SingleIn(LandingScope::class)
   fun provideCoroutineScope(): CoroutineScope =
       CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
-  fun landingViewModel(): LandingViewModel
 
   @ContributesSubcomponent.Factory(AppScope::class)
   interface Factory {
@@ -34,18 +31,11 @@ interface LandingComponent {
     @Provides
     @IntoSet // kotlin-inject multi-bindings (1)
     fun provideSettingsEntryProvider(
-        navigator: Navigator,
         landingComponentFactory: Factory,
     ): EntryProviderInstaller = {
       entry<LandingScreenRoute> {
-        val component = landingComponentFactory.createLandingComponent()
-        val viewModel = component.landingViewModel()
-
-        // this is a very manual way of wiring it (more for a demo)
-        // use DI more effectively as we do in SettingsComponent
-        LandingScreen(
-            viewModel = viewModel,
-            onNavigateToSettings = { navigator.goTo(SettingsRoutes.ScreenARoute) })
+        val component by lazy { landingComponentFactory.createLandingComponent() }
+        component.landingScreen.value()
       }
     }
   }

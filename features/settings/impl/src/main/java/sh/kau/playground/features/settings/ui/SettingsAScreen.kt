@@ -41,7 +41,7 @@ class SettingsAScreen(
     private val viewModel: SettingsAViewModel,
 ) {
   @Composable
-  fun Content() {
+  operator fun invoke() {
     logcat("SettingsA") { "xxx injected app name →  ${bindings.appName}" }
 
     val uiState by viewModel.state.collectAsState()
