@@ -33,10 +33,8 @@ interface LandingComponent {
     fun provideSettingsEntryProvider(
         landingComponentFactory: Factory,
     ): EntryProviderInstaller = {
-      entry<LandingScreenRoute> {
-        val component by lazy { landingComponentFactory.createLandingComponent() }
-        component.landingScreen.value()
-      }
+      val component by lazy { landingComponentFactory.createLandingComponent() }
+      entry<LandingScreenRoute> { component.landingScreen.value() }
     }
   }
 }
