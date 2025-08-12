@@ -46,15 +46,14 @@ class MyViewModel : UsfViewModel<Event, State, Effect>() {
 
 ```kotlin
 // 1. Events - What the user does
-sealed interface SettingsBEvent {
-    data object RefreshClicked : SettingsBEvent
-    data class TextChanged(val text: String) : SettingsBEvent
+sealed interface HomeEvent {
+    data object RefreshClicked : HomeEvent
+    data class TextChanged(val text: String) : HomeEvent
 }
 
 // 2. State - What the UI shows (with callbacks)
-data class SettingsBUiState(
-    val quoteText: String = "",
-    val quoteAuthor: String = "",
+data class HomeUiState(
+    val title: String = "",
     val isLoading: Boolean = false,
     // UI callbacks as part of state
     val onRefreshClick: () -> Unit = {},
@@ -62,10 +61,26 @@ data class SettingsBUiState(
 )
 
 // 3. Effects - One-time actions
-sealed interface SettingsBEffect {
-    data object NavigateBack : SettingsBEffect
-    data class ShowToast(val message: String) : SettingsBEffect
+sealed interface HomeEffect {
+    data object NavigateBack : HomeEffect
+    data class ShowToast(val message: String) : HomeEffect
 }
+```
+
+### Naming Convention
+
+For screens with longer names, use abbreviated prefixes for Event/State/Effect types:
+
+```kotlin
+// For SettingsAScreen
+sealed interface SAEvent { ... }
+data class SAUiState(...) 
+sealed interface SAEffect { ... }
+
+// For SettingsBScreen  
+sealed interface SBEvent { ... }
+data class SBUiState(...)
+sealed interface SBEffect { ... }
 ```
 
 ## Real Implementation
@@ -73,67 +88,105 @@ sealed interface SettingsBEffect {
 ### Basic ViewModel
 
 ```kotlin
-// features/settings/SettingsBViewModelImpl.kt:14-51
-@ContributesBinding(SettingsScope::class)
-class SettingsBViewModelImpl @Inject constructor(
+@ContributesBinding(FeatureScope::class, boundType = MyViewModel::class)
+class MyViewModelImpl
+@Inject
+constructor(
     coroutineScope: CoroutineScope,
-    val quotesRepo: Lazy<QuotesRepo>,
-) : UsfViewModel<SettingsBEvent, SettingsBUiState, SettingsBEffect>(
-    coroutineScope = coroutineScope,
-) {
+    private val someService: SomeService,
+) : MyViewModel,
+    UsfViewModel<MyEvent, MyUiState, MyEffect>(
+        coroutineScope = coroutineScope,
+    ) {
     
-    override fun initialState() = SettingsBUiState(
-        quoteText = "Get to the CHOPPER!!!",
-        quoteAuthor = "Arnold Schwarzenegger",
+    // Use single expression for simple initial states
+    override fun initialState() = MyUiState(
+        title = "Title",
+        onButtonClicked = inputCallback(MyEvent.ButtonClicked),
+        onTextChanged = inputCallbackWithParam(MyEvent::TextChanged),
     )
     
-    override fun ResultScope<SettingsBUiState, SettingsBEffect>.onSubscribed() {
-        // Load data when UI subscribes
-        coroutineScope.launch(Dispatchers.IO) {
-            val quote = quotesRepo.value.quoteForTheDay()
-            updateState { it.copy(
-                quoteText = quote.quote,
-                quoteAuthor = quote.author,
-            )}
-        }
-    }
-    
-    override suspend fun ResultScope<SettingsBUiState, SettingsBEffect>.process(
-        event: SettingsBEvent
-    ) {
-        // Handle events here
-    }
-}
-```
-
-### UI Integration
-
-```kotlin
-@Composable
-fun SettingsBScreen(viewModel: SettingsBViewModel) {
-    val uiState by viewModel.state.collectAsState()
-    
-    // Handle one-time effects
-    LaunchedEffect(viewModel) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                is SettingsBEffect.NavigateBack -> navigator.goBack()
-                is SettingsBEffect.ShowToast -> showToast(effect.message)
+    override suspend fun ResultScope<MyUiState, MyEffect>.process(event: MyEvent) {
+        when (event) {
+            is MyEvent.ButtonClicked -> {
+                logcat { "[TAG] Button clicked" }  // Simple logging
+                updateState { it.copy(loading = true) }
+                val result = someService.doWork()
+                updateState { it.copy(loading = false, data = result) }
+            }
+            is MyEvent.TextChanged -> {
+                updateState { it.copy(text = event.text) }
             }
         }
     }
     
-    // UI using state
-    Column {
-        Text(text = uiState.quoteText)
-        Text(text = "- ${uiState.quoteAuthor}")
+    override fun ResultScope<MyUiState, MyEffect>.onSubscribed() {
+        logcat { "[TAG] Subscribed" }
+        // Initialize when UI subscribes
+    }
+}
+```
+
+### UI Integration (Screen Implementation)
+
+```kotlin
+@Inject
+@SingleIn(FeatureScope::class)
+class MyScreen(
+    private val viewModel: MyViewModel,
+    private val navigator: Navigator,  // Inject Navigator directly
+) {
+    @Composable
+    operator fun invoke() {  // Use operator invoke pattern
+        val uiState by viewModel.state.collectAsState()
         
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
+        // Handle one-time effects  
+        LaunchedEffect(viewModel) {
+            viewModel.effects.collect { effect ->
+                when (effect) {
+                    is MyEffect.NavigateToNext -> {
+                        navigator.goTo(NextRoute)  // Handle navigation internally
+                    }
+                    is MyEffect.ShowToast -> { 
+                        // Show toast
+                    }
+                }
+            }
         }
         
-        Button(onClick = uiState.onRefreshClick) {
-            Text("Refresh")
+        // UI using state
+        Column {
+            Text(text = uiState.title)
+            
+            Button(onClick = uiState.onButtonClicked) {
+                Text("Click Me")
+            }
+        }
+    }
+}
+```
+
+### Component Registration
+
+```kotlin
+@ContributesSubcomponent(FeatureScope::class)
+@SingleIn(FeatureScope::class)
+interface FeatureComponent {
+    val myScreen: MyScreen
+    
+    @ContributesSubcomponent.Factory(AppScope::class)
+    interface Factory {
+        fun createFeatureComponent(): FeatureComponent
+        
+        @Provides
+        @IntoSet
+        fun provideFeatureEntryProvider(
+            factory: Factory
+        ): EntryProviderInstaller = {
+            val component by lazy { factory.createFeatureComponent() }
+            
+            // Simple entry - screen handles navigation internally
+            entry<MyRoute> { component.myScreen() }
         }
     }
 }
@@ -379,6 +432,55 @@ class NewViewModel : UsfViewModel<Event, State, Effect>() {
         }
     }
 }
+```
+
+## Code Style Guidelines
+
+### Preferred Patterns
+
+```kotlin
+// ✅ Single expression for simple functions
+override fun initialState() = MyUiState()
+
+// ✅ Inject Navigator directly into screens
+class MyScreen(
+    private val viewModel: MyViewModel,
+    private val navigator: Navigator,
+)
+
+// ✅ Simple logging without complex tags
+logcat { "[TAG] Message" }
+
+// ✅ Direct dependency injection (no Bindings classes)
+@Inject
+constructor(
+    private val service: MyService,
+    @Named("appName") private val appName: String,
+)
+
+// ✅ Abbreviated names for long screen names
+// SettingsAScreen → SAEvent, SAUiState, SAEffect
+// SettingsBScreen → SBEvent, SBUiState, SBEffect
+```
+
+### Avoid
+
+```kotlin
+// ❌ Unnecessary return statements
+override fun initialState(): MyUiState {
+    return MyUiState()
+}
+
+// ❌ Passing navigation callbacks as parameters
+class MyScreen(
+    @Assisted navToNext: () -> Unit  
+)
+
+// ❌ Complex logging tags
+logcat("MyScreen") { "xxx injected value → $value" }
+
+// ❌ Grouping dependencies in Bindings classes
+class FeatureBindings(val service: Service, val repo: Repo)
 ```
 
 ## Key Benefits
