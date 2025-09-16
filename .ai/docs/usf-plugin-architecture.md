@@ -270,7 +270,79 @@ class PaginationPlugin<T> : UsfPlugin<Event, State<T>, Effect>() {
 
 ## Testing Plugins
 
-Plugins are independently testable using the same patterns as standard USF ViewModels. See the main USF architecture doc for testing examples.
+Plugins are independently testable using the same patterns as standard USF ViewModels.
+
+### Basic Plugin Testing
+
+```kotlin
+class SearchPluginTest {
+
+    @Test
+    fun `search plugin handles query changes with debounce`() = runTest {
+        val plugin = SearchPlugin<Product> { query ->
+            productRepository.search(query)
+        }
+
+        val mockScope = mockk<ResultScope<SearchState<Product>, SearchEffect>>()
+        val states = mutableListOf<SearchState<Product>>()
+
+        every { mockScope.updateState(any()) } answers {
+            val updater = arg<(SearchState<Product>) -> SearchState<Product>>(0)
+            states.add(updater(states.lastOrNull() ?: SearchState()))
+        }
+
+        // Rapid queries
+        plugin.run { mockScope.process(SearchEvent.QueryChanged("a")) }
+        plugin.run { mockScope.process(SearchEvent.QueryChanged("ab")) }
+        plugin.run { mockScope.process(SearchEvent.QueryChanged("abc")) }
+
+        // Advance past debounce
+        advanceTimeBy(400)
+        runCurrent()
+
+        // Only final query should have triggered search
+        assertThat(states.last().query).isEqualTo("abc")
+        coVerify(exactly = 1) { productRepository.search("abc") }
+    }
+}
+```
+
+### Testing Plugin Integration
+
+```kotlin
+@Test
+fun `view model with search plugin integrates correctly`() = runTest {
+    val searchPlugin = mockk<SearchPlugin<Product>>()
+    val viewModel = ProductViewModelImpl(
+        coroutineScope = backgroundScope,
+        searchPlugin = searchPlugin
+    )
+
+    coEvery {
+        searchPlugin.process(any<SearchEvent>())
+    } coAnswers {
+        // Mock plugin updating its internal state
+        SearchState(query = "test", results = listOf(Product("test")))
+    }
+
+    val states = mutableListOf<ProductUiState>()
+    backgroundScope.launch { viewModel.state.toList(states) }
+    runCurrent()
+
+    // Act
+    viewModel.input(ProductEvent.SearchQueryChanged("test"))
+    runCurrent()
+
+    // Assert plugin was called
+    coVerify { searchPlugin.process(SearchEvent.QueryChanged("test")) }
+
+    // Assert ViewModel state includes plugin data
+    assertThat(states.last().searchResults).hasSize(1)
+    assertThat(states.last().searchResults.first().name).isEqualTo("test")
+}
+```
+
+For comprehensive testing patterns and examples, see `.ai/docs/usf-testing-guide.md`.
 
 ## Common Plugin Patterns
 
