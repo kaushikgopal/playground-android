@@ -1,11 +1,16 @@
 # USF (Unidirectional State Flow) Architecture
 
+The USF pattern is perfect for:
+- Screens with user interactions
+- Complex state management
+- Async operations with loading states
+- Features needing predictable testing
+
 ## Quick Overview
 
-USF enforces a simple, predictable pattern for ViewModels:
-**Events → Process → State/Effects**
+USF enforces a simple, predictable pattern: **Events → Process → State/Effects**
 
-Think of it as MVI (Model-View-Intent) with built-in lifecycle management and less boilerplate.
+Think MVI with built-in lifecycle management and less boilerplate.
 
 **Traditional ViewModel:**
 ```kotlin
@@ -16,8 +21,7 @@ class MyViewModel : ViewModel() {
     fun onButtonClick() {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true)
-            val result = repository.fetch()
-            _state.value = _state.value.copy(loading = false, data = result)
+            // Complex logic mixed with state updates
         }
     }
 }
@@ -25,15 +29,16 @@ class MyViewModel : ViewModel() {
 
 **USF ViewModel:**
 ```kotlin
-class MyViewModel : UsfViewModel<Event, State, Effect>() {
+class MyViewModel(
+    coroutineScope: CoroutineScope
+) : UsfViewModel<Event, State, Effect>(coroutineScope) {
     override fun initialState() = State()
-    
+
     override suspend fun ResultScope<State, Effect>.process(event: Event) {
         when (event) {
             is Event.ButtonClick -> {
                 updateState { it.copy(loading = true) }
-                val result = repository.fetch()
-                updateState { it.copy(loading = false, data = result) }
+                // Clear separation of concerns
             }
         }
     }
@@ -45,24 +50,24 @@ class MyViewModel : UsfViewModel<Event, State, Effect>() {
 ### The Three Types
 
 ```kotlin
-// 1. Events - What the user does
+// 1. Events - User actions
 sealed interface HomeEvent {
     data object RefreshClicked : HomeEvent
-    data class TextChanged(val text: String) : HomeEvent
+    data class WelcomeMessageClicked(val message: String) : HomeEvent
 }
 
-// 2. State - What the UI shows (with callbacks)
+// 2. State - UI display (with callbacks)
 data class HomeUiState(
-    val title: String = "",
-    val isLoading: Boolean = false,
-    // UI callbacks as part of state
-    val onRefreshClick: () -> Unit = {},
-    val onTextChange: (String) -> Unit = {},
+    val tabTitle: String = "Home",
+    val lastRefreshTime: String? = null,
+    // Callbacks as part of state
+    val onRefreshClicked: () -> Unit = {},
+    val onWelcomeMessageClicked: (String) -> Unit = {},
 )
 
 // 3. Effects - One-time actions
 sealed interface HomeEffect {
-    data object NavigateBack : HomeEffect
+    data object NavigateToSettings : HomeEffect
     data class ShowToast(val message: String) : HomeEffect
 }
 ```
@@ -83,7 +88,100 @@ data class SBUiState(...)
 sealed interface SBEffect { ... }
 ```
 
+## File Structure
+
+Each USF feature follows a consistent module organization:
+
+```
+features/myfeature/
+├── src/main/java/app/pudi/android/myfeature/
+│   ├── ui/
+│   │   ├── MyScreen.kt                 // Composable screen
+│   │   ├── MyViewModel.kt              // Interface
+│   │   └── MyViewModelImpl.kt          // USF implementation
+│   ├── nav/
+│   │   └── MyRoutes.kt                 // Navigation routes
+│   └── di/
+│       └── MyComponent.kt              // DI component
+└── build.gradle.kts                    // Module dependencies
+```
+
+
+## Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                          UI Layer                               │
+│  ┌─────────────────┐    ┌──────────────────────────────────┐    │
+│  │   MyScreen.kt   │────│        Compose UI Elements       │    │
+│  │                 │    │   Button(onClick = uiState.      │    │
+│  │ @Composable     │    │           onButtonClicked)       │    │
+│  │ operator invoke │    │   Text(text = uiState.title)     │    │
+│  └─────────────────┘    └──────────────────────────────────┘    │
+│           │                             │                       │
+│           │ collectAsState()            │ LaunchedEffect        │
+│           ▼                             ▼                       │
+└───────────┼─────────────────────────────┼───────────────────────┘
+            │                             │
+┌───────────┼─────────────────────────────┼───────────────────────┐
+│           │        ViewModel Layer      │                       │
+│  ┌────────▼─────────┐          ┌────────▼────────┐              │
+│  │     .state       │          │    .effects     │              │
+│  │  StateFlow<      │          │ Flow<Effect>    │              │
+│  │   UiState>       │          │                 │              │
+│  └──────────────────┘          └─────────────────┘              │
+│           ▲                             ▲                       │
+│           │ updateState()               │ emitEffect()          │
+│  ┌────────┼─────────────────────────────┼─────────────────────┐ │
+│  │        │     UsfViewModel            │                     │ │
+│  │  ┌─────▼──────────┐         ┌────────▼────────┐            │ │
+│  │  │ ResultScope<   │◄────────┤     process()   │            │ │
+│  │  │ State, Effect> │         │   (Event) →     │            │ │
+│  │  │                │         │ State/Effects   │            │ │
+│  │  └────────────────┘         └─────────────────┘            │ │
+│  │           ▲                           ▲                    │ │
+│  │           │ Pipeline Lifecycle        │ input(Event)       │ │
+│  └───────────┼───────────────────────────┼────────────────────┘ │
+│              │                           │                      │
+└──────────────┼───────────────────────────┼──────────────────────┘
+               │                           │
+┌──────────────┼───────────────────────────┼──────────────────────┐
+│              │        DI Layer           │                      │
+│  ┌───────────▼─────────┐     ┌───────────▼─────────────────┐    │
+│  │   CoroutineScope    │     │      MyComponent.kt         │    │
+│  │ SupervisorJob() +   │     │                             │    │
+│  │ Dispatchers.Main    │     │ @ContributesSubcomponent    │    │
+│  │      .immediate     │     │ @Provides CoroutineScope    │    │
+│  └─────────────────────┘     │ val myScreen: MyScreen      │    │
+│                              └─────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+
+Data Flow:
+1. UI triggers events → viewModel.input(Event)
+2. UsfViewModel.process(Event) → updateState() | emitEffect()
+3. State changes → UI recomposition via collectAsState()
+4. Effects → UI side effects via LaunchedEffect
+```
+
 ## Real Implementation
+
+### UsfViewModel Constructor
+
+The `UsfViewModel` constructor accepts these parameters:
+
+```kotlin
+abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
+    coroutineScope: CoroutineScope,                          // Required: Injected coroutine scope
+    private val processingDispatcher: CoroutineDispatcher = Dispatchers.IO,  // Optional: Event processing dispatcher
+    inspector: UsfInspector? = null,                         // Optional: For monitoring/debugging
+)
+```
+
+**Key Points:**
+- **coroutineScope**: inject this via DI in your main component - don't use `viewModelScope` directly
+  - USF manages this scope and pipeline directly and removes the need for an "android" dependency here
+- **processingDispatcher**: Defaults to `Dispatchers.IO`, can override for testing
+- **inspector**: Optional monitoring interface for debugging/analytics
 
 ### Basic ViewModel
 
@@ -102,8 +200,8 @@ constructor(
     // Use single expression for simple initial states
     override fun initialState() = MyUiState(
         title = "Title",
-        onButtonClicked = inputCallback(MyEvent.ButtonClicked),
-        onTextChanged = inputCallbackWithParam(MyEvent::TextChanged),
+        onButtonClicked = { input(MyEvent.ButtonClicked) },
+        onTextChanged = { text -> input(MyEvent.TextChanged(text)) },
     )
     
     override suspend fun ResultScope<MyUiState, MyEffect>.process(event: MyEvent) {
@@ -123,6 +221,7 @@ constructor(
     override fun ResultScope<MyUiState, MyEffect>.onSubscribed() {
         logcat { "[TAG] Subscribed" }
         // Initialize when UI subscribes
+        // updateLastRefreshTime()
     }
 }
 ```
@@ -139,25 +238,25 @@ class MyScreen(
     @Composable
     operator fun invoke() {  // Use operator invoke pattern
         val uiState by viewModel.state.collectAsState()
-        
-        // Handle one-time effects  
+
+        // Handle one-time effects
         LaunchedEffect(viewModel) {
             viewModel.effects.collect { effect ->
                 when (effect) {
                     is MyEffect.NavigateToNext -> {
                         navigator.goTo(NextRoute)  // Handle navigation internally
                     }
-                    is MyEffect.ShowToast -> { 
+                    is MyEffect.ShowToast -> {
                         // Show toast
                     }
                 }
             }
         }
-        
+
         // UI using state
         Column {
             Text(text = uiState.title)
-            
+
             Button(onClick = uiState.onButtonClicked) {
                 Text("Click Me")
             }
@@ -172,19 +271,26 @@ class MyScreen(
 @ContributesSubcomponent(FeatureScope::class)
 @SingleIn(FeatureScope::class)
 interface FeatureComponent {
+
+    // IMPORTANT: Provide CoroutineScope for USF ViewModels
+    @Provides
+    @SingleIn(FeatureScope::class)
+    fun provideCoroutineScope(): CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
     val myScreen: MyScreen
-    
+
     @ContributesSubcomponent.Factory(AppScope::class)
     interface Factory {
         fun createFeatureComponent(): FeatureComponent
-        
+
         @Provides
         @IntoSet
         fun provideFeatureEntryProvider(
             factory: Factory
         ): EntryProviderInstaller = {
             val component by lazy { factory.createFeatureComponent() }
-            
+
             // Simple entry - screen handles navigation internally
             entry<MyRoute> { component.myScreen() }
         }
@@ -194,66 +300,21 @@ interface FeatureComponent {
 
 ## Key Patterns
 
-### UI Callbacks in State
+### The ResultScope
 
-USF puts callbacks directly in the state for cleaner UI code:
-
-```kotlin
-// State with callbacks
-data class LandingUiState(
-    val title: String = "Landing",
-    val onSettingsClick: () -> Unit = {},  // Callback in state
-)
-
-// ViewModel provides the callback
-override fun initialState() = LandingUiState(
-    onSettingsClick = inputCallback(LandingEvent.NavigateToSettingsClicked)
-)
-
-// UI just uses it
-Button(onClick = uiState.onSettingsClick) {
-    Text("Settings")
-}
-```
-
-### When to Use Callbacks vs Direct Input
-
-**Use callbacks in state:**
-```kotlin
-// When you need parameters from UI
-val onTextChanged: (String) -> Unit
-val onItemSelected: (id: Int) -> Unit
-
-// When it's frequently called
-val onScroll: (offset: Float) -> Unit
-```
-
-**Use direct viewModel.input():**
-```kotlin
-// Simple navigation/effects
-Button(onClick = { viewModel.input(Event.NavigateBack) })
-
-// One-time actions
-LaunchedEffect(Unit) {
-    viewModel.input(Event.LoadData)
-}
-```
-
-### The ResultScope Magic
-
-`ResultScope` provides two key functions inside `process()`:
+`ResultScope` provides thread-safe operations inside `process()`:
 
 ```kotlin
 override suspend fun ResultScope<State, Effect>.process(event: Event) {
-    // 1. Update state
+    // Update state (thread-safe)
     updateState { currentState ->
         currentState.copy(loading = true)
     }
     
-    // 2. Emit effects
+    // Emit effects (one-time actions)
     emitEffect(Effect.ShowToast("Hello"))
     
-    // Both are thread-safe and scoped to the pipeline
+    // Both are automatically scoped to the pipeline
 }
 ```
 
@@ -262,91 +323,101 @@ override suspend fun ResultScope<State, Effect>.process(event: Event) {
 ```kotlin
 // Called when first UI subscriber connects
 override fun ResultScope<State, Effect>.onSubscribed() {
-    loadInitialData()
+    // Load initial data
+    coroutineScope.launch {
+        val data = repository.fetch()
+        updateState { it.copy(data = data) }
+    }
 }
 
 // Called when last subscriber disconnects (5-second timeout)
 override fun onUnsubscribed() {
-    cleanup()
+    // Cleanup resources
 }
 ```
 
-## Pipeline Lifecycle (The Smart Part)
+### Callbacks in State
 
-USF ViewModels have a smart pipeline that manages resources:
+⚠️ **Important:** While USF supports callbacks in state, prefer direct `viewModel.input()` calls when possible for better testability.
 
-1. **Dormant** - No UI observing, no resources used
+```kotlin
+// ✅ Preferred: Direct input
+Button(onClick = { viewModel.input(Event.RefreshClicked) })
+
+// ⚠️ Use sparingly: Callbacks in state
+data class UiState(
+    val onRefreshClicked: () -> Unit = {}  // Harder to test
+)
+
+// When callbacks make sense:
+// 1. Complex parameter transformation
+val onTextChanged: (String) -> Unit  // Transforms UI input
+// 2. Performance-critical (avoids recomposition)
+val onScroll: (Float) -> Unit  // Called frequently
+```
+
+## Pipeline Lifecycle
+
+USF ViewModels have smart resource management:
+
+1. **Dormant** - No UI observing, no resources
 2. **Active** - UI subscribed, processing events
 3. **Timeout** - UI gone, 5-second countdown
-4. **Cleanup** - Resources released if no UI returns
+4. **Cleanup** - Resources released if UI doesn't return
 
-This means ViewModels automatically:
+This happens automatically - ViewModels:
 - Start when UI appears
 - Pause when UI is gone
 - Resume if UI returns quickly
 - Clean up if UI is gone for good
 
-## Testing
+## Advanced: Plugin Architecture
 
+For complex features with reusable logic, USF supports plugin composition.
+
+**When to use plugins:**
+- Multiple ViewModels need the same feature (search, pagination, validation)
+- Complex ViewModels need modular breakdown
+- Isolated testing of feature components
+
+**Example:**
 ```kotlin
-@Test
-fun `quote loads on subscribe`() = runTest {
-    val mockRepo = mockk<QuotesRepo> {
-        coEvery { quoteForTheDay() } returns Quote("Test", "Author")
-    }
-    
-    val viewModel = SettingsBViewModelImpl(
-        coroutineScope = TestScope(),
-        quotesRepo = Lazy { mockRepo }
-    )
-    
-    // Start collecting (simulates UI subscription)
-    val states = viewModel.state.take(2).toList()
-    
-    // Initial state
-    assertEquals("Get to the CHOPPER!!!", states[0].quoteText)
-    
-    // After loading
-    assertEquals("Test", states[1].quoteText)
-    assertEquals("Author", states[1].quoteAuthor)
-}
-```
-
-## When to Use USF
-
-### ✅ Perfect For
-- Screens with user interactions
-- Complex state management
-- Async operations with loading states
-- Features needing predictable testing
-
-### ❌ Not Needed For
-- Simple display-only screens
-- Stateless utilities
-- Pure business logic (use regular classes)
-
-## Advanced: Plugin Composition
-
-For complex features, USF supports plugin composition (not yet used in this app):
-
-```kotlin
-// Create reusable logic
-class SearchPlugin : UsfPlugin<SearchEvent, SearchState, SearchEffect>() {
-    // Reusable search logic
-}
-
-// Compose into ViewModel
 class ComplexViewModel : UsfViewModel<Event, State, Effect>() {
     init {
         register(SearchPlugin(), /* adapters */)
+        register(PaginationPlugin(), /* adapters */)
     }
 }
 ```
 
-**When to consider plugins:**
-- Sharing logic across multiple ViewModels
-- Building complex features from smaller parts
-- Need isolated testing of feature components
+### Effect-to-Event Transformation
+
+Advanced USF feature allowing plugins to trigger parent ViewModel events through their effects:
+
+```kotlin
+// Plugin emits effect
+emitEffect(PluginEffect.TriggerParentRefresh)
+
+// Adapter transforms effect to parent event
+transformEffect = { pluginEffect ->
+    when (pluginEffect) {
+        is PluginEffect.TriggerParentRefresh -> Event.RefreshData
+        is PluginEffect.NavigateToDetails -> Event.NavigateToScreen("details")
+        else -> null
+    }
+}
+```
+
+**Use cases:**
+- **Plugin Feedback Loops**: Plugins trigger parent actions based on their state
+- **Navigation Control**: Plugins initiate navigation through parent ViewModel
+- **State Coordination**: Plugins reset or update parent state when needed
+- **Error Handling**: Plugins trigger parent error handling flows
+- **Complex Workflows**: Multi-step processes coordinated between plugins and parent
+
+This enables sophisticated plugin coordination where plugins can influence the parent ViewModel's behavior beyond just state and effects.
+
+See `.ai/docs/usf-plugin-architecture.md` for complete implementation details.
 
 ## Common Patterns
 
@@ -361,6 +432,7 @@ override suspend fun process(event: Event) {
                 updateState { it.copy(loading = false, data = data) }
             } catch (e: Exception) {
                 updateState { it.copy(loading = false, error = e.message) }
+                emitEffect(Effect.ShowError(e.message))
             }
         }
     }
@@ -372,20 +444,28 @@ override suspend fun process(event: Event) {
 data class FormState(
     val email: String = "",
     val isValid: Boolean = false,
-    val onEmailChange: (String) -> Unit = {},
 )
 
 override suspend fun process(event: Event) {
     when (event) {
         is Event.EmailChanged -> {
             val isValid = event.email.contains("@")
-            updateState { it.copy(email = event.email, isValid = isValid) }
+            updateState { 
+                it.copy(email = event.email, isValid = isValid) 
+            }
+        }
+        is Event.Submit -> {
+            if (state.value.isValid) {
+                submitForm()
+            } else {
+                emitEffect(Effect.ShowError("Invalid email"))
+            }
         }
     }
 }
 ```
 
-### Debounced Search
+### Debounced Operations
 ```kotlin
 private var searchJob: Job? = null
 
@@ -403,6 +483,34 @@ override suspend fun process(event: Event) {
 }
 ```
 
+## Testing
+
+```kotlin
+@Test
+fun `refresh updates time and shows toast`() = runTest {
+    val viewModel = HomeViewModelImpl(
+        coroutineScope = TestScope()
+    )
+    
+    // Collect states and effects
+    val states = mutableListOf<HomeUiState>()
+    val effects = mutableListOf<HomeEffect>()
+    
+    launch { viewModel.state.toList(states) }
+    launch { viewModel.effects.toList(effects) }
+    
+    // Trigger event
+    viewModel.input(HomeEvent.RefreshClicked)
+    advanceUntilIdle()
+    
+    // Verify state updated
+    assertNotNull(states.last().lastRefreshTime)
+    
+    // Verify effect emitted
+    assertTrue(effects.any { it is HomeEffect.ShowToast })
+}
+```
+
 ## Migration from Standard ViewModel
 
 ```kotlin
@@ -413,21 +521,26 @@ class OldViewModel : ViewModel() {
     
     fun onButtonClick() {
         viewModelScope.launch {
-            _state.value = state.value.copy(loading = true)
-            // ...
+            _state.value = _state.value.copy(loading = true)
+            val data = repository.fetch()
+            _state.value = _state.value.copy(loading = false, data = data)
         }
     }
 }
 
 // After: USF ViewModel
-class NewViewModel : UsfViewModel<Event, State, Effect>() {
+class NewViewModel(
+    coroutineScope: CoroutineScope  // Injected, not viewModelScope
+) : UsfViewModel<Event, State, Effect>(coroutineScope) {
+
     override fun initialState() = State()
-    
-    override suspend fun process(event: Event) {
+
+    override suspend fun ResultScope<State, Effect>.process(event: Event) {
         when (event) {
             is Event.ButtonClick -> {
                 updateState { it.copy(loading = true) }
-                // ...
+                val data = repository.fetch()
+                updateState { it.copy(loading = false, data = data) }
             }
         }
     }

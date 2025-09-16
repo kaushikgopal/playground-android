@@ -2,6 +2,7 @@ package sh.kau.playground.usf.plugin
 
 import sh.kau.playground.usf.inspector.UsfInspector
 import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
 import sh.kau.playground.usf.scope.ResultScope
@@ -68,6 +69,7 @@ abstract class UsfPlugin<Event : Any, State : Any, Effect : Any>(
         state = _state,
         coroutineScope = coroutineScope,
         inspector = _inspector,
+        parentInput = { event -> input(event) },
     )
   }
   private val pluginEffects by lazy {
@@ -197,11 +199,12 @@ abstract class UsfPlugin<Event : Any, State : Any, Effect : Any>(
   /** Registers a child plugin with this plugin. */
   final override fun <PluginEvent, PluginState, PluginEffect> register(
       plugin: UsfPluginInterface<PluginEvent, PluginState, PluginEffect>,
-      adaptEvent: UsfEventAdapter<Event, PluginEvent>?,
-      adaptState: UsfStateAdapter<PluginState, State>?,
-      adaptEffect: UsfEffectAdapter<PluginEffect, Effect>?,
+      mapEvent: UsfEventAdapter<Event, PluginEvent>?,
+      applyState: UsfStateAdapter<PluginState, State>?,
+      mapEffect: UsfEffectAdapter<PluginEffect, Effect>?,
+      transformEffect: UsfEffectToEventAdapter<PluginEffect, Event>?,
   ) {
-    pluginRegistrar.register(plugin, adaptEvent, adaptState, adaptEffect)
+    pluginRegistrar.register(plugin, mapEvent, applyState, mapEffect, transformEffect)
   }
 
   /** Unregisters a previously registered child plugin. */

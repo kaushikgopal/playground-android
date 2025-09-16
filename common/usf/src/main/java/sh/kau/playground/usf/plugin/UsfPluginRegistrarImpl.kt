@@ -3,6 +3,7 @@ package sh.kau.playground.usf.plugin
 import sh.kau.playground.usf.api.Usf
 import sh.kau.playground.usf.inspector.UsfInspector
 import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
 import kotlinx.coroutines.CancellationException
@@ -36,12 +37,15 @@ import kotlinx.coroutines.launch
  * @param Effect The parent component's effect type
  * @param state The state flow that will be updated with plugin state changes
  * @param coroutineScope The scope used for launching coroutines
+ * @param inspector Inspector for logging errors and events
+ * @param parentInput Optional callback to send events to the parent component for processing
  */
 @OptIn(ExperimentalStdlibApi::class)
 internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
     override val state: MutableStateFlow<State>,
     private val coroutineScope: CoroutineScope,
     private val inspector: UsfInspector?,
+    private val parentInput: (Event) -> Unit = {},
 ) : Usf<Event, State, Effect>, UsfPluginRegistrar<Event, State, Effect> {
   private var _coroutineScope: CoroutineScope = coroutineScope
 
@@ -55,19 +59,21 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
    * Registers a plugin with its adapters.
    *
    * @param plugin The plugin to register
-   * @param adaptEvent Adapter that filters/transforms events for this plugin
-   * @param adaptState Adapter that maps plugin state to parent state
-   * @param adaptEffect Adapter that maps plugin effects to parent effects
+   * @param mapEvent Adapter that filters/maps events for this plugin
+   * @param applyState Adapter that maps plugin state to parent state
+   * @param mapEffect Adapter that maps plugin effects to parent effects
+   * @param transformEffect Adapter that transforms plugin effects to parent events
    */
   override fun <PluginEvent, PluginState, PluginEffect> register(
       plugin: UsfPluginInterface<PluginEvent, PluginState, PluginEffect>,
-      adaptEvent: UsfEventAdapter<Event, PluginEvent>?,
-      adaptState: UsfStateAdapter<PluginState, State>?,
-      adaptEffect: UsfEffectAdapter<PluginEffect, Effect>?,
+      mapEvent: UsfEventAdapter<Event, PluginEvent>?,
+      applyState: UsfStateAdapter<PluginState, State>?,
+      mapEffect: UsfEffectAdapter<PluginEffect, Effect>?,
+      transformEffect: UsfEffectToEventAdapter<PluginEffect, Event>?,
   ) {
     if (_registeredPlugins.containsKey(plugin)) return
 
-    val registration = PluginRegistration(adaptState, adaptEffect, adaptEvent)
+    val registration = PluginRegistration(applyState, mapEffect, mapEvent, transformEffect)
     _registeredPlugins[plugin] = registration
 
     setupPluginSubscriptions(plugin)
@@ -170,6 +176,19 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
       }
     }
 
+    if (registration.effectToEventAdapter != null) {
+      pluginScope.launch {
+        plugin.effects.collect { pluginEffect ->
+          try {
+            registration.effectToEventAdapter.map(pluginEffect)?.let { event -> parentInput(event) }
+          } catch (e: Exception) {
+            if (e is CancellationException) throw e // propagate cancellation
+            inspector?.error(e, "[pef →  ev]")
+          }
+        }
+      }
+    }
+
     plugin.onRegistered(pluginScope)
   }
 
@@ -188,12 +207,13 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
  * Registration wrapper that encapsulates a plugin and its adapters.
  *
  * This class manages the relationship between a plugin and its parent component, storing the
- * adapters needed for state/effect mapping and event filtering, along with the isolated plugin
- * scope.
+ * adapters needed for state/effect mapping, event filtering, and effect-to-event transformation,
+ * along with the isolated plugin scope.
  */
 private class PluginRegistration<PluginEvent, PluginState, PluginEffect, Event, State, Effect>(
     val stateAdapter: UsfStateAdapter<PluginState, State>?,
     val effectAdapter: UsfEffectAdapter<PluginEffect, Effect>?,
     val eventMapper: UsfEventAdapter<Event, PluginEvent>?,
-    var pluginScope: CoroutineScope? = null
+    val effectToEventAdapter: UsfEffectToEventAdapter<PluginEffect, Event>?,
+    var pluginScope: CoroutineScope? = null,
 )

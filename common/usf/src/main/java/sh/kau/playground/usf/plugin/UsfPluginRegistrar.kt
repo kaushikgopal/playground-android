@@ -1,6 +1,7 @@
 package sh.kau.playground.usf.plugin
 
 import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
 
@@ -25,18 +26,21 @@ interface UsfPluginRegistrar<Event : Any, State : Any, Effect : Any> {
    * mapper.
    *
    * @param plugin The child plugin to register
-   * @param adaptEvent Optional mapper to filter and transform events for the child plugin. If null,
+   * @param mapEvent Optional mapper to filter and transform events for the child plugin. If null,
    *   no events will be sent to this plugin.
-   * @param adaptState Optional adapter to map child state to parent state. If null, state changes
+   * @param applyState Optional adapter to map child state to parent state. If null, state changes
    *   from this plugin will not affect parent state.
-   * @param adaptEffect Optional adapter to map child effects to parent effects. If null, effects
+   * @param mapEffect Optional adapter to map child effects to parent effects. If null, effects
    *   from this plugin will not be propagated to parent.
+   * @param transformEffect Optional adapter to transform child effects to parent events. If null,
+   *   child effects will not trigger parent events.
    */
   fun <PluginEvent, PluginState, PluginEffect> register(
       plugin: UsfPluginInterface<PluginEvent, PluginState, PluginEffect>,
-      adaptEvent: UsfEventAdapter<Event, PluginEvent>? = null,
-      adaptState: UsfStateAdapter<PluginState, State>? = null,
-      adaptEffect: UsfEffectAdapter<PluginEffect, Effect>? = null,
+      mapEvent: UsfEventAdapter<Event, PluginEvent>? = null,
+      applyState: UsfStateAdapter<PluginState, State>? = null,
+      mapEffect: UsfEffectAdapter<PluginEffect, Effect>? = null,
+      transformEffect: UsfEffectToEventAdapter<PluginEffect, Event>? = null,
   )
 
   /**

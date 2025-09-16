@@ -78,6 +78,16 @@ open class TestViewModel(
           }
         }
       }
+
+      // Events for effect-to-event transformation testing
+      is TestEvent.PluginTriggeredReset -> {
+        updateState { it.copy(counter = 0) }
+        emitEffect(TestEffect.CounterUpdated(0))
+      }
+      is TestEvent.PluginTriggeredCounterUpdate -> {
+        updateState { it.copy(counter = event.newValue) }
+        emitEffect(TestEffect.CounterUpdated(event.newValue))
+      }
     }
   }
 }

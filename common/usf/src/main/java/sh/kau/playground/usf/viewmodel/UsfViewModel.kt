@@ -6,6 +6,7 @@ import sh.kau.playground.usf.plugin.UsfPluginInterface
 import sh.kau.playground.usf.plugin.UsfPluginRegistrar
 import sh.kau.playground.usf.plugin.UsfPluginRegistrarImpl
 import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
 import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
 import sh.kau.playground.usf.scope.ResultScope
@@ -120,6 +121,7 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
         state = _state,
         coroutineScope = _viewModelScope,
         inspector = _inspector,
+        parentInput = { event -> input(event) },
     )
   }
 
@@ -332,11 +334,12 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
   /** Registers a child plugin with this view model. */
   final override fun <PluginEvent, PluginState, PluginEffect> register(
       plugin: UsfPluginInterface<PluginEvent, PluginState, PluginEffect>,
-      adaptEvent: UsfEventAdapter<Event, PluginEvent>?,
-      adaptState: UsfStateAdapter<PluginState, UiState>?,
-      adaptEffect: UsfEffectAdapter<PluginEffect, Effect>?
+      mapEvent: UsfEventAdapter<Event, PluginEvent>?,
+      applyState: UsfStateAdapter<PluginState, UiState>?,
+      mapEffect: UsfEffectAdapter<PluginEffect, Effect>?,
+      transformEffect: UsfEffectToEventAdapter<PluginEffect, Event>?
   ) {
-    pluginRegistrar.register(plugin, adaptEvent, adaptState, adaptEffect)
+    pluginRegistrar.register(plugin, mapEvent, applyState, mapEffect, transformEffect)
   }
 
   /** Unregisters a previously registered child plugin. */
