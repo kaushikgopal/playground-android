@@ -14,6 +14,10 @@ ensure-deps:
 		echo "Installing ripgrep..."; \
 		brew install ripgrep; \
 	fi
+	@if ! command -v fd >/dev/null 2>&1; then \
+		echo "Installing fd..."; \
+		brew install fd; \
+	fi
 
 help: ensure-deps		## list out commands with descriptions
 	@rg '^([a-zA-Z0-9_-]+):.*?## (.*)$$' Makefile --no-line-number --no-filename --color=never --replace '$$1|$$2' | \
