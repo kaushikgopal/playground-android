@@ -1,1 +1,1 @@
-.ai/instructions.md
+See @AGENTS.md
