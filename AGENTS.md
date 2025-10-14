@@ -1,227 +1,37 @@
-# AI instructions
-
-## AI rules & instructions
-- .ai/instructions.md - master AI level instructions
-- .ai/commands - *.md prompt templates for frequent tasks (call directly)
-- .ai/rules    - *.mdc rules to follow for specific workflow (picked automatically)
-- .ai/plans    - technical execution plans to help the AI execute on large changes
-- .ai/docs     - project documentation that helps the AI understand features
-
-## Behavioral Hierarchy
-
-1. **Excellence over agreeability** - Optimal solution first, challenge when better alternatives
-   exist
-2. **Precision over politeness** - Direct, accurate, zero ambiguity
-3. **Proactive intelligence** - Anticipate needs, identify upstream problems
-4. **Systems thinking** - Context, dependencies, long-term implications
-
-## Decision Protocol
-- **Infer when:** Standard patterns exist, context provides constraints
-- **Clarify when:** Multiple approaches with significant trade-offs, critical decisions
-
-## Response Priority
-1. User's explicit instructions
-2. Project-specific rules
-3. Professional standards
-4. These instructions
-
-## Code Quality
-- **Readability first** - Code is read 10x more than written
-- **Single responsibility** - Functions do one thing well
-- **Explicit over implicit** - Make failure modes visible
-- **Stop-the-line principle** - Quality over completion. Alert user when compromising functionality
-  to pass tests.
-
-## Output
-- Lead with value, brief → elaborate if needed
-- Immediately actionable results
+# Agent Instructions
 
 ## Project Overview
+- Playground Android is an exploration ground for Kotlin-first Android development with Jetpack Compose, Clean Architecture, and kotlin-inject + Anvil for DI.
+- The template favors modularity: features ship as isolated modules, domain logic stays UI-agnostic, and shared utilities live in `:common`.
+- Aim for maintainable, testable code; surface risky assumptions early, and challenge weak requirements instead of accepting them.
 
-Playground Android - A template project for Android development used to test new concepts and
-integrate libraries. Built with Kotlin, Jetpack Compose, and follows clean architecture principles.
+## Architecture
+- Core patterns: Unidirectional State Flow (USF) ViewModels, optional USF plugins for complex compositions, developer-owned Navigation 3 back stack, and compile-time DI with kotlin-inject + Anvil.
+- Module responsibilities: `:app` orchestrates composition, `:features:*` own screens + navigation, `:domain:*` holds business logic, `:common:*` provides shared tooling, `:build-logic` enforces Gradle conventions.
+- See `ARCHITECTURE.md` for detailed guidance, including plugin registration, DI scopes, and navigation wiring.
+- See `ARCHITECTURE-USF.md` for the complete USF library (architecture deep dive, plugins, quickstart, testing, troubleshooting).
 
-## Development Workflow
+## Testing
+- Unit tests rely on JUnit 5, `kotlinx.coroutines.test`, MockK, AssertJ, and Turbine; all public logic must have coverage.
+- Test USF pipelines by driving events, capturing state/effects, and controlling virtual time; isolate plugin behavior when used.
+- Run `make tests` for the suite or `make build` for full verification. Additional patterns and utilities are documented in `TESTING.md`.
 
-### Build Commands (use Makefile)
+## Important Commands
+- `make build-debug` — Assemble a debug build without lint.
+- `make build` — Full build including tests.
+- `make clean` — Remove build outputs and caches.
+- `make tests` — Execute all unit tests.
+- `make lint` — Run Android/Kotlin lint checks.
+- `make ktfmt` — Format staged Kotlin files.
+- `make ktfmt-all` — Format every Kotlin file.
 
-- `make build-debug` - Build debug app (without lint)
-- `make build` - Assemble full project
-- `make clean` - Clean build folders and cache
-- `make tests` - Run all unit tests
-- `make lint` - Run lint checks
-- `make ktfmt` - Format changed files on branch
-- `make ktfmt-all` - Format all Kotlin files
-
-### Testing
-
-- Use JUnit 5 with Jupiter engine
-- Use Mockk for mocking, AssertJ for assertions
-- Follow Arrange-Act-Assert pattern
-- Test timeout: 10 minutes per test
-- Run specific test: `make tests` (runs all tests currently)
-
-## Module Architecture
-
-### 1. `:app` module
-- Application entry point
-- Lean module that assembles dependencies
-- Root navigation setup
-
-### 2. `:features:*` modules
-
-- Isolated app features
-- Follow USF (Unidirectional State Flow) pattern
-- Each feature has its own navigation
-
-### 3. `:domain:*` modules
-- Business logic and shared domain models
-- App-specific but shared across features
-- Not intended to be swapped out
-
-### 4. `:common:*` modules
-- Shared utilities and components
-- Can be hot-swapped with another implementation
-- Includes: log, networking, usf, lint-rules
-
-### 5. `:build-logic` module
-- Convention plugins for consistent module configuration
-- Template plugins for features and android libs
-- Avoids duplicated build script setup
-
-## Architecture Patterns
-
-### USF Pattern (Required for ViewModels)
-
-All ViewModels must use the modern USF architecture with pipeline-based lifecycle management:
-
-#### UsfViewModel (Standard Approach)
-Use `UsfViewModel<Event, UiState, Effect>` for all ViewModels:
-
-**Core Components:**
-- **Event**: User actions/inputs (sealed interface)
-- **UiState**: Complete UI state (immutable data class)
-- **Effect**: One-time side effects (navigation, toasts)
-- **ResultScope**: Context for state updates and effect emissions
-
-**Key Principles:**
-- Direct event-to-state/effect processing
-- Pipeline-based lifecycle management
-- Automatic resource cleanup with timeout
-- Unidirectional data flow
-- Immutable state
-- Single source of truth
-- Testable business logic
-
-**Pipeline Architecture:**
-- **Subscription Management**: Pipeline activates when first subscriber starts collecting
-- **Timeout-based Cleanup**: 5-second timeout before shutting down when no subscribers remain
-- **Scope Management**: Separate view model scope (persistent) and pipeline scope (lifecycle-aware)
-- **Channel-based Events**: Events processed through channels for reliable delivery
-- **State Dispatcher**: Dedicated single-threaded dispatcher for thread-safe state updates
-
-#### UsfPlugin Architecture (For Complex Features)
-For complex ViewModels, compose `UsfPluginInterface<Event, State, Effect>` with `UsfViewModel`:
-
-**Core Components:**
-- **UsfViewModel**: Enhanced ViewModel with pipeline and plugin support
-- **UsfPluginInterface**: Contract for plugin implementations
-- **UsfPlugin**: Base plugin implementation with standard functionality
-- **Plugin Adapters**: Type-safe event/state/effect conversion
-- **ResultScope**: Scoped context for state updates and effect emissions
-- **Internal State**: Isolated state management within plugins
-
-**Benefits:**
-- Modular and reusable UI logic
-- Better separation of concerns
-- Easier testing and maintenance
-- Plugin composition for complex features
-- Automatic lifecycle management
-- Resource efficiency through pipeline management
-
-**Usage Decision:**
-- **Simple ViewModels**: Use `UsfViewModel` directly
-- **Complex ViewModels**: Use `UsfViewModel` with `UsfPluginInterface` composition
-- **Reusable Logic**: Create `UsfPlugin` components
-
-**Pipeline Integration:**
-- Plugins registered/unregistered automatically with pipeline lifecycle
-- Plugin events processed in parallel with ViewModel events
-- Shared timeout and cleanup behavior
-- Unified subscription counting across all flows
-
-See `.ai/docs/usf-plugin-architecture.md` for detailed implementation guide.
-
-### Dependency Injection (kotlin-inject-anvil)
-- Use `@Inject` constructor injection
-- Use `@ContributesBinding(AppScope::class)` for cross-module dependencies
-- Use `@ContributesSubcomponent` for feature-specific components
-- Multibinding supported for collections
-- Function injection supported in Composables
-
-## Code Standards
-
-### Kotlin
-- PascalCase for classes, camelCase for variables/functions
-- Start functions with verbs
-- Write short functions (<20 lines) with single purpose
-- Prefer immutability and data classes
-- Follow SOLID principles
-- No star imports
-- Always use trailing commas in multi-line structures
-
-### Android-Specific
-- Use Jetpack Compose (no XML/Fragments)
-- Follow repository pattern for data layer
-- Use Compose Navigation
-- Material 3 design system
-
-### Naming Anti-Patterns (Avoid)
-- Manager, Helper, Util/Utility, Processor, Service (unless Android Service)
-- Use domain-specific names instead
-
-### Testing
-- Write unit tests for all public functions
-- Use test doubles (mocks/fakes/stubs)
-- Meaningful test variable names (inputX, mockX, actualX, expectedX)
-
-## Key Development Notes
-
-### Code Style
-- Use ktfmt with defaults
-- Custom lint rules enforce architecture
-
-### Logging
-- Never log sensitive information
-- Use "Data Marks" in logs so messages should have `"[FFF][CC] log message"`
-  - where FFF is a suitable 3 character abbreviation for the feature or functionality
-  - CC is a suitable 2 or 3 character abbreviation of the specific class
-
-### Concurrency
-- Never use `GlobalScope` - inject proper `CoroutineScope`
-- Never create `Thread()` directly - use coroutines
-- Use suspend functions for async operations
-
-### Module Dependencies
-- All modules get `common:log` automatically
-- `common:usf` provides both standard USF and USF Plugin architecture
-- Check existing usage before adding dependencies
-- Follow patterns in neighboring modules
-
-### Avoid Kotlin Objects
-- Don't create Kotlin `object` declarations (hard to test)
-- Use regular classes with dependency injection
-- Exception: True constants only
-
-## Repository Structure
-
-- `app/`: Main application module
-- `features/`: Feature modules (landing, settings, discover)
-- `domain/`: Business logic (quoter, shared, ui)
-- `common/`: Shared utilities (log, networking, usf, lint-rules)
-- `build-logic/`: Gradle convention plugins
-- `gradle/`: Gradle wrapper and version catalog
-- `Makefile`: Common development commands
-- `.ai/`: AI assistant documentation
-  - `.ai/docs/usf-plugin-architecture.md`: Comprehensive USF Plugin architecture guide
-  - `.ai/history/`: Session history and implementation notes
+## Coding Conventions
+- Optimize for legibility: prefer clear `if/else`, single-responsibility functions (<20 lines), and immutable data structures when possible.
+- Enforce Kotlin style rules: PascalCase types, camelCase members, no star imports, always add trailing commas in multiline literals.
+- Avoid Kotlin `object` except for true constants; rely on constructor injection with scoped classes (`@SingleIn`, `@ContributesBinding`, `@ContributesSubcomponent`).
+- UI code is Compose-only; keep composables thin and delegate logic to USF ViewModels and domain layers.
+- Logging: never include sensitive data; prefix messages with data marks (`"[FFF][CC] message"`).
+- Concurrency: never use `GlobalScope` or raw threads; inject coroutine scopes, prefer suspend functions, and clean up resources via USF lifecycle hooks.
+- Naming: skip generic suffixes like Manager/Helper/Util—choose domain terms that reveal intent.
+- Comments document *why* decisions were made (space-shuttle style). Do not leave TODOs without owner/context.
+- Instruction priority: user requests → project rules → professional standards → this document. Default to precision over politeness and surface flawed assumptions quickly.
