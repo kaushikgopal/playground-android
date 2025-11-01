@@ -75,7 +75,7 @@ class SettingsAScreen(
                       Text("Enable Feature", style = MaterialTheme.typography.bodyLarge)
                       Switch(
                           checked = uiState.toggleEnabled,
-                          onCheckedChange = { viewModel.input(SettingsAEvent.ToggleChanged) },
+                          onCheckedChange = { viewModel.input(SettingsAEvent.ToggleChanged) }, // TODO: should
                       )
                     }
 

@@ -5,6 +5,7 @@ import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
+import sh.kau.playground.usf.viewmodel.inputEventCallback
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 
 @ContributesBinding(SettingsScope::class, boundType = SettingsAViewModel::class)
@@ -18,7 +19,9 @@ class SettingsAViewModelImpl(
     ) {
 
   override fun initialState(): SettingsAUiState {
-    return SettingsAUiState()
+    return SettingsAUiState(
+        onCheckedChange = inputEventCallback(SettingsAEvent.ToggleChanged),
+    )
   }
 
   override suspend fun ResultScope<SettingsAUiState, SettingsAEffect>.process(

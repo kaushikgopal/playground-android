@@ -15,6 +15,7 @@ sealed interface SettingsAEvent {
 data class SettingsAUiState(
     val title: String = "Settings A",
     val toggleEnabled: Boolean = false,
+    val onCheckedChange: () -> Unit,
 )
 
 sealed interface SettingsAEffect {

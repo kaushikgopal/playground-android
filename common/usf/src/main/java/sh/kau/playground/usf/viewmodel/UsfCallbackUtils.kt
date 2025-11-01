@@ -1,6 +1,4 @@
-package app.pudi.android.usf.viewmodel
-
-import sh.kau.playground.usf.viewmodel.UsfViewModel
+package sh.kau.playground.usf.viewmodel
 
 /**
  * USF Event Callback Utilities
