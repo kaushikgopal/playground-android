@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import logcat.logcat
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
@@ -31,6 +30,7 @@ import sh.kau.playground.features.settings.viewmodel.SettingsAEvent
 import sh.kau.playground.features.settings.viewmodel.SettingsAViewModel
 import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Teritiary
+import sh.kau.playground.ui.dp16
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @Inject
@@ -60,8 +60,8 @@ class SettingsAScreen(
         contentAlignment = Alignment.Center) {
           Column(
               horizontalAlignment = Alignment.CenterHorizontally,
-              verticalArrangement = Arrangement.spacedBy(16.dp),
-              modifier = Modifier.padding(16.dp)) {
+              verticalArrangement = Arrangement.spacedBy(dp16),
+              modifier = Modifier.padding(dp16)) {
                 Text(
                     text = uiState.title,
                     style = MaterialTheme.typography.headlineLarge,

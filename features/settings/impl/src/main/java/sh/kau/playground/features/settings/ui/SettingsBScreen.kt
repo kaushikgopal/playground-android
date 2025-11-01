@@ -17,11 +17,13 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.features.settings.viewmodel.SettingsBViewModel
 import sh.kau.playground.ui.Secondary
+import sh.kau.playground.ui.dp16
+import sh.kau.playground.ui.dp24
+import sh.kau.playground.ui.dp32
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 // kotlin-inject function injection (2)
@@ -41,13 +43,13 @@ fun SettingsBScreen(
       contentAlignment = Alignment.Center) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(16.dp)) {
+            verticalArrangement = Arrangement.spacedBy(dp16),
+            modifier = Modifier.padding(dp16)) {
               Text(
                   text = uiState.title,
                   style = MaterialTheme.typography.headlineLarge,
                   fontWeight = FontWeight.Bold,
-                  modifier = Modifier.padding(bottom = 24.dp),
+                  modifier = Modifier.padding(bottom = dp24),
               )
 
               // Display a default quote
@@ -55,7 +57,7 @@ fun SettingsBScreen(
                   text = uiState.quoteText,
                   style = MaterialTheme.typography.bodyLarge,
                   fontStyle = FontStyle.Italic,
-                  modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
+                  modifier = Modifier.padding(horizontal = dp32, vertical = dp16),
                   textAlign = TextAlign.Center,
               )
 

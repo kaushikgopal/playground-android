@@ -90,6 +90,12 @@ playground-android is a modern Android development playground showcasing best-in
 - Clear entry points via `EntryProviderInstaller`
 - Back stack management through `Navigator` singleton
 
+### Spacing & Layout
+- **ALWAYS use AppSpacing values** from `domain.ui.AppSpacing` for all padding, spacing, and margins
+- Available values: `dp4`, `dp8`, `dp12`, `dp16`, `dp20`, `dp24`, `dp32`, `dp64`
+- **Never use hardcoded `.dp` values** (e.g., `16.dp`) - always use the predefined spacing constants
+- This ensures consistent spacing across the entire app
+
 ## Architecture
 
 ### Module Layout
@@ -144,6 +150,7 @@ playground-android is a modern Android development playground showcasing best-in
 - PascalCase types, camelCase members, no star imports, trailing commas in multiline literals
 - Avoid Kotlin `object` except for true constants; rely on scoped DI classes
 - UI is Compose-only; keep composables thin, delegate logic to ViewModels and domain layers
+- **Spacing**: ALWAYS use `AppSpacing` constants (dp4, dp8, dp16, etc.) - never hardcode `.dp` values
 
 ### Performance & Best Practices
 - **Performance**: never block the UI; prefer incremental loading and optimistic updates

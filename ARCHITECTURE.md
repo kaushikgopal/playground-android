@@ -58,5 +58,5 @@ This document provides detailed architectural patterns for module structure, nav
 - Apply Jetpack Compose exclusively; no XML fragments.
 - Keep screens thin by pulling business logic into ViewModels and domain layers, leaving composables to render state and delegate events.
 - Example: `ItemListScreen` observes `ItemListUiState`, renders list items, and delegates tap events to `onItemClicked = { viewModel.input(ILEvent.ItemClicked(it)) }`.
-- Typography and spacing follow consistent design principles: predictable padding, clear visual hierarchy, optimized for readability (see `AGENTS.md` for patterns).
+- Typography and spacing follow consistent design principles: use `AppSpacing` constants (dp4, dp8, dp16, etc.) for all padding/margins, maintain clear visual hierarchy, optimize for readability (see `AGENTS.md` for patterns).
 - Wrap navigation and DI plumbing inside feature modules so the `:app` module only orchestrates high-level wiring.

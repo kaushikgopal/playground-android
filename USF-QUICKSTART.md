@@ -198,7 +198,7 @@ private fun CounterContent(uiState: CounterUiState) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(dp16),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -207,13 +207,13 @@ private fun CounterContent(uiState: CounterUiState) {
             style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dp16))
 
         if (uiState.isLoading) {
             CircularProgressIndicator()
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dp16))
 
         // Error message
         uiState.errorMessage?.let { error ->
@@ -222,11 +222,11 @@ private fun CounterContent(uiState: CounterUiState) {
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dp8))
         }
 
         // Buttons using state callbacks
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(dp8)) {
             Button(
                 onClick = uiState.onDecrement,
                 enabled = !uiState.isLoading
@@ -242,7 +242,7 @@ private fun CounterContent(uiState: CounterUiState) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dp16))
 
         Button(
             onClick = uiState.onAsyncIncrement,
@@ -251,7 +251,7 @@ private fun CounterContent(uiState: CounterUiState) {
             Text("Async +1")
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dp8))
 
         Button(
             onClick = uiState.onReset,
