@@ -48,7 +48,7 @@ clean: clean-build  	## clean everything
 	@echo "\033[2;31m•••• remove empty directories, suppressing error messages\033[0m"
 	@fd -u -td -te -X rmdir
 
-clean-build: 		## clean build folders and cache alone
+clean-build: ensure-deps 		## clean build folders and cache alone
 	@echo "\033[2;31m•••• This script will clean the build folders & cache\033[0m"
 	@echo "\033[2;31m•••• removing build directories\033[0m"
 	@fd -u -t d '^build$$' -X rm -Rf
@@ -69,18 +69,14 @@ tests: 			## run unit tests (without lint)
 	@echo "Run all unit tests without linting"
 	@./gradlew -x lint --warning-mode $(warnings) testDebugUnitTest
 
-test: 			## run single unit test or all tests (without lint)
+test: ensure-deps 			## run single unit test or all tests (without lint)
                  # make test name=<TestClass>`
 	@if [ "$(name)" = "" ]; then \
 		echo "\033[2m•••• running all tests because you didn't provide name\033[0m"; \
 		make tests; \
 	else \
 		echo "\033[2m•••• Finding module and package for test: $(name)\033[0m"; \
-		if command -v fd >/dev/null 2>&1; then \
-			TEST_FILE=$$(fd -t f "$(name).kt" . | head -1); \
-		else \
-			TEST_FILE=$$(find . -name "$(name).kt" -type f | head -1); \
-		fi; \
+		TEST_FILE=$$(fd -t f "$(name).kt" . | head -1); \
 		if [ "$$TEST_FILE" = "" ]; then \
 			echo "Error: Test file $(name).kt not found"; \
 			exit 1; \
