@@ -423,18 +423,17 @@ class AnalyticsPlugin : UsfPlugin<Event, State, Effect>() {
 }
 ```
 
-## Current App Status
+## When to Use Plugins in Your Features
 
-The app has USF Plugin support but **currently uses standard USF ViewModels** for simplicity:
+The architecture supports USF Plugins, but **start with standard USF ViewModels** for simplicity:
 
-- HomeViewModel - Standard USF
-- SettingsViewModel - Standard USF
-- DiscoverViewModel - Standard USF
+- Use standard USF ViewModels for straightforward features
+- Introduce plugins only when reusability or complexity demands it
 
 Consider plugins when:
-1. Multiple screens need search
-2. Pagination logic needs sharing
-3. Complex features need isolation
+1. Multiple screens need the same logic (search, pagination, etc.)
+2. Features need isolated testing of concerns
+3. Complex screens benefit from separation of responsibilities
 
 ## Migration Path
 

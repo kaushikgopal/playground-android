@@ -448,15 +448,15 @@ class SearchPluginTest {
 
     @Test
     fun `search plugin handles query changes with debounce`() = runTest {
-        val plugin = SearchPlugin<Product> { query ->
-            productRepository.search(query)
+        val plugin = SearchPlugin<Item> { query ->
+            dataRepository.search(query)
         }
 
-        val mockScope = mockk<ResultScope<SearchState<Product>, SearchEffect>>()
-        val states = mutableListOf<SearchState<Product>>()
+        val mockScope = mockk<ResultScope<SearchState<Item>, SearchEffect>>()
+        val states = mutableListOf<SearchState<Item>>()
 
         every { mockScope.updateState(any()) } answers {
-            val updater = arg<(SearchState<Product>) -> SearchState<Product>>(0)
+            val updater = arg<(SearchState<Item>) -> SearchState<Item>>(0)
             states.add(updater(states.lastOrNull() ?: SearchState()))
         }
 
@@ -471,7 +471,7 @@ class SearchPluginTest {
 
         // Only final query should have triggered search
         assertThat(states.last().query).isEqualTo("abc")
-        coVerify(exactly = 1) { productRepository.search("abc") }
+        coVerify(exactly = 1) { dataRepository.search("abc") }
     }
 }
 ```
@@ -481,8 +481,8 @@ class SearchPluginTest {
 ```kotlin
 @Test
 fun `view model with search plugin integrates correctly`() = runTest {
-    val searchPlugin = mockk<SearchPlugin<Product>>()
-    val viewModel = ProductViewModelImpl(
+    val searchPlugin = mockk<SearchPlugin<Item>>()
+    val viewModel = DataViewModelImpl(
         coroutineScope = backgroundScope,
         searchPlugin = searchPlugin
     )
@@ -491,15 +491,15 @@ fun `view model with search plugin integrates correctly`() = runTest {
         searchPlugin.process(any<SearchEvent>())
     } coAnswers {
         // Mock plugin updating its internal state
-        SearchState(query = "test", results = listOf(Product("test")))
+        SearchState(query = "test", results = listOf(Item("test")))
     }
 
-    val states = mutableListOf<ProductUiState>()
+    val states = mutableListOf<DataUiState>()
     backgroundScope.launch { viewModel.state.toList(states) }
     runCurrent()
 
     // Act
-    viewModel.input(ProductEvent.SearchQueryChanged("test"))
+    viewModel.input(DataEvent.SearchQueryChanged("test"))
     runCurrent()
 
     // Assert plugin was called

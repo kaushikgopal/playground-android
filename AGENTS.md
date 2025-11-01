@@ -2,7 +2,7 @@
 
 ## How to Use This Document
 
-This is the **primary entry point** for agents working on Pudi. It provides sufficient context for most decisions.
+This is the **primary entry point** for agents working on this project. It provides sufficient context for most decisions.
 
 **When you need more detail:**
 - Module structure, navigation, or DI patterns → @ARCHITECTURE.md
@@ -13,7 +13,7 @@ This is the **primary entry point** for agents working on Pudi. It provides suff
 - Testing patterns and utilities → @TESTING.md
 
 ## Project Overview
-Pudi is an RSS reader for Android that aims to provide the world's best reading experience on mobile. Unlike feature-heavy RSS readers with endless customization, Pudi is intentionally opinionated and subtle—designed for users who want the most efficient way to consume content without configuration overhead.
+playground-android is a modern Android development playground showcasing best-in-class architectural patterns and practices. It serves as a reference implementation for building maintainable, testable Android applications using contemporary tooling and techniques.
 
 **Technology stack**: Kotlin-first with Jetpack Compose, Clean Architecture, Unidirectional State Flow (USF) ViewModels, and compile-time DI via kotlin-inject + Anvil. Modular by design: features ship as isolated modules, domain logic stays UI-agnostic, and shared utilities live in `:common`.
 
@@ -28,74 +28,74 @@ Pudi is an RSS reader for Android that aims to provide the world's best reading 
 
 ## Core Principles
 
-### 1. Subtle and Opinionated
-- No endless settings or customization options; deliver the best reading experience out of the box
-- Progressive disclosure: long-press for advanced options, infer user preferences from behavior
-- Persist style choices throughout the experience without explicit configuration
+### 1. Architecture First
+- Clean separation of concerns with feature modules, domain logic, and shared utilities
+- Testability as a first-class concern; every component should be easily testable in isolation
+- Type-safe dependency injection with compile-time validation
 
-### 2. Uncompromising Reading Experience
-- Typography, spacing, and padding rigorously aligned for optimal readability (inspiration: Superhuman, NetNewsWire)
-- Clean visual hierarchy with subtle text colors and dividers
-- Font choices optimized for extended reading sessions
+### 2. Modern Development Practices
+- Kotlin-first with coroutines for concurrency
+- Jetpack Compose for declarative UI with minimal boilerplate
+- Unidirectional data flow (USF) for predictable state management
+- Immutable data structures to prevent bugs
 
-### 3. Speed is a Feature
-- Never block the app; instant opening even in low network conditions
-- No splash screens or loading gates (contrast with Feedly's blocking splash)
-- Prioritize perceived performance and responsiveness
+### 3. Performance & Responsiveness
+- Never block the UI; all long-running work happens on background threads
+- Efficient state updates that minimize recomposition
+- Proper lifecycle management to prevent leaks
 
-### 4. Offline Companion
-- Automatically save "read later" articles for offline reading
-- Pre-cache content for flights/offline scenarios without manual intervention
+### 4. Developer Experience
+- Clear patterns that scale from simple to complex features
+- Comprehensive documentation with practical examples
+- Debugging-friendly architecture with observable state flows
 
-## Key Features & Priorities
+## Key Architectural Features
 
-### Implemented / In Progress
-- Feed management: add, organize, and read RSS/Atom feeds
-- Clean reading interface with favicon-based feed representation
-- Offline article storage for "read later"
+### Core Components
+- **USF ViewModels**: Unidirectional State Flow pattern for predictable state management
+- **Navigation 3**: Type-safe, developer-owned back stack navigation
+- **Modular Architecture**: Features as isolated modules with clear boundaries
+- **Compile-time DI**: kotlin-inject + Anvil for fast, type-safe dependency injection
 
-### High Priority
-- **Read Later**: first-class feature for saving articles
-- **Reddit feed support**: integrate Reddit as a feed source
-- **Newsletter-to-reading**: transform Substack/email newsletters to in-app reading (share-to-Pudi)
-- **Discover**: seamless search and feed discovery (Google search webview + quick-add for HN, popular blogs)
-- **Feed sniffing**: detect RSS feeds from arbitrary websites (check `<link>` metadata before guessing URLs)
+### Demonstrated Patterns
+- Simple CRUD screens with loading, error, and success states
+- Complex multi-step workflows with plugin composition
+- Form validation and debounced input handling
+- Async operations with proper cancellation
+- Lifecycle-aware resource management
+- Comprehensive testing patterns for all scenarios
 
-### Future Exploration
-- Social sharing: export feed lists as "starter packs"
-- Stories for today: surface popular articles from your feeds
-- Stream view: show top 10-20 articles only (like HN front page)
-- Mark above/below as read
-- Multi-source feeds: support beyond RSS (Bluesky, etc.)
-- LLM summaries for articles
-- Podcast generation from feeds (NotebookLM-style)
+### Areas of Focus
+- Clean architecture with separation of UI, domain, and data layers
+- Testable components with clear contracts
+- Performance optimization techniques
+- Error handling patterns
+- State management best practices
 
-## Design & UX Principles
+## UI & Compose Patterns
 
-### Information Architecture
-- Collapsible folder groups for feed organization
-- Consistent favicon usage across list items
-- Minimal chrome; let content breathe
-- Top bar fades subtly; no heavy UI chrome
+### Compose Best Practices
+- Thin composables that delegate logic to ViewModels
+- State hoisting for reusable components
+- Stable callbacks using `inputEventCallback` for reference stability
+- Preview functions for rapid UI iteration
 
-### Reading Experience
-- Single-page reading view with optimized spacing
-- Subtle dividers for content separation
-- Fixed typography hierarchy
-- WebView rendering for full article content (see ReadYou implementation)
+### State Management in UI
+- Collect state with `collectAsState()` for reactive updates
+- Handle effects with `LaunchedEffect(viewModel)` for one-time actions
+- Avoid business logic in composables; keep them presentation-only
 
-### Discover/Search
-- Fixed search bar at top
-- On focus: show starter text + Google search webview
-- Quick-add shortcuts for HN, popular blog categories
-- Seamless navigation from search to add
+### Navigation
+- Type-safe routes with serializable data classes
+- Clear entry points via `EntryProviderInstaller`
+- Back stack management through `Navigator` singleton
 
 ## Architecture
 
 ### Module Layout
 - `:app` — Entry point; wires dependency graph, root composables, navigation display
-- `:features:*` — Independent feature modules (e.g., `:features:feeds`, `:features:reader`, `:features:discover`)
-- `:domain:*` — Shared business logic (feed parsing, article storage, sync)
+- `:features:*` — Independent feature modules that demonstrate different patterns and use cases
+- `:domain:*` — Shared business logic and domain models
 - `:common:*` — Cross-cutting utilities (logging, networking, USF core, UI components)
 - `:build-logic` — Gradle convention plugins
 
@@ -145,16 +145,16 @@ Pudi is an RSS reader for Android that aims to provide the world's best reading 
 - Avoid Kotlin `object` except for true constants; rely on scoped DI classes
 - UI is Compose-only; keep composables thin, delegate logic to ViewModels and domain layers
 
-### Pudi-Specific
-- **RSS/Feed handling**: always check `<link rel="alternate" type="application/rss+xml">` in HTML `<head>` before guessing feed URLs
-- **Reading experience**: maintain consistent spacing/padding; consult Superhuman/NetNewsWire patterns
+### Performance & Best Practices
 - **Performance**: never block the UI; prefer incremental loading and optimistic updates
-- **Offline**: default to offline-first architecture; cache articles automatically for "read later"
+- **Error Handling**: explicit error states in UI, never silently catch-and-ignore exceptions
+- **State Management**: immutable state updates, clear event/state/effect boundaries
+- **Resource Management**: proper cleanup in lifecycle hooks, cancel coroutines when no longer needed
 
 ### Logging, Concurrency, Naming
-- Logging: never include sensitive data; prefix with data marks (`"[FFF][CC] message"`)
+- Logging: never include sensitive data; use clear prefixes for module identification (`"[MOD] message"`)
 - Concurrency: no `GlobalScope` or raw threads; inject scopes, use suspend functions, clean up via USF lifecycle
-- Naming: skip generic suffixes (Manager/Helper/Util); choose domain terms (e.g., `FeedSniffer`, `ArticleRepository`)
+- Naming: skip generic suffixes (Manager/Helper/Util); choose descriptive, domain-specific terms (e.g., `DataValidator`, `UserRepository`)
 
 ### Comments & Instruction Priority
 - Comments document *why* decisions were made (space-shuttle style); no TODOs without owner/context
