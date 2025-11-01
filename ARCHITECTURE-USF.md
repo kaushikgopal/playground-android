@@ -1,5 +1,10 @@
 # USF (Unidirectional State Flow) Architecture
 
+> **For project overview and context**, see @AGENTS.md
+> **For module structure and DI patterns**, see @ARCHITECTURE.md
+
+This comprehensive guide (3600+ lines) covers everything you need to implement, test, and debug USF ViewModels in Pudi.
+
 The USF pattern is perfect for:
 - Screens with user interactions
 - Complex state management
