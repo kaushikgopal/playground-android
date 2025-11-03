@@ -7,7 +7,7 @@ app-namespace = "sh.kau.playground"
 app-version-code = "2"
 app-version-name = "25.08.100"
 
-agp = "8.9.1"  # android-gradle-plugin
+agp = "8.12.3"  # android-gradle-plugin
 kotlin = "2.0.20"
 
 ksp = "2.0.20-1.0.25"      # Updated for Kotlin 2.1.21 compatibility
@@ -27,7 +27,7 @@ junit = "5.10.2"
 junitVersion = "1.2.1"
 kotlin-inject = "0.7.2"
 kotlin-inject-anvil = "0.1.0"
-lint = "31.9.1"  # = agp + 23.0.0
+lint = "31.12.3"  # = agp + 23.0.0
 nav3Core = "1.0.0-alpha04"
 secretsGradlePlugin = "2.0.1"
 spotless = "6.25.0"
