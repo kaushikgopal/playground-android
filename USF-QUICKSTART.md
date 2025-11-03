@@ -70,6 +70,8 @@ interface CounterViewModel {
 
 ## Step 3: Implement the USF ViewModel
 
+USF processes events on the main thread (`Dispatchers.Main.immediate`). Keep work inside `process()` fast and pure; move anything that might block into the provided `offload { }` helper.
+
 ```kotlin
 // CounterViewModelImpl.kt
 @ContributesBinding(CounterScope::class, boundType = CounterViewModel::class)
@@ -119,9 +121,11 @@ class CounterViewModelImpl(
                 updateState { it.copy(isLoading = true, errorMessage = null) }
 
                 try {
-                    // Simulate async operation
-                    delay(1000)
-                    val newValue = repository.incrementAsync(state.value.count)
+                    val newValue = offload {
+                        // Simulate expensive work off the main thread
+                        delay(1000)
+                        repository.incrementAsync(state.value.count)
+                    }
                     updateState {
                         it.copy(count = newValue, isLoading = false)
                     }
@@ -155,8 +159,8 @@ class CounterViewModelImpl(
 
 **Key Points:**
 - `ResultScope` provides thread-safe `updateState()` and `emitEffect()` functions
-- State updates are immutable copies
-- Long-running operations can be handled with proper loading states
+- Event processing runs on the main thread; keep updates fast and immutable
+- Use `offload { }` for work that would block—StrictMode in debug builds will warn if you forget
 - Error handling should update state and optionally emit effects
 
 ## Step 4: Create the Composable Screen

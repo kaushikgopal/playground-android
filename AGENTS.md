@@ -107,12 +107,14 @@ playground-android is a modern Android development playground showcasing best-in
 
 ### Unidirectional State Flow (USF)
 - Every screen uses `UsfViewModel<Event, UiState, Effect>` with immutable state and one-off effects
+- Events process on the main thread (`Dispatchers.Main.immediate`); keep handlers fast and use `offload { }` for heavy work
 - Events flow through `process` inside `ResultScope`; state updates via `updateState { … }`, side effects via `emitEffect`
 - Model callbacks as part of state to keep composables dumb:
   - Use `inputEventCallback` for simple events: `onAction = inputEventCallback(Event.Action)`
   - Use `inputEventCallback` for parameterized callbacks: `onTextChanged = inputEventCallback(Event::TextChanged)`
   - These helpers ensure **reference stability** for Compose, preventing unnecessary recompositions
   - Callbacks are created once and preserved via `.copy()`, ensuring stable references across state updates
+- Debug builds enable StrictMode (see `StrictModeInitializer`) to flag blocking work on main; fix violations by moving logic into `offload { }` or background coroutines
 
 **USF Documentation:**
 - **@USF.md** — Core patterns for 90% of cases (basic ViewModels, UI integration, testing)

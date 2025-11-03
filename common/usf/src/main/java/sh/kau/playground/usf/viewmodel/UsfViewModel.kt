@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onCompletion
@@ -70,7 +69,6 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
     inspector: UsfInspector? = null,
 ) : Usf<Event, UiState, Effect>, UsfPluginRegistrar<Event, UiState, Effect> {
 
-  private val stateDispatcher = processingDispatcher.limitedParallelism(1)
   private val viewModelMaxTimeoutSeconds = 5.seconds
   internal val subscriberCount = AtomicInteger(0)
 
@@ -126,7 +124,9 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
   }
 
   private val pluginEffects by lazy {
-    pluginRegistrar.effects.onEach { effect -> inspectEffect(effect) }
+    pluginRegistrar.effects.onEach { effect ->
+      _viewModelScope.launch(handler + processingDispatcher) { _inspector?.onEffect(effect) }
+    }
   }
 
   private val _effects = Channel<Effect>()
@@ -139,11 +139,20 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
   private val resultScope =
       object : ResultScope<UiState, Effect> {
         override fun updateState(update: (UiState) -> UiState) {
-          _pipelineScope?.launch(handler) { withContext(stateDispatcher) { _state.update(update) } }
+          val scope = _pipelineScope ?: _viewModelScope
+          if (!Dispatchers.Main.immediate.isDispatchNeeded(scope.coroutineContext)) {
+            _state.update(update)
+          } else {
+            scope.launch(handler + Dispatchers.Main.immediate) { _state.update(update) }
+          }
         }
 
         override fun emitEffect(effect: Effect) {
           emit(effect)
+        }
+
+        override suspend fun <T> offload(block: suspend () -> T): T {
+          return withContext(processingDispatcher) { block() }
         }
       }
 
@@ -153,12 +162,11 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
           .receiveAsFlow()
           .onStart { _inspector?.onPipelineStarted() }
           .onCompletion { _inspector?.onPipelineStopped() }
-          .flowOn(processingDispatcher)
           .onEach { event ->
-            _pipelineScope?.launch(handler) {
-              inspectEvent(event)
+            _pipelineScope?.launch(handler + Dispatchers.Main.immediate) {
+              launch(processingDispatcher) { _inspector?.onEvent(event) }
               try {
-                withContext(processingDispatcher) { resultScope.run { process(event) } }
+                resultScope.run { process(event) }
               } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 _inspector?.error(e, "[ev → s|e]")
@@ -315,20 +323,10 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
   }
 
   private fun emit(effect: Effect) {
-    _viewModelScope.launch(handler) {
+    _viewModelScope.launch(handler + Dispatchers.Main.immediate) {
       _effects.send(effect)
-      inspectEffect(effect)
+      launch(processingDispatcher) { _inspector?.onEffect(effect) }
     }
-  }
-
-  /** Inspect an event using the inspector */
-  private suspend fun inspectEvent(event: Any) {
-    withContext(processingDispatcher) { _inspector?.onEvent(event) }
-  }
-
-  /** Inspect an effect using the inspector */
-  private suspend fun inspectEffect(effect: Effect) {
-    withContext(processingDispatcher) { _inspector?.onEffect(effect) }
   }
 
   /** Registers a child plugin with this view model. */

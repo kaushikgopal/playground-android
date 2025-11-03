@@ -18,6 +18,14 @@ class AppImpl : App, Application() {
   override fun onCreate() {
     super.onCreate()
 
+    if (isDebuggable) {
+      try {
+        StrictModeInitializer.enableStrictMode()
+      } catch (_: Throwable) {
+        // StrictMode initializer is debug-only; never crash startup if it fails.
+      }
+    }
+
     // Log all priorities in debug builds, no-op in release builds.
     // AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
     CompositeLogger.Companion.install(appComponent.loggers.value)

@@ -73,7 +73,9 @@ abstract class UsfPlugin<Event : Any, State : Any, Effect : Any>(
     )
   }
   private val pluginEffects by lazy {
-    pluginRegistrar.effects.onEach { effect -> inspectEffect(effect) }
+    pluginRegistrar.effects.onEach { effect ->
+      coroutineScope.launch(handler + processingDispatcher) { _inspector?.onEffect(effect) }
+    }
   }
 
   private val _effects = MutableSharedFlow<Effect>()
@@ -82,12 +84,25 @@ abstract class UsfPlugin<Event : Any, State : Any, Effect : Any>(
   private val resultScope =
       object : ResultScope<State, Effect> {
         override fun updateState(update: (State) -> State) {
-          val updatedState = _state.updateAndGet(update)
-          coroutineScope.launch { _inspector?.onStateUpdated(updatedState) }
+          if (!Dispatchers.Main.immediate.isDispatchNeeded(coroutineScope.coroutineContext)) {
+            val updatedState = _state.updateAndGet(update)
+            coroutineScope.launch(handler + processingDispatcher) {
+              _inspector?.onStateUpdated(updatedState)
+            }
+          } else {
+            coroutineScope.launch(handler + Dispatchers.Main.immediate) {
+              val updatedState = _state.updateAndGet(update)
+              launch(processingDispatcher) { _inspector?.onStateUpdated(updatedState) }
+            }
+          }
         }
 
         override fun emitEffect(effect: Effect) {
           emit(effect)
+        }
+
+        override suspend fun <T> offload(block: suspend () -> T): T {
+          return withContext(processingDispatcher) { block() }
         }
       }
 
@@ -96,14 +111,14 @@ abstract class UsfPlugin<Event : Any, State : Any, Effect : Any>(
     pluginRegistrar.input(event)
 
     // Then process in parent plugin
-    coroutineScope.launch(handler) {
+    coroutineScope.launch(handler + Dispatchers.Main.immediate) {
       try {
-        withContext(processingDispatcher) { resultScope.run { process(event) } }
+        resultScope.run { process(event) }
       } catch (e: Exception) {
         if (e is CancellationException) throw e // propagate cancellation
         _inspector?.error(e, "[ev → s|ef]")
       }
-      inspectEvent(event)
+      launch(processingDispatcher) { _inspector?.onEvent(event) }
     }
   }
 
@@ -180,20 +195,10 @@ abstract class UsfPlugin<Event : Any, State : Any, Effect : Any>(
   }
 
   private fun emit(effect: Effect) {
-    coroutineScope.launch {
+    coroutineScope.launch(handler + Dispatchers.Main.immediate) {
       _effects.emit(effect)
-      inspectEffect(effect)
+      launch(processingDispatcher) { _inspector?.onEffect(effect) }
     }
-  }
-
-  /** Inspect an event using the inspector */
-  private suspend fun inspectEvent(event: Event) {
-    withContext(processingDispatcher) { _inspector?.onEvent(event) }
-  }
-
-  /** Inspect an effect using the inspector */
-  private suspend fun inspectEffect(effect: Effect) {
-    withContext(processingDispatcher) { _inspector?.onEffect(effect) }
   }
 
   /** Registers a child plugin with this plugin. */
