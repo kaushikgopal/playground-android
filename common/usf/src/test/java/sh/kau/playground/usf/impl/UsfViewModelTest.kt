@@ -1,9 +1,5 @@
 package sh.kau.playground.usf.impl
 
-import sh.kau.playground.usf.TestEffect
-import sh.kau.playground.usf.TestEvent
-import sh.kau.playground.usf.TestState
-import sh.kau.playground.usf.scope.ResultScope
 import kotlin.text.get
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -22,6 +18,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import sh.kau.playground.usf.TestEffect
+import sh.kau.playground.usf.TestEvent
+import sh.kau.playground.usf.TestState
+import sh.kau.playground.usf.scope.ResultScope
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsfViewModelTest {
@@ -337,7 +337,8 @@ class UsfViewModelTest {
 
   @Test
   @DisplayName(
-      "Pipeline stays active as long as there is at least one subscriber (either to state or effects)")
+      "Pipeline stays active as long as there is at least one subscriber (either to state or effects)"
+  )
   fun testPipelineStaysActiveWithAnySubscriber() = runTest {
     val viewModel = createTestViewModel()
     assertThat(viewModel.mainJob?.isActive ?: false).isFalse() // Initially inactive
@@ -429,7 +430,9 @@ class UsfViewModelTest {
         TestEvent.AsyncOperationEvent(
             delayMillis = asyncDelay,
             targetCounter = 0, // Counter doesn't matter here
-            effectToEmit = expectedEffect))
+            effectToEmit = expectedEffect,
+        )
+    )
     runCurrent() // Process the event, launch async job
 
     assertThat(effects).isEmpty() // Effect not yet emitted
@@ -460,7 +463,9 @@ class UsfViewModelTest {
             delayMillis = asyncDelay,
             targetCounter = targetCounterValue,
             newName = targetNameValue,
-            effectToEmit = expectedEffect))
+            effectToEmit = expectedEffect,
+        )
+    )
     runCurrent() // Process event, launch async
 
     assertThat(viewStates.last()).isEqualTo(TestState()) // Initial state
@@ -487,11 +492,12 @@ class UsfViewModelTest {
 
     // Launch slow one first, then fast one
     viewModel.input(
-        TestEvent.AsyncOperationEvent(
-            delayMillis = 200L, targetCounter = 2, effectToEmit = effect2))
+        TestEvent.AsyncOperationEvent(delayMillis = 200L, targetCounter = 2, effectToEmit = effect2)
+    )
     runCurrent()
     viewModel.input(
-        TestEvent.AsyncOperationEvent(delayMillis = 50L, targetCounter = 1, effectToEmit = effect1))
+        TestEvent.AsyncOperationEvent(delayMillis = 50L, targetCounter = 1, effectToEmit = effect1)
+    )
     runCurrent()
 
     assertThat(effects).isEmpty()
@@ -527,7 +533,9 @@ class UsfViewModelTest {
         TestEvent.AsyncOperationEvent(
             delayMillis = asyncErrorDelay,
             targetCounter = 999, // This state update should not happen
-            shouldThrowError = true))
+            shouldThrowError = true,
+        )
+    )
     runCurrent() // Process the event, launch the failing async job
 
     // Advance time to trigger the error in the async job
@@ -814,7 +822,11 @@ class UsfViewModelTest {
     val asyncDelay = 300L
     viewModel.input(
         TestEvent.AsyncOperationEvent(
-            delayMillis = asyncDelay, targetCounter = 999, effectToEmit = TestEffect.SimpleEffect))
+            delayMillis = asyncDelay,
+            targetCounter = 999,
+            effectToEmit = TestEffect.SimpleEffect,
+        )
+    )
     runCurrent() // Process event, launch async job
 
     // Async operations launched during event processing are now properly scoped to the pipeline

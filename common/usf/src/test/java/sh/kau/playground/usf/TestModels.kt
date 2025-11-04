@@ -16,11 +16,12 @@ sealed class TestEvent {
       val targetCounter: Int,
       val newName: String? = null,
       val effectToEmit: TestEffect? = null,
-      val shouldThrowError: Boolean = false
+      val shouldThrowError: Boolean = false,
   ) : TestEvent()
 
   // Events for effect-to-event transformation testing
   object PluginTriggeredReset : TestEvent()
+
   data class PluginTriggeredCounterUpdate(val newValue: Int) : TestEvent()
 }
 
@@ -37,7 +38,9 @@ sealed class TestEffect {
 // Plugin models for effect-to-event testing
 sealed class TestPluginEvent {
   object Increment : TestPluginEvent()
+
   object TriggerResetEffect : TestPluginEvent()
+
   data class TriggerCounterUpdateEffect(val targetValue: Int) : TestPluginEvent()
 }
 
@@ -45,6 +48,8 @@ data class TestPluginState(val value: Int = 0)
 
 sealed class TestPluginEffect {
   data class ValueChanged(val newValue: Int) : TestPluginEffect()
+
   object TriggerParentReset : TestPluginEffect()
+
   data class TriggerParentCounterUpdate(val targetValue: Int) : TestPluginEffect()
 }

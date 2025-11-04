@@ -82,10 +82,10 @@ fun interface UsfEventAdapter<ParentEvent, PluginEvent> {
 /**
  * Interface for an effect-to-event adapter that transforms plugin effects into parent events.
  *
- * This adapter enables plugins to trigger parent events through their effects, creating a
- * feedback loop where plugin effects can cause the parent to process new events. This is
- * particularly useful for complex workflows where plugins need to coordinate with their parent
- * or trigger parent state changes.
+ * This adapter enables plugins to trigger parent events through their effects, creating a feedback
+ * loop where plugin effects can cause the parent to process new events. This is particularly useful
+ * for complex workflows where plugins need to coordinate with their parent or trigger parent state
+ * changes.
  *
  * @param PluginEffect The plugin effect type
  * @param ParentEvent The parent event type
@@ -94,9 +94,9 @@ fun interface UsfEffectToEventAdapter<in PluginEffect, out ParentEvent> {
   /**
    * Transform a plugin effect into a parent event.
    *
-   * This method is called whenever the plugin emits an effect. It takes the plugin effect and
-   * maps it to a parent event type, or returns null if this effect should not be transformed
-   * into a parent event.
+   * This method is called whenever the plugin emits an effect. It takes the plugin effect and maps
+   * it to a parent event type, or returns null if this effect should not be transformed into a
+   * parent event.
    *
    * @param pluginEffect The effect from the plugin
    * @return A parent event, or null if this effect shouldn't be transformed to an event

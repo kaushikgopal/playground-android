@@ -3,8 +3,8 @@ package sh.kau.playground.usf.scope
 /**
  * Scope interface that provides methods for updating state and emitting effects.
  *
- * ResultScope is used as a receiver type for event processing methods in USF ViewModels
- * and plugins, providing a clean API for state management and effect emission.
+ * ResultScope is used as a receiver type for event processing methods in USF ViewModels and
+ * plugins, providing a clean API for state management and effect emission.
  *
  * @param State The state type
  * @param Effect The effect type
@@ -28,9 +28,9 @@ interface ResultScope<State, Effect> {
   /**
    * Offloads heavy or blocking work to a background dispatcher before returning to the caller.
    *
-   * Implementations provide the dispatcher choice; callers simply supply the workload that must
-   * not run on the main thread. When the block completes, execution resumes on the original
-   * context (typically main) so UI updates remain safe.
+   * Implementations provide the dispatcher choice; callers simply supply the workload that must not
+   * run on the main thread. When the block completes, execution resumes on the original context
+   * (typically main) so UI updates remain safe.
    */
   suspend fun <T> offload(block: suspend () -> T): T
 }

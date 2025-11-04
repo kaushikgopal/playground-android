@@ -40,34 +40,36 @@ fun SettingsBScreen(
 
   Box(
       modifier = Modifier.fillMaxSize().background(Secondary),
-      contentAlignment = Alignment.Center) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(dp16),
-            modifier = Modifier.padding(dp16)) {
-              Text(
-                  text = uiState.title,
-                  style = MaterialTheme.typography.headlineLarge,
-                  fontWeight = FontWeight.Bold,
-                  modifier = Modifier.padding(bottom = dp24),
-              )
+      contentAlignment = Alignment.Center,
+  ) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(dp16),
+        modifier = Modifier.padding(dp16),
+    ) {
+      Text(
+          text = uiState.title,
+          style = MaterialTheme.typography.headlineLarge,
+          fontWeight = FontWeight.Bold,
+          modifier = Modifier.padding(bottom = dp24),
+      )
 
-              // Display a default quote
-              Text(
-                  text = uiState.quoteText,
-                  style = MaterialTheme.typography.bodyLarge,
-                  fontStyle = FontStyle.Italic,
-                  modifier = Modifier.padding(horizontal = dp32, vertical = dp16),
-                  textAlign = TextAlign.Center,
-              )
+      // Display a default quote
+      Text(
+          text = uiState.quoteText,
+          style = MaterialTheme.typography.bodyLarge,
+          fontStyle = FontStyle.Italic,
+          modifier = Modifier.padding(horizontal = dp32, vertical = dp16),
+          textAlign = TextAlign.Center,
+      )
 
-              Text(
-                  text = "- ${uiState.quoteAuthor}",
-                  style = MaterialTheme.typography.bodyMedium,
-                  fontStyle = FontStyle.Italic,
-              )
-            }
-      }
+      Text(
+          text = "- ${uiState.quoteAuthor}",
+          style = MaterialTheme.typography.bodyMedium,
+          fontStyle = FontStyle.Italic,
+      )
+    }
+  }
 }
 
 @Preview(showBackground = true)

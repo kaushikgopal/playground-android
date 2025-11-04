@@ -1,15 +1,5 @@
 package sh.kau.playground.usf.viewmodel
 
-import sh.kau.playground.usf.api.Usf
-import sh.kau.playground.usf.inspector.UsfInspector
-import sh.kau.playground.usf.plugin.UsfPluginInterface
-import sh.kau.playground.usf.plugin.UsfPluginRegistrar
-import sh.kau.playground.usf.plugin.UsfPluginRegistrarImpl
-import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
-import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
-import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
-import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
-import sh.kau.playground.usf.scope.ResultScope
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.seconds
@@ -38,6 +28,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
+import sh.kau.playground.usf.api.Usf
+import sh.kau.playground.usf.inspector.UsfInspector
+import sh.kau.playground.usf.plugin.UsfPluginInterface
+import sh.kau.playground.usf.plugin.UsfPluginRegistrar
+import sh.kau.playground.usf.plugin.UsfPluginRegistrarImpl
+import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
+import sh.kau.playground.usf.scope.ResultScope
 
 /**
  * Base implementation of UsfViewModel that adopts the ResultScope pattern with pipeline-based
@@ -264,7 +264,8 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
       _pipelineScope =
           CoroutineScope(
               _viewModelScope.coroutineContext +
-                  SupervisorJob(_viewModelScope.coroutineContext[Job]))
+                  SupervisorJob(_viewModelScope.coroutineContext[Job])
+          )
 
       mainJob = pipeline.launchIn(_viewModelScope.plus(handler))
       pluginRegistrar.register(_pipelineScope!!)
@@ -308,7 +309,7 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
   private fun <T> Flow<T>.manageSubscription(
       subscriberCount: AtomicInteger,
       startPipeline: () -> Unit,
-      schedulePipelineTermination: () -> Unit
+      schedulePipelineTermination: () -> Unit,
   ): Flow<T> {
     return this.onStart {
           if (subscriberCount.incrementAndGet() == 1) {
@@ -335,7 +336,7 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
       mapEvent: UsfEventAdapter<Event, PluginEvent>?,
       applyState: UsfStateAdapter<PluginState, UiState>?,
       mapEffect: UsfEffectAdapter<PluginEffect, Effect>?,
-      transformEffect: UsfEffectToEventAdapter<PluginEffect, Event>?
+      transformEffect: UsfEffectToEventAdapter<PluginEffect, Event>?,
   ) {
     pluginRegistrar.register(plugin, mapEvent, applyState, mapEffect, transformEffect)
   }

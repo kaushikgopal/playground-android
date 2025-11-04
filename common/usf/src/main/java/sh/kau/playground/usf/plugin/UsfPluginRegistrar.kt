@@ -30,8 +30,8 @@ interface UsfPluginRegistrar<Event : Any, State : Any, Effect : Any> {
    *   no events will be sent to this plugin.
    * @param applyState Optional adapter to map child state to parent state. If null, state changes
    *   from this plugin will not affect parent state.
-   * @param mapEffect Optional adapter to map child effects to parent effects. If null, effects
-   *   from this plugin will not be propagated to parent.
+   * @param mapEffect Optional adapter to map child effects to parent effects. If null, effects from
+   *   this plugin will not be propagated to parent.
    * @param transformEffect Optional adapter to transform child effects to parent events. If null,
    *   child effects will not trigger parent events.
    */

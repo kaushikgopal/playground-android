@@ -57,36 +57,39 @@ class SettingsAScreen(
 
     Box(
         modifier = Modifier.fillMaxSize().background(Teritiary),
-        contentAlignment = Alignment.Center) {
-          Column(
-              horizontalAlignment = Alignment.CenterHorizontally,
-              verticalArrangement = Arrangement.spacedBy(dp16),
-              modifier = Modifier.padding(dp16)) {
-                Text(
-                    text = uiState.title,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                )
+        contentAlignment = Alignment.Center,
+    ) {
+      Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(dp16),
+          modifier = Modifier.padding(dp16),
+      ) {
+        Text(
+            text = uiState.title,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+        )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      Text("Enable Feature", style = MaterialTheme.typography.bodyLarge)
-                      Switch(
-                          checked = uiState.toggleEnabled,
-                          onCheckedChange = { viewModel.input(SettingsAEvent.ToggleChanged) }, // TODO: should
-                      )
-                    }
-
-                Button(
-                    onClick = { viewModel.input(SettingsAEvent.NavigateToBClicked) },
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                ) {
-                  Text(text = "Settings B")
-                }
-              }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Text("Enable Feature", style = MaterialTheme.typography.bodyLarge)
+          Switch(
+              checked = uiState.toggleEnabled,
+              onCheckedChange = { viewModel.input(SettingsAEvent.ToggleChanged) }, // TODO: should
+          )
         }
+
+        Button(
+            onClick = { viewModel.input(SettingsAEvent.NavigateToBClicked) },
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        ) {
+          Text(text = "Settings B")
+        }
+      }
+    }
   }
 }
 

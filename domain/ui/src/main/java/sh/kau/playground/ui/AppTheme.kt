@@ -19,7 +19,7 @@ import androidx.core.view.WindowCompat
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true, // Dynamic color is available on Android 12+
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
   val context = LocalContext.current
   val colorScheme =

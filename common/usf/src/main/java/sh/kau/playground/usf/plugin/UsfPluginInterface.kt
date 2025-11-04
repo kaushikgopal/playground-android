@@ -74,8 +74,8 @@
  */
 package sh.kau.playground.usf.plugin
 
-import sh.kau.playground.usf.api.Usf
 import kotlinx.coroutines.CoroutineScope
+import sh.kau.playground.usf.api.Usf
 
 /**
  * Core interface for the USF plugin pattern, enabling modular and reusable UI logic.

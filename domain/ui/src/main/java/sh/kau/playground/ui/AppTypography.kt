@@ -15,7 +15,8 @@ val AppTypography =
                 fontWeight = FontWeight.Companion.Normal,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                letterSpacing = 0.5.sp),
+                letterSpacing = 0.5.sp,
+            ),
         /* Other default text styles to override
 
             displayLarge =

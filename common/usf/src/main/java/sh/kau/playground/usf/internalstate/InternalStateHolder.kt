@@ -13,9 +13,7 @@ class InternalStateHolder<T>(initialState: T) {
   private var _state: T = initialState
   private val mutex = Mutex()
 
-  /**
-   * Gets the current state value.
-   */
+  /** Gets the current state value. */
   val get: T
     get() = _state
 
@@ -25,10 +23,11 @@ class InternalStateHolder<T>(initialState: T) {
    * @param update Function that receives the current state and returns the new state
    * @return The new state after update
    */
-  suspend fun update(update: (T) -> T): T = mutex.withLock {
-    _state = update(_state)
-    _state
-  }
+  suspend fun update(update: (T) -> T): T =
+      mutex.withLock {
+        _state = update(_state)
+        _state
+      }
 
   /**
    * Updates the state atomically using the provided update function (non-suspending version).
@@ -36,8 +35,9 @@ class InternalStateHolder<T>(initialState: T) {
    * @param update Function that receives the current state and returns the new state
    * @return The new state after update
    */
-  fun updateBlocking(update: (T) -> T): T = synchronized(this) {
-    _state = update(_state)
-    _state
-  }
+  fun updateBlocking(update: (T) -> T): T =
+      synchronized(this) {
+        _state = update(_state)
+        _state
+      }
 }

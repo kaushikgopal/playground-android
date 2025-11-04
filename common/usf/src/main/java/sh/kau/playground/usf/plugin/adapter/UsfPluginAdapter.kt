@@ -1,7 +1,5 @@
 package sh.kau.playground.usf.plugin.adapter
 
-import sh.kau.playground.usf.api.Usf
-import sh.kau.playground.usf.plugin.UsfPluginInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -10,6 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import sh.kau.playground.usf.api.Usf
+import sh.kau.playground.usf.plugin.UsfPluginInterface
 
 /**
  * Adapts any Usf implementation to the UsfPlugin interface.

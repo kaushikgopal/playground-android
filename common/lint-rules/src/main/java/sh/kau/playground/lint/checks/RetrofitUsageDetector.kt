@@ -39,9 +39,11 @@ class RetrofitUsageDetector : Detector(), SourceCodeScanner {
             HTTP_ANNOTATIONS.firstNotNullOfOrNull { node.findAnnotation(it) } ?: return
 
         val returnType = node.safeReturnType(context)
-        if (returnType == null ||
-            returnType == PsiTypes.voidType() ||
-            returnType.canonicalText == "kotlin.Unit") {
+        if (
+            returnType == null ||
+                returnType == PsiTypes.voidType() ||
+                returnType.canonicalText == "kotlin.Unit"
+        ) {
           node.report(
               "Retrofit endpoints should return something other than Unit/void.",
               context.getNameLocation(node),
@@ -83,8 +85,9 @@ class RetrofitUsageDetector : Detector(), SourceCodeScanner {
             } else {
               hasBodyParam = true
             }
-          } else if (parameter.hasAnnotation(FQCN_FIELD) ||
-              parameter.hasAnnotation(FQCN_FIELD_MAP)) {
+          } else if (
+              parameter.hasAnnotation(FQCN_FIELD) || parameter.hasAnnotation(FQCN_FIELD_MAP)
+          ) {
             hasFieldParams = true
             if (!isFormUrlEncoded) {
               val currentText = node.text

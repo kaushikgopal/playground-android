@@ -6,8 +6,8 @@ import kotlin.reflect.KProperty
 /**
  * Delegate property for managing internal state in USF ViewModels and plugins.
  *
- * This delegate provides a lazy-initialized, thread-safe internal state holder
- * that can be used for managing ViewModel-specific state separate from UI state.
+ * This delegate provides a lazy-initialized, thread-safe internal state holder that can be used for
+ * managing ViewModel-specific state separate from UI state.
  *
  * Usage:
  * ```
@@ -22,16 +22,16 @@ import kotlin.reflect.KProperty
  * @param T The type of internal state
  * @param initializer Function that provides the initial state
  */
-class InternalState<T>(
-    private val initializer: () -> T
-) : ReadOnlyProperty<Any?, InternalStateHolder<T>> {
+class InternalState<T>(private val initializer: () -> T) :
+    ReadOnlyProperty<Any?, InternalStateHolder<T>> {
 
   private var _holder: InternalStateHolder<T>? = null
 
   override fun getValue(thisRef: Any?, property: KProperty<*>): InternalStateHolder<T> {
-    return _holder ?: synchronized(this) {
-      _holder ?: InternalStateHolder(initializer()).also { _holder = it }
-    }
+    return _holder
+        ?: synchronized(this) {
+          _holder ?: InternalStateHolder(initializer()).also { _holder = it }
+        }
   }
 
   companion object {

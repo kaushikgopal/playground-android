@@ -25,7 +25,8 @@ class CoerceAtMostUsageDetector : Detector(), SourceCodeScanner {
             priority = 6,
             severity = Severity.ERROR,
             implementation =
-                Implementation(CoerceAtMostUsageDetector::class.java, Scope.JAVA_FILE_SCOPE))
+                Implementation(CoerceAtMostUsageDetector::class.java, Scope.JAVA_FILE_SCOPE),
+        )
   }
 
   override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)
@@ -56,7 +57,8 @@ class CoerceAtMostUsageDetector : Detector(), SourceCodeScanner {
                 node,
                 context.getLocation(node),
                 "Prefer using `minOf`",
-                fix)
+                fix,
+            )
           }
         }
       }

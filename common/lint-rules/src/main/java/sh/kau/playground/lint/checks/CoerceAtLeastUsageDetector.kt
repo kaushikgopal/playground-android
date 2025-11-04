@@ -25,7 +25,8 @@ class CoerceAtLeastUsageDetector : Detector(), SourceCodeScanner {
             priority = 6,
             severity = Severity.ERROR,
             implementation =
-                Implementation(CoerceAtLeastUsageDetector::class.java, Scope.JAVA_FILE_SCOPE))
+                Implementation(CoerceAtLeastUsageDetector::class.java, Scope.JAVA_FILE_SCOPE),
+        )
   }
 
   override fun getApplicableUastTypes() = listOf(UCallExpression::class.java)

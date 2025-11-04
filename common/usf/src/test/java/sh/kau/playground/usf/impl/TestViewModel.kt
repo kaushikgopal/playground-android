@@ -16,7 +16,7 @@ open class TestViewModel(
     private val customInitialStateProvider: (() -> TestState)? = null,
     private val testInspector: UsfInspector = NoOpInspector,
     coroutineScope: CoroutineScope,
-    processingDispatcher: CoroutineDispatcher
+    processingDispatcher: CoroutineDispatcher,
 ) :
     UsfViewModel<TestEvent, TestState, TestEffect>(
         inspector = testInspector,

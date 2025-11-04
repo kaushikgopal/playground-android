@@ -1,11 +1,5 @@
 package sh.kau.playground.usf.plugin
 
-import sh.kau.playground.usf.inspector.UsfInspector
-import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
-import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
-import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
-import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
-import sh.kau.playground.usf.scope.ResultScope
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,6 +17,12 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
+import sh.kau.playground.usf.inspector.UsfInspector
+import sh.kau.playground.usf.plugin.adapter.UsfEffectAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEffectToEventAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfEventAdapter
+import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
+import sh.kau.playground.usf.scope.ResultScope
 
 /**
  * Implementation of the [UsfPluginInterface] interface with standard state and effect management.

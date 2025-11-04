@@ -106,13 +106,17 @@ internal class DenyListedApiDetector : Detector(), SourceCodeScanner, XmlScanner
             val deniedFunctions =
                 typeConfig.functionEntries.getOrDefault(functionName, emptyList()) +
                     typeConfig.functionEntries.getOrDefault(
-                        DenyListedEntry.Companion.MatchAll, emptyList())
+                        DenyListedEntry.Companion.MatchAll,
+                        emptyList(),
+                    )
 
             deniedFunctions.forEach { denyListEntry ->
               if (denyListEntry.allowInTests && context.isTestSource) {
                 return@forEach
-              } else if (denyListEntry.parametersMatchWith(function) &&
-                  denyListEntry.argumentsMatchWith(node)) {
+              } else if (
+                  denyListEntry.parametersMatchWith(function) &&
+                      denyListEntry.argumentsMatchWith(node)
+              ) {
                 context.report(
                     issue = denyListEntry.issue,
                     location = context.getNameLocation(node),
@@ -140,7 +144,9 @@ internal class DenyListedApiDetector : Detector(), SourceCodeScanner, XmlScanner
             val deniedFunctions =
                 typeConfig.referenceEntries.getOrDefault(referenceName, emptyList()) +
                     typeConfig.referenceEntries.getOrDefault(
-                        DenyListedEntry.Companion.MatchAll, emptyList())
+                        DenyListedEntry.Companion.MatchAll,
+                        emptyList(),
+                    )
 
             deniedFunctions.forEach { denyListEntry ->
               if (denyListEntry.allowInTests && context.isTestSource) {
@@ -291,7 +297,8 @@ internal class DenyListedApiDetector : Detector(), SourceCodeScanner, XmlScanner
                 className = "android.os.Build.VERSION_CODES",
                 fieldName = DenyListedEntry.Companion.MatchAll,
                 errorMessage =
-                    "No one remembers what these constants map to. Use the API level integer value directly since it's self-defining."),
+                    "No one remembers what these constants map to. Use the API level integer value directly since it's self-defining.",
+            ),
             DenyListedEntry(
                 className = "kotlinx.coroutines.rx3.RxCompletableKt",
                 functionName = "rxCompletable",
