@@ -3,6 +3,7 @@ package sh.kau.playground.features.settings.viewmodel
 import kotlinx.coroutines.CoroutineScope
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsScope
+import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
 import sh.kau.playground.usf.viewmodel.inputEventCallback
@@ -16,6 +17,7 @@ class SettingsAViewModelImpl(
     SettingsAViewModel,
     UsfViewModel<SettingsAEvent, SettingsAUiState, SettingsAEffect>(
         coroutineScope = coroutineScope,
+        inspector = UsfLoggingInspector("[USF][S-A]"),
     ) {
 
   override fun initialState(): SettingsAUiState {

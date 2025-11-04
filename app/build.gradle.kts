@@ -45,7 +45,9 @@ dependencies {
   ksp(libs.bundles.kotlin.inject.compiler)
   implementation(libs.bundles.kotlin.inject)
 
+  implementation(projects.common.log) // DI multi-binding for loggers
   implementation(projects.common.navigation)
+
   // --- project dependencies
   implementation(projects.features.landing)
   implementation(projects.features.settings.impl)

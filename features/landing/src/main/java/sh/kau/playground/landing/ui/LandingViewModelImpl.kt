@@ -3,6 +3,7 @@ package sh.kau.playground.landing.ui
 import kotlinx.coroutines.CoroutineScope
 import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.landing.di.LandingScope
+import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
@@ -17,6 +18,7 @@ class LandingViewModelImpl(
     LandingViewModel,
     UsfViewModel<LandingEvent, LandingUiState, LandingEffect>(
         coroutineScope = coroutineScope,
+        inspector = UsfLoggingInspector("[USF][LVM]"),
     ) {
 
   override fun initialState(): LandingUiState = LandingUiState()

@@ -7,6 +7,7 @@ import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.quoter.Quote
 import sh.kau.playground.quoter.QuotesRepo
+import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
@@ -20,6 +21,7 @@ constructor(
 ) :
     UsfViewModel<SettingsBEvent, SettingsBUiState, SettingsBEffect>(
         coroutineScope = coroutineScope,
+        inspector = UsfLoggingInspector("[USF][S-B]"),
     ),
     SettingsBViewModel {
 

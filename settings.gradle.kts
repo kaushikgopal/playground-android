@@ -31,19 +31,18 @@ include(
 // module specific to this app
 include(
     ":domain:ui", // compose theme & design system
-
     ":domain:quoter:api", // produce quotes
     ":domain:quoter:impl",
-
     ":domain:shared", // pure kotlin module | referenced everywhere e.g. @Named
 )
-
 
 // common modules (shared across the app) but swappable with other implementations
 include(
     ":common:log", // android module
+    ":common:usf", // jvm module
+    ":common:usf:log", // convenience logger for feature modules
+
     ":common:lint-rules",
     ":common:navigation",
     ":common:networking",
-    ":common:usf",
 )
