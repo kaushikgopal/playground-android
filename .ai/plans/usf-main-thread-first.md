@@ -700,61 +700,8 @@ All implementation, documentation, and validation tasks complete. Awaiting code 
 
 ## In Progress
 
-- None (select next task from Pending when ready)
+- None (plan completed)
 
 ## Pending
 
-### Core Implementation
-- [x] Update UsfViewModel.kt implementation (`common/usf/src/main/java/sh/kau/playground/usf/viewmodel/UsfViewModel.kt`)
-  - [x] Remove `stateDispatcher` variable (line 73)
-  - [x] Update ResultScope implementation (lines 141–148)
-    - [x] Remove withContext from updateState
-    - [x] Add offload implementation
-    - [x] Add main fast‑path for updateState when already on Main.immediate
-  - [x] Remove `.flowOn(processingDispatcher)` from pipeline (line 156)
-  - [x] Update event processing (lines 157–167)
-    - [x] Remove `withContext(processingDispatcher)`
-    - [x] Add `launch(processingDispatcher)` for inspector
-    - [x] Add `Dispatchers.Main.immediate` to the launch that runs process
-  - [x] Make `Dispatchers.Main.immediate` explicit for UI-touching launches
-  - [x] Update `emit` function (lines 317–321)
-    - [x] Add `launch(processingDispatcher)` for inspector
-  - [x] Delete `inspectEvent` (lines 325–327)
-  - [x] Delete `inspectEffect` (lines 330–331)
-
-- [x] Update UsfPlugin.kt implementation (`common/usf/src/main/java/sh/kau/playground/usf/plugin/UsfPlugin.kt`)
-  - [x] Add main fast‑path in `updateState`
-  - [x] Add `offload` implementation in ResultScope
-  - [x] Process events on Main.immediate; move inspector to background
-  - [x] Emit effects on Main.immediate; move inspector to background
-  - [x] Verify consistency with ViewModel behavior
-
-- [x] Add debug-only StrictMode gate in app module
-  - [x] Add `app/src/debug/java/sh/kau/playground/app/StrictModeInitializer.kt`
-  - [x] Call from `app/src/main/java/sh/kau/playground/app/AppImpl.kt` when debuggable
-  - [x] Detect disk IO, network, and slow calls on main; penalties: at least `penaltyLog()`
-
-### Testing
-- [x] Run full test suite
-  - [x] Execute `make tests`
-  - [x] Verify all 25+ tests pass
-  - [x] Debug any failures
-
-- [x] Manual testing
-- [x] Test TextField responsiveness (e.g., temporary field in Settings A)
-  - [x] Test heavy operations (if examples exist)
-  - [x] Test error handling
-  - [x] Test configuration changes
-
-- [x] Performance verification
-  - [x] Measure TextField input latency improvement
-  - [x] Verify no frame drops during text input
-
-### Cleanup
-- [x] If a temporary TextField was added for validation, remove or convert it into a proper example after verification (not needed; no temporary field added)
-
-### Documentation
-- (Completed in this phase — see Completed section for details)
-
-### Follow-up
-- Deferred for future hardening pass (see Decision Log)
+- None
