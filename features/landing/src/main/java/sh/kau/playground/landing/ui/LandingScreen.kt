@@ -27,8 +27,8 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 typealias LandingScreen = @Composable () -> Unit
 
-@Inject
-@SingleIn(LandingScope::class)
+// Note: @Inject on top-level functions doesn't work with typealiases
+// The @Provides is in the component instead
 fun LandingScreen(
     viewModel: LandingViewModel,
     navigator: Navigator,

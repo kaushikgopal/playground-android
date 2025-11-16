@@ -30,8 +30,8 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 typealias SettingsBScreen = @Composable () -> Unit
 
 // kotlin-inject function injection (1)
-@Inject
-@SingleIn(SettingsScope::class)
+// Note: @Inject on top-level functions doesn't work with typealiases
+// The @Provides is in the component instead
 fun SettingsBScreen(
     viewModel: SettingsBViewModel,
 ): SettingsBScreen = {

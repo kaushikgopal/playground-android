@@ -11,6 +11,7 @@ import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenARoute
 import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.features.settings.ui.SettingsAScreen
 import sh.kau.playground.features.settings.ui.SettingsBScreen
+import sh.kau.playground.features.settings.viewmodel.SettingsBViewModel
 import sh.kau.playground.navigation.EntryProviderInstaller
 import sh.kau.playground.shared.di.Named
 import software.amazon.lastmile.kotlin.inject.anvil.AppScope
@@ -22,13 +23,20 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 interface SettingsComponent {
 
   val settingsAScreen: Lazy<SettingsAScreen>
-  // kotlin-inject function injection (3)
-  val settingsBScreen: Lazy<SettingsBScreen>
 
   @Provides
   @SingleIn(SettingsScope::class)
   fun provideCoroutineScope(): CoroutineScope =
       CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+  // kotlin-inject function injection (3)
+  // Explicit @Provides for typealias to work around KSP limitations
+  @Provides
+  fun provideSettingsBScreen(viewModel: SettingsBViewModel): SettingsBScreen =
+    SettingsBScreen(viewModel)
+
+  // Expose the screen for navigation
+  val settingsBScreen: SettingsBScreen
 
   @ContributesSubcomponent.Factory(AppScope::class)
   interface Factory {
@@ -41,7 +49,7 @@ interface SettingsComponent {
       // remember factory here is the AppComponent itself (it implements the interface)
       val settingsComponent by lazy { factory.createSettingsComponent() }
       entry<ScreenARoute> { settingsComponent.settingsAScreen.value() }
-      entry<ScreenBRoute> { settingsComponent.settingsBScreen.value() }
+      entry<ScreenBRoute> { settingsComponent.settingsBScreen() }
     }
   }
 }
