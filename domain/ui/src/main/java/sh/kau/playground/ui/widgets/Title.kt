@@ -1,11 +1,11 @@
 package sh.kau.playground.ui.widgets
 
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import sh.kau.playground.ui.AppTypography
+import sh.kau.playground.ui.modTopTitlePadding
 
-//@Compos
-//fun Title(text: String) {
-//  _root_ide_package_.org.w3c.dom.Text(
-//    text = "Discover",
-//    style = AppTypography.displayMedium,
-//    modifier = modTopTitlePadding
-//  )
-//}
+@Composable
+fun Title(text: String) {
+  Text(text = "Discover", style = AppTypography.displayMedium, modifier = modTopTitlePadding)
+}
