@@ -32,10 +32,9 @@ typealias SettingsBScreen = @Composable () -> Unit
 // kotlin-inject function injection (1)
 @Inject
 @SingleIn(SettingsScope::class)
-@Composable
 fun SettingsBScreen(
     viewModel: SettingsBViewModel,
-) {
+): SettingsBScreen = {
   val uiState by viewModel.state.collectAsState()
 
   Box(

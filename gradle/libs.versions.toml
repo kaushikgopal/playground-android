@@ -8,9 +8,9 @@ app-version-code = "2"
 app-version-name = "25.08.100"
 
 agp = "8.12.3"  # android-gradle-plugin
-kotlin = "2.0.20"
+kotlin = "2.1.21"
 
-ksp = "2.0.20-1.0.25"      # Updated for Kotlin 2.1.21 compatibility
+ksp = "2.1.21-2.0.2"       # Updated for Kotlin 2.1.21 compatibility
 kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 kotlinxSerializationCore = "1.8.1"
@@ -18,7 +18,7 @@ kotlinxSerializationCore = "1.8.1"
 activityCompose = "1.10.1"
 androidxLifecycle = "2.8.7"
 androidxTest = "1.6.2"
-composeBom = "2025.04.00" # https://developer.android.com/jetpack/compose/bom/bom-mapping
+composeBom = "2025.05.00" # https://developer.android.com/jetpack/compose/bom/bom-mapping
 composeNavigation = "2.8.9"
 desugarJdk = "2.1.5"
 espresso = "3.6.1"
@@ -50,6 +50,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-material = { module = "androidx.compose.material3:material3" }
+compose-material-alpha = { module = "androidx.compose.material3:material3", version = "1.4.0-alpha14" }
 compose-material-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 

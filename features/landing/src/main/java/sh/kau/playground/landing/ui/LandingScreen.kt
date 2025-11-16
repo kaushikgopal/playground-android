@@ -29,11 +29,10 @@ typealias LandingScreen = @Composable () -> Unit
 
 @Inject
 @SingleIn(LandingScope::class)
-@Composable
 fun LandingScreen(
     viewModel: LandingViewModel,
     navigator: Navigator,
-) {
+): LandingScreen = {
   val uiState by viewModel.state.collectAsState()
 
   LaunchedEffect(viewModel) {
