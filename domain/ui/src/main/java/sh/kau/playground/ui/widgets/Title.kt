@@ -6,6 +6,6 @@ import sh.kau.playground.ui.AppTypography
 import sh.kau.playground.ui.modTopTitlePadding
 
 @Composable
-fun Title(text: String) {
-  Text(text = "Discover", style = AppTypography.displayMedium, modifier = modTopTitlePadding)
+fun Title(text: String = "✴\uFE0E Screen ✴\uFE0E") {
+  Text(text = text, style = AppTypography.displayMedium, modifier = modTopTitlePadding)
 }
