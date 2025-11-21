@@ -9,11 +9,11 @@ Playground Android currently wires every module through kotlin-inject + kotlin-i
 ## Progress
 
 - [x] (2025-11-21 00:06Z) Repository + documentation audit completed; ExecPlan authored with Option 3 (full Metro migration) scope.
-- [ ] Phase 1 – Version catalog/Kotlin upgrade validated on `make debug` with legacy DI still intact.
-- [ ] Phase 2 – Build-logic + Gradle modules switched from KSP/kotlin-inject bundles to the Metro Gradle plugin and compiler classpath.
-- [ ] Phase 3 – Scope + annotation migration (AppScope/LandingScope/SettingsScope + all `me.tatarka`/`software.amazon.lastmile` imports replaced with Metro equivalents).
-- [ ] Phase 4 – Graph rewrites (`AppComponent` → `AppGraph`, feature subcomponents → graph extensions, entry installers rebased on Metro providers).
-- [ ] Phase 5 – Validation, documentation, and cleanup once `make debug`, `make tests`, and `./gradlew :app:installDebug` succeed under Metro.
+- [x] (2025-11-21 00:58Z) Phase 1 – Version catalog/Kotlin upgrade validated on `make debug` with legacy DI still intact (Kotlin 2.2.20, KSP 2.2.20-2.0.4, Metro plugin alias declared, `make debug warnings=summary` successful).
+- [x] (2025-11-21 01:03Z) Phase 2 – Build-logic + Gradle modules switched from KSP/kotlin-inject bundles to the Metro Gradle plugin and compiler classpath (Template plugins now apply Metro, all module `ksp(...)`/`libs.bundles.kotlin.inject*` deps removed, `make debug` fails early in `domain/shared:compileKotlin` due to missing `me.tatarka` annotations as expected).
+- [x] (2025-11-21 01:25Z) Phase 3 – Scope + annotation migration (custom scopes/qualifiers rebuilt on Metro, all `me.tatarka` imports removed, Kotlin DI annotations swapped to Metro counterparts, `Lazy` injection sites converted to `Provider`).
+- [x] (2025-11-21 01:25Z) Phase 4 – Graph rewrites (`AppComponent` replaced with `AppGraph`, Landing/Settings rewritten as Metro graph extensions with entry installers, Metro `createGraphFactory` wiring adopted, `make debug` succeeds end-to-end).
+- [x] (2025-11-21 01:31Z) Phase 5 – Validation, documentation, and cleanup (docs now reference Metro, README/AGENTS/ARCHITECTURE updated, `make tests warnings=summary` passes, `./gradlew :app:installDebug` fails only because no device/emulator is attached).
 
 ## Surprises & Discoveries
 
@@ -22,6 +22,11 @@ Playground Android currently wires every module through kotlin-inject + kotlin-i
 - `LandingComponent` exposes a `LandingScreen` typealias via manual `@Provides` functions because kotlin-inject could not apply `@Inject` to top-level typealias factories (features/landing/src/main/java/sh/kau/playground/landing/di/LandingComponent.kt:27-35). The migration has to keep those providers (now Metro `@Provides`) otherwise Nav3 entry installers will not resolve the Compose lambda.
 - Several classes rely on kotlin-inject’s ability to inject `Lazy<T>` directly (`QuotesRepoImpl` in domain/quoter/impl and `SettingsBViewModelImpl` in features/settings/impl). Metro prefers `dev.zacsweers.metro.Provider<T>` for deferred resolution; we must swap to Provider or explicit factory lambdas, then audit coroutine usage (`SettingsBViewModelImpl` launches IO work off the injected coroutineScope) to keep behavior intact.
 - `AppComponent` only declares `SettingsComponent.Factory` explicitly even though `LandingComponent.Factory` is contributed into the graph via `@ContributesSubcomponent.Factory(AppScope::class)` (AppComponent.kt:19-38, LandingComponent.kt:37-48). When rewriting to Metro we need `AppGraph : LandingGraph.Factory, SettingsGraph.Factory` so that entry installers retain compile-time coverage.
+- Upgrading Kotlin to 2.2.20 introduces new kotlin-inject/KSP warnings about generated components accessing `Usf`/`UsfViewModel` supertypes (e.g., app/build/generated/ksp/debug/kotlin/sh/kau/playground/features/settings/di/InjectSettingsComponentFinalKotlinInjectAppComponent.kt:43,56). The warnings do not fail the build but confirm this bump is the last one we can take before replacing the DI stack.
+- Removing kotlin-inject dependencies immediately surfaces missing annotation errors in `domain/shared/src/main/java/sh/kau/playground/shared/di/Named.kt` (`Unresolved reference 'me'`, `Unresolved reference 'Qualifier'`) during `:domain:shared:compileKotlin`, confirming Phase 3 must rehome qualifiers before builds can pass.
+- Metro's runtime is compiled for JVM 11+, so every Android/Kotlin module had to move from `JvmTarget.JVM_1_8` to JVM 11 and align Java compile options/toolchains, otherwise the compiler refused to inline `createGraphFactory` calls.
+- Metro scopes conflict with explicit scope annotations on graph-level bindings; keeping `@LandingScope`/`@SettingsScope` on ViewModels and screens caused `IncompatiblyScopedBindings` errors until the scope annotations were removed from the classes (the graph extension scopes those bindings automatically).
+- Qualifier bindings only resolve when the qualifier annotates the provider declaration rather than the return type; switching to `@Named` on the `@Provides` functions (and annotating property getters) unblocked the missing-binding diagnostics emitted by Metro.
 
 ## Decision Log
 
@@ -30,6 +35,7 @@ Playground Android currently wires every module through kotlin-inject + kotlin-i
 - Decision: Preserve the `EntryProviderInstaller` multibinding pattern that feeds Nav3 by using Metro’s `@IntoSet` (on provider functions inside graph extensions) and exposing `Lazy<Set<EntryProviderInstaller>>` from `AppGraph`. Date/Author: 2025-11-21 / Codex.
 - Decision: Introduce `@AppScope` under `domain/shared/src/main/java/sh/kau/playground/shared/di` and convert all previous `@SingleIn(AppScope::class)` usages to scope annotations (feature scopes already live next to their modules). Date/Author: 2025-11-21 / Codex.
 - Decision: Replace kotlin-inject `Lazy<T>` injection points with `dev.zacsweers.metro.Provider<T>` (or Metro `Lazy<T>` if added later) so that `QuotesRepoImpl` and `SettingsBViewModelImpl` retain deferred initialization without relying on Kotlin stdlib delegated lazy injection. Date/Author: 2025-11-21 / Codex.
+- Decision: Standardize every module on JVM target 11 (Android + Kotlin/JVM) to satisfy Metro’s compiler requirements and avoid the `Cannot inline bytecode built with JVM target 11 into bytecode built with JVM target 1.8` failure. Date/Author: 2025-11-21 / Codex.
 
 ## Outcomes & Retrospective
 
@@ -275,6 +281,12 @@ class AndroidLogger @Inject constructor(
    rg -n "kotlin-inject"
    ```
 
+2025-11-21 00:58Z – Steps 1 and 2 were executed: `./gradlew --version` acknowledged the Gradle-side Kotlin tooling, `make debug warnings=summary` succeeded under Kotlin 2.2.20 + KSP 2.2.20-2.0.4 with legacy DI still in place. Warnings about `Usf`/`UsfViewModel` access surfaced (see Surprises & Discoveries) but do not block progress.
+2025-11-21 01:03Z – Step 5 now fails during `:domain:shared:compileKotlin` after removing the kotlin-inject bundles; the log shows unresolved references to `me.tatarka.inject.annotations.Qualifier` in `domain/shared/src/main/java/sh/kau/playground/shared/di/Named.kt`, which is the expected breakpoint before Metro annotations replace the old qualifier.
+2025-11-21 01:25Z – Final Phase 3/4 verification via repeated `make debug warnings=summary` runs: after replacing scopes/annotations, rewriting AppGraph/LandingGraph/SettingsGraph, updating providers to Metro `@Named`, and bumping JVM targets to 11 the debug build now completes cleanly. Earlier runs exposed the JVM target mismatch and Metro scope diagnostics captured under Surprises.
+2025-11-21 01:31Z – `make tests warnings=summary` passes end-to-end; `./gradlew :app:installDebug` still fails because no emulator/device is connected, which matches expectations for this headless environment.
+2025-11-21 01:25Z – Final Phase 3/4 verification via repeated `make debug warnings=summary` runs: after replacing scopes/annotations, rewriting AppGraph/LandingGraph/SettingsGraph, updating providers to Metro `@Named`, and bumping JVM targets to 11 the debug build now completes cleanly. Earlier runs exposed the JVM target mismatch and Metro scope diagnostics captured under Surprises.
+
 ## Validation and Acceptance
 
 - `make debug warnings=summary` completes with Metro-generated sources only (no KSP tasks or kotlin-inject artifacts in Gradle output).
@@ -387,3 +399,8 @@ class QuotesRepoImpl @Inject constructor(
 ```
 
 These definitions ensure Metro enforces scopes/graph wiring at compile time while keeping the navigation + logging behavior identical to today’s runtime.
+
+Plan update 2025-11-21 00:58Z — Completed Phase 1 (Kotlin/KSP bump with Metro plugin alias) and documented the new KSP warnings surfaced by Kotlin 2.2.20.
+Plan update 2025-11-21 01:03Z — Completed Phase 2 by applying Metro through the convention plugins, stripping all `ksp(...)`/kotlin-inject bundle usages from module Gradle files, removing the catalog aliases, and recording the expected `domain/shared:compileKotlin` failure that now blocks further progress until Metro annotations land.
+Plan update 2025-11-21 01:25Z — Completed Phases 3 & 4 by migrating all scopes/annotations to Metro, rewriting `AppGraph`/feature graph extensions, converting lazy injections to `Provider`, and validating that `make debug warnings=summary` now succeeds under the Metro-only stack.
+Plan update 2025-11-21 01:31Z — Completed Phase 5 with documentation refresh (README/AGENTS/ARCHITECTURE + Makefile cleanup) and validation commands (`make tests warnings=summary`, attempted `./gradlew :app:installDebug` with failure attributed to no attached device).
