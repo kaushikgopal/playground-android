@@ -1,5 +1,6 @@
 package sh.kau.playground.networking
 
+import dev.zacsweers.metro.Inject
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -9,17 +10,15 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import logcat.logcat
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import sh.kau.playground.shared.di.AppScope
 
 /**
  * This class abstracts away the implementation details for networking.
  * * It prevents direct dependency over networking libraries (like Ktor) to spread across the app
  */
-@SingleIn(AppScope::class)
+@AppScope
 @Inject
-class NetworkApi() {
+class NetworkApi {
   private val client: Lazy<HttpClient> = lazy {
     HttpClient(Android) {
       install(ContentNegotiation) {
