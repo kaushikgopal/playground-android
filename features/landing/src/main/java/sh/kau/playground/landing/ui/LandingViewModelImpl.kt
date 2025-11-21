@@ -1,16 +1,15 @@
 package sh.kau.playground.landing.ui
 
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.landing.di.LandingScope
 import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@ContributesBinding(LandingScope::class, boundType = LandingViewModel::class)
-@SingleIn(LandingScope::class)
+@ContributesBinding(LandingScope::class, binding = binding<LandingViewModel>())
 @Inject
 class LandingViewModelImpl(
     coroutineScope: CoroutineScope,

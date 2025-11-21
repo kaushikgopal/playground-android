@@ -1,6 +1,6 @@
 package sh.kau.playground.landing.di
 
-import me.tatarka.inject.annotations.Scope
+import dev.zacsweers.metro.Scope
 
 @Scope
 @Target(
