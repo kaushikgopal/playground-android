@@ -6,11 +6,16 @@ import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.the
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 // implementation LibrariesForLibs.javaClass.superclass.protectionDomain.codeSource.location
 // in build.gradle.kts enables this
 val Project.libs
   get() = the<LibrariesForLibs>()
+
+inline fun Project.kotlin(block: KotlinProjectExtension.() -> Unit): KotlinProjectExtension {
+  return project.extensions.getByType(KotlinProjectExtension::class.java).apply(block)
+}
 
 inline fun Project.configAndroidAppAndLib(
     crossinline androidApp: ApplicationExtension.() -> Unit,
