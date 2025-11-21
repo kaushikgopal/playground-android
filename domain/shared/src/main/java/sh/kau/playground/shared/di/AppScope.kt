@@ -1,4 +1,4 @@
-package sh.kau.playground.features.settings.di
+package sh.kau.playground.shared.di
 
 import dev.zacsweers.metro.Scope
 
@@ -8,4 +8,4 @@ import dev.zacsweers.metro.Scope
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
 )
-annotation class SettingsScope
+annotation class AppScope

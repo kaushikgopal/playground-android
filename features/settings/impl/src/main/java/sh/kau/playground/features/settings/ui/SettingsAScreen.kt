@@ -20,10 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import dev.zacsweers.metro.Inject
 import logcat.logcat
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsBindings
-import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.features.settings.nav.SettingsRoutes.ScreenBRoute
 import sh.kau.playground.features.settings.viewmodel.SettingsAEffect
 import sh.kau.playground.features.settings.viewmodel.SettingsAEvent
@@ -31,10 +30,8 @@ import sh.kau.playground.features.settings.viewmodel.SettingsAViewModel
 import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Teritiary
 import sh.kau.playground.ui.dp16
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @Inject
-@SingleIn(SettingsScope::class)
 class SettingsAScreen(
     private val bindings: SettingsBindings,
     private val navigator: Navigator,

@@ -17,13 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.nav.SettingsRoutes
-import sh.kau.playground.landing.di.LandingScope
 import sh.kau.playground.navigation.Navigator
 import sh.kau.playground.ui.Primary
 import sh.kau.playground.ui.Teritiary
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 typealias LandingScreen = @Composable () -> Unit
 

@@ -252,3 +252,7 @@ output.json
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle/wrapper/gradle-wrapper.jar
+
+
+##################################
+.ai/plans/tmp

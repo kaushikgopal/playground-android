@@ -1,23 +1,24 @@
 package sh.kau.playground.features.settings.viewmodel
 
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Provider
+import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.quoter.Quote
 import sh.kau.playground.quoter.QuotesRepo
 import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 
-@ContributesBinding(SettingsScope::class, boundType = SettingsBViewModel::class)
-class SettingsBViewModelImpl
 @Inject
-constructor(
+@ContributesBinding(SettingsScope::class, binding = binding<SettingsBViewModel>())
+class SettingsBViewModelImpl(
     coroutineScope: CoroutineScope,
-    val quotesRepo: Lazy<QuotesRepo>,
+    private val quotesRepo: Provider<QuotesRepo>,
 ) :
     UsfViewModel<SettingsBEvent, SettingsBUiState, SettingsBEffect>(
         coroutineScope = coroutineScope,
@@ -37,7 +38,7 @@ constructor(
   override fun ResultScope<SettingsBUiState, SettingsBEffect>.onSubscribed() {
     // Load quote for the day
     coroutineScope.launch(Dispatchers.IO) {
-      val quote = quotesRepo.value.quoteForTheDay()
+      val quote = quotesRepo().quoteForTheDay()
       updateState { currentState ->
         currentState.copy(
             quoteText = quote.quote,

@@ -16,8 +16,8 @@ Some of the concepts implemented here:
 - [ ] [Coil](https://coil-kt.github.io/coil/) for image loading
 - [x] [multi module](#app-module-diagram-multi-module-setup) setup
 - [x] compose-navigation between feature modules
-- [x] [dependency injection with kotlin-inject-anvil](https://github.com/kaushikgopal/playground-android/pull/12)
-  - [x] [function-injection](https://github.com/kaushikgopal/playground-android/pull/9/commits/aad254957a003982633006fb2f350ee7a372f11d) demo in `@Composable`
+- [x] compile-time dependency injection with [Metro](https://github.com/ZacSweers/metro) (graph factories + graph extensions)
+  - [x] `@Provides` function-injection demo for Compose screen typealiases
 - [x] USF architecture (much like [usf-movies-android](https://github.com/kaushikgopal/movies-usf-android))
 
 # Getting started

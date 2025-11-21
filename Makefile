@@ -53,8 +53,8 @@ clean-build: ensure-deps 		## clean build folders and cache alone
 	@echo "\033[2;31m•••• removing build directories\033[0m"
 	@fd -u -t d '^build$$' -X rm -Rf
 
-kill-ksp: 		## kill kotlin daemon (useful for ksp errors)
-	@echo "\033[2;31m•••• This script will kill your kotlin daemon (useful for ksp errors)\033[0m"
+kill-kt-daemon: 		## kill Kotlin compile daemons (useful when Gradle caches misbehave)
+	@echo "\033[2;31m•••• Killing Kotlin compile daemons\033[0m"
 	@jps | grep -E 'KotlinCompileDaemon' | awk '{print $$1}' | xargs kill -9 || true
 
 lint: 			## run lint checks

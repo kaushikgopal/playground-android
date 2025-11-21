@@ -1,25 +1,24 @@
 package sh.kau.playground.log
 
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Named
 import logcat.AndroidLogcatLogger
 import logcat.LogPriority
 import logcat.LogcatLogger
-import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.shared.di.Named
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import sh.kau.playground.shared.di.AppScope
 
 /**
  * Only reason we have this vs using AndroidLogcatLogger directly is:
  * - control verbosity priority for Android logs
  * - control if logs sent for debuggable app
- * - demonstrate/show-off multibinding with kotlin-inject
+ * - demonstrate/show-off Metro multibinding + composite logging
  */
 @Inject
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class, multibinding = true)
+@AppScope
+@ContributesIntoSet(AppScope::class)
 class AndroidLogger(
-    @Named("debuggableApp") val debuggableApp: Boolean,
+    @param:Named("debuggableApp") val debuggableApp: Boolean,
     androidLogger: AndroidLogcatLogger = AndroidLogcatLogger(LogPriority.VERBOSE), // usually DEBUG
 ) : LogcatLogger by androidLogger {
 

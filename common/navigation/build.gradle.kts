@@ -8,10 +8,6 @@ android {
 }
 
 dependencies {
-  // dependency injection
-  ksp(libs.bundles.kotlin.inject.compiler)
-  implementation(libs.bundles.kotlin.inject)
-
   // navigation
   api(libs.bundles.jetpack.navigation)
 

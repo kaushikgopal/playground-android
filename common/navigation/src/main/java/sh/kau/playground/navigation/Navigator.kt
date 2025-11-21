@@ -4,16 +4,17 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.EntryProviderBuilder
 import androidx.navigation3.runtime.NavKey
-import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.shared.di.Named
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Named
+import sh.kau.playground.shared.di.AppScope
 
 typealias EntryProviderInstaller = EntryProviderBuilder<NavRoute>.() -> Unit
 
-@SingleIn(AppScope::class)
+@AppScope
 @Inject
-class Navigator(@Named("startDestination") private val startDestination: NavRoute) {
+class Navigator(
+    @param:Named("startDestination") private val startDestination: NavRoute,
+) {
   val backStack: SnapshotStateList<NavRoute> = mutableStateListOf(startDestination)
 
   fun goTo(destination: NavRoute) {

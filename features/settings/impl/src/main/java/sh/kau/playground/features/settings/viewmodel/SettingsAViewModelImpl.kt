@@ -1,15 +1,16 @@
 package sh.kau.playground.features.settings.viewmodel
 
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
 import sh.kau.playground.usf.viewmodel.inputEventCallback
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 
-@ContributesBinding(SettingsScope::class, boundType = SettingsAViewModel::class)
+@ContributesBinding(SettingsScope::class, binding = binding<SettingsAViewModel>())
 @Inject
 class SettingsAViewModelImpl(
     coroutineScope: CoroutineScope,

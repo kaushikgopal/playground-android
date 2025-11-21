@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import logcat.LogPriority
 import logcat.logcat
-import sh.kau.playground.app.di.AppComponent
+import sh.kau.playground.app.di.createAppGraph
 import sh.kau.playground.log.CompositeLogger
 import sh.kau.playground.shared.App
 
 class AppImpl : App, Application() {
 
-  private val appComponent by lazy(LazyThreadSafetyMode.NONE) { AppComponent.Companion.from(this) }
+  private val appGraph by lazy(LazyThreadSafetyMode.NONE) { createAppGraph(this) }
 
   override val isDebuggable: Boolean
     get() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
@@ -28,13 +28,10 @@ class AppImpl : App, Application() {
 
     // Log all priorities in debug builds, no-op in release builds.
     // AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
-    CompositeLogger.Companion.install(appComponent.loggers.value)
+    CompositeLogger.install(appGraph.loggers.value)
 
-    // calling the field directly on appComponent
-    // is made possible because AppComponent inherits KotlinInjectAppComponentMerged directly
-    // you could alternatively provide another injection intermediate object
-    logcat(LogPriority.INFO) { "xxx Welcome to ${appComponent.provideAppName()}" }
+    logcat(LogPriority.INFO) { "xxx Welcome to ${appGraph.appName}" }
 
-    logcat { "number of loggers: ${appComponent.loggers.value.size}" }
+    logcat { "number of loggers: ${appGraph.loggers.value.size}" }
   }
 }

@@ -4,9 +4,8 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import utils.configAndroidAppAndLib
-import utils.kotlinOptions
+import utils.kotlin
 import utils.libs
 
 /**
@@ -46,16 +45,14 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
   /** Configurations common to both android app modules & android library modules */
   private fun Project.applyAndroidConfig(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     plugins.apply(libs.plugins.kotlin.android.get().pluginId)
-    plugins.apply(libs.plugins.ksp.get().pluginId)
+    plugins.apply(libs.plugins.metro.get().pluginId)
+
+    // Use JVM Toolchain for consistent Java/Kotlin compilation
+    kotlin { jvmToolchain(17) }
 
     commonExtension.apply {
       compileSdk = libs.versions.sdk.compile.get().toInt()
       defaultConfig { minSdk = libs.versions.sdk.min.get().toInt() }
-
-      kotlinOptions {
-        // allow kotlin auto-complete + prevent weird compilation errors in IDE
-        jvmTarget.set(JvmTarget.JVM_1_8)
-      }
 
       packaging {
         resources {

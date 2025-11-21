@@ -15,7 +15,7 @@ This is the **primary entry point** for agents working on this project. It provi
 ## Project Overview
 playground-android is a modern Android development playground showcasing best-in-class architectural patterns and practices. It serves as a reference implementation for building maintainable, testable Android applications using contemporary tooling and techniques.
 
-**Technology stack**: Kotlin-first with Jetpack Compose, Clean Architecture, Unidirectional State Flow (USF) ViewModels, and compile-time DI via kotlin-inject + Anvil. Modular by design: features ship as isolated modules, domain logic stays UI-agnostic, and shared utilities live in `:common`.
+**Technology stack**: Kotlin-first with Jetpack Compose, Clean Architecture, Unidirectional State Flow (USF) ViewModels, and compile-time DI via Metro (compiler plugin + graph extensions). Modular by design: features ship as isolated modules, domain logic stays UI-agnostic, and shared utilities live in `:common`.
 
 ## Important Commands
 - `make` — Default build target (runs full build including tests)
@@ -55,7 +55,7 @@ playground-android is a modern Android development playground showcasing best-in
 - **USF ViewModels**: Unidirectional State Flow pattern for predictable state management
 - **Navigation 3**: Type-safe, developer-owned back stack navigation
 - **Modular Architecture**: Features as isolated modules with clear boundaries
-- **Compile-time DI**: kotlin-inject + Anvil for fast, type-safe dependency injection
+- **Compile-time DI**: Metro dependency graphs with graph extensions and generated factories
 
 ### Demonstrated Patterns
 - Simple CRUD screens with loading, error, and success states
@@ -131,11 +131,12 @@ playground-android is a modern Android development playground showcasing best-in
 - Features contribute `EntryProviderInstaller` to map routes to composables
 - `navigator.goTo(route)` / `navigator.goBack()` / `navigator.clearAndGoTo(route)`
 
-### Dependency Injection (kotlin-inject + Anvil)
-- `@Inject` constructors, `@SingleIn(scope)` for lifetime
-- `@ContributesBinding(scope)` for interface implementations
-- Feature-scoped subcomponents: `@ContributesSubcomponent(FeatureScope::class)`
-- Prefer constructor injection; use `Lazy<T>` for deferred work
+### Dependency Injection (Metro)
+- Declare scopes via Metro `@Scope` annotations (`@AppScope`, `@LandingScope`, `@SettingsScope`, etc.) and annotate shared singletons with those scopes.
+- `AppGraph` is annotated with `@DependencyGraph(AppScope::class)` and exposes shared bindings such as `Navigator`, `Lazy<Set<EntryProviderInstaller>>`, and qualified values like `@Named("appName") String`.
+- Feature modules contribute graph extensions using `@GraphExtension(scope)` plus `@ContributesTo(AppScope::class)` factories. This keeps feature wiring local while Metro generates the glue that makes `AppGraph` implement each factory interface.
+- Prefer constructor injection everywhere. When work should defer, inject a `Provider<T>` (Metro’s deferred handle) instead of Kotlin’s `Lazy`.
+- Entry installers and other multibindings come from `@Provides @IntoSet` functions defined inside the graph extension factories; Metro preserves scope + qualifier metadata automatically.
 
 ## Testing
 - JUnit 5, `kotlinx.coroutines.test`, MockK, AssertJ, Turbine
