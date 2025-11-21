@@ -17,21 +17,18 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import me.tatarka.inject.annotations.Inject
-import sh.kau.playground.features.settings.di.SettingsScope
 import sh.kau.playground.features.settings.viewmodel.SettingsBViewModel
 import sh.kau.playground.ui.Secondary
 import sh.kau.playground.ui.dp16
 import sh.kau.playground.ui.dp24
 import sh.kau.playground.ui.dp32
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-// kotlin-inject function injection (2)
+// Metro function injection (2)
 typealias SettingsBScreen = @Composable () -> Unit
 
-// kotlin-inject function injection (1)
-// Note: @Inject on top-level functions doesn't work with typealiases
-// The @Provides is in the component instead
+// Metro function injection (1)
+// Note: @Inject on top-level functions doesn't work with typealiases,
+// so Landing/Settings graphs expose these via @Provides functions instead.
 fun SettingsBScreen(
     viewModel: SettingsBViewModel,
 ): SettingsBScreen = {
