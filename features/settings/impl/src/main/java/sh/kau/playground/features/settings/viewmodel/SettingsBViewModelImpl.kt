@@ -14,10 +14,9 @@ import sh.kau.playground.usf.log.UsfLoggingInspector
 import sh.kau.playground.usf.scope.ResultScope
 import sh.kau.playground.usf.viewmodel.UsfViewModel
 
-@ContributesBinding(SettingsScope::class, binding = binding<SettingsBViewModel>())
-class SettingsBViewModelImpl
 @Inject
-constructor(
+@ContributesBinding(SettingsScope::class, binding = binding<SettingsBViewModel>())
+class SettingsBViewModelImpl(
     coroutineScope: CoroutineScope,
     private val quotesRepo: Provider<QuotesRepo>,
 ) :
