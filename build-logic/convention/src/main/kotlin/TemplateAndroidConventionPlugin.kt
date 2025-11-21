@@ -45,7 +45,7 @@ open class TemplateAndroidConventionPlugin : Plugin<Project> {
   /** Configurations common to both android app modules & android library modules */
   private fun Project.applyAndroidConfig(commonExtension: CommonExtension<*, *, *, *, *, *>) {
     plugins.apply(libs.plugins.kotlin.android.get().pluginId)
-    plugins.apply(libs.plugins.ksp.get().pluginId)
+    plugins.apply(libs.plugins.metro.get().pluginId)
 
     // Use JVM Toolchain for consistent Java/Kotlin compilation
     kotlin { jvmToolchain(17) }

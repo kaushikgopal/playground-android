@@ -34,17 +34,11 @@ class TemplateFeatureConventionPlugin : TemplateAndroidConventionPlugin() {
 
         buildFeatures { compose = true } // enable compose functionality in Android Studio
 
-        plugins.apply(libs.plugins.kotlin.android.get().pluginId)
         plugins.apply(libs.plugins.kotlin.compose.compiler.get().pluginId)
         plugins.apply(libs.plugins.kotlin.serialization.get().pluginId)
 
         dependencies {
           val implementation by configurations
-
-          // dependency injection
-          val ksp by configurations
-          ksp(libs.bundles.kotlin.inject.compiler)
-          implementation(libs.bundles.kotlin.inject)
 
           // Project dependencies
           implementation(project(":common:log")) // to use logcat directly in features

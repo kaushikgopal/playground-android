@@ -8,10 +8,6 @@ android {
 }
 
 dependencies {
-    // dependency injection
-    ksp(libs.bundles.kotlin.inject.compiler)
-    implementation(libs.bundles.kotlin.inject)
-
     // dependencies you want most other feature modules to have
     // be judicious
     api(libs.logcat)

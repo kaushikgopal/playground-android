@@ -8,9 +8,9 @@ app-version-code = "2"
 app-version-name = "25.08.100"
 
 agp = "8.12.3"  # android-gradle-plugin
-kotlin = "2.1.21"
+kotlin = "2.2.20"
 
-ksp = "2.1.21-2.0.2"       # Updated for Kotlin 2.1.21 compatibility
+metro = "0.7.7"
 kotlin-bcv = "0.13.2"
 kotlin-dataframe = "0.13.1"
 kotlinxSerializationCore = "1.8.1"
@@ -25,8 +25,6 @@ espresso = "3.6.1"
 
 junit = "5.10.2"
 junitVersion = "1.2.1"
-kotlin-inject = "0.7.2"
-kotlin-inject-anvil = "0.1.0"
 lint = "31.12.3"  # = agp + 23.0.0
 nav3Core = "1.0.0-alpha04"
 secretsGradlePlugin = "2.0.1"
@@ -87,12 +85,6 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
 coroutines-android = { module = "org.jetbrains.kotlin:kotlinx-coroutines-android" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 
-kotlin-inject-compiler = { group = "me.tatarka.inject", name = "kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
-kotlin-inject-runtime = { group = "me.tatarka.inject", name = "kotlin-inject-runtime", version.ref = "kotlin-inject" }
-kotlin-inject-anvil-compiler = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "compiler", version.ref = "kotlin-inject-anvil" }
-kotlin-inject-anvil-runtime = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime", version.ref = "kotlin-inject-anvil" }
-kotlin-inject-anvil-runtime-utils = { group = "software.amazon.lastmile.kotlin.inject.anvil", name = "runtime-optional", version.ref = "kotlin-inject-anvil" }
-
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
 
@@ -134,15 +126,6 @@ jetpack-navigation = [
     "jetpack-navigation3-ui",
     "kotlinx-serialization-core",
     # "kotlinx-serialization-json",
-]
-kotlin-inject = [
-    "kotlin-inject-runtime",
-    "kotlin-inject-anvil-runtime",
-    "kotlin-inject-anvil-runtime-utils",
-]
-kotlin-inject-compiler = [
-    "kotlin-inject-compiler",
-     "kotlin-inject-anvil-compiler",
 ]
 ktor = [
     "ktor-client-android", # ktor engine
@@ -190,6 +173,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 java-test-fixtures = { id = "org.gradle.java-test-fixtures" }
 
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
