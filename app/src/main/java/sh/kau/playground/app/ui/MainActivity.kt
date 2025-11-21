@@ -10,7 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import sh.kau.playground.app.di.AppComponent
+import sh.kau.playground.app.di.createAppGraph
 import sh.kau.playground.ui.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,13 +18,13 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val appComponent = AppComponent.Companion.from(this)
+    val appGraph = createAppGraph(this)
 
     enableEdgeToEdge()
     setContent {
       AppTheme {
-        val navigator = appComponent.navigator
-        val entryProviders = appComponent.entryProviderInstallers
+        val navigator = appGraph.navigator
+        val entryProviders = appGraph.entryProviderInstallers
 
         Scaffold(
             modifier = Modifier.Companion.fillMaxSize(),
