@@ -1,21 +1,21 @@
 package sh.kau.playground.quoter
 
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Provider
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import me.tatarka.inject.annotations.Inject
 import sh.kau.playground.networking.NetworkApi
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import sh.kau.playground.shared.di.AppScope
 
 @Inject
-@SingleIn(AppScope::class)
+@AppScope
 @ContributesBinding(AppScope::class)
 class QuotesRepoImpl(
-    private val api: Lazy<NetworkApi>,
+    private val api: Provider<NetworkApi>,
 ) : QuotesRepo {
 
   override suspend fun quoteForTheDay(): Quote {
@@ -24,7 +24,7 @@ class QuotesRepoImpl(
 
   private suspend fun fetchQuote(): Quote {
     val response: HttpResponse =
-        api.value.client().get("https://zenquotes.io/api/today") {
+        api().client().get("https://zenquotes.io/api/today") {
           contentType(ContentType.Application.Json)
         }
     return response.body<List<Quote>>()[0]
