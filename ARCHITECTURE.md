@@ -46,13 +46,12 @@ This document provides detailed architectural patterns for module structure, nav
   - `navigator.clearAndGoTo(HomeRoute)` replaces the stack (useful for logout/reset flows).
 - Write helper extensions (e.g., `Navigator.popToHome`) when custom stack manipulation is needed.
 
-## Dependency Injection (kotlin-inject + Anvil)
-- Annotate injectable classes with `@Inject` constructors and mark lifetime with `@SingleIn(scope)`.
-- Use `@ContributesBinding(scope)` to bind implementations to interfaces without manual modules.
-- Define feature-scoped subcomponents via `@ContributesSubcomponent(FeatureScope::class)`; expose lazy screen providers to defer composition work.
-- The app component (`@MergeComponent(AppScope::class)`) aggregates bindings and exposes factories for feature components alongside shared services such as `Navigator`.
-- Example bindings: `DataRepository` interface bound to `DataRepositoryImpl`, `Preferences` bound to `PreferencesImpl`.
-- Prefer constructor parameters over optional setters; inject `Lazy<T>` when work should defer until first use (e.g., `Lazy<DataCache>` for on-demand initialization).
+## Dependency Injection (Metro)
+- Scopes live next to their modules (`AppScope`, `LandingScope`, `SettingsScope`) and are plain Metro `@Scope` annotations. Annotate long-lived services (e.g., `Navigator`, `NetworkApi`, loggers) with `@AppScope`.
+- `AppGraph` is the root `@DependencyGraph(AppScope::class)` and extends every feature graph factory. It provides qualified values with `@Provides @Named("…")` functions and exposes Metro-generated `Lazy<Set<EntryProviderInstaller>>` to bootstrap Navigation 3.
+- Feature modules use `@GraphExtension(<FeatureScope>::class)` + `@ContributesTo(AppScope::class)` factories to contribute their bindings. Each extension can define scoped `@Provides` functions (e.g., coroutine scopes, screen factories) and add Nav3 installers via `@Provides @IntoSet` functions.
+- Constructor injection remains the default. Swap any legacy `Lazy<T>` injection sites with Metro `Provider<T>` when a dependency must be resolved lazily.
+- Graph instances are created through `createGraphFactory<AppGraph.Factory>().create(app)`; `AppImpl` caches that instance and everything else reads from it.
 
 ## UI Composition
 - Apply Jetpack Compose exclusively; no XML fragments.
