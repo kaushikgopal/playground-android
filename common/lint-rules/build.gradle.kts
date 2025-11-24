@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.kotlin.jvm)
+  id("template.jvm")
   alias(libs.plugins.android.lint)
 }
 

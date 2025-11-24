@@ -29,5 +29,11 @@ gradlePlugin {
             id = "template.feature"
             implementationClass = "TemplateFeatureConventionPlugin"
         }
+
+        register("templateJvm") {
+            // pure Kotlin/JVM modules (no Android)
+            id = "template.jvm"
+            implementationClass = "TemplateJvmConventionPlugin"
+        }
     }
 }
