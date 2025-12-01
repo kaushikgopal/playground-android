@@ -63,7 +63,7 @@ abstract class UsfPlugin<Event : Any, UiState : Any, Effect : Any> :
 
 ## When to Use Plugins
 
-### ✅ Perfect For
+### Perfect For
 
 1. **Reusable Logic Across ViewModels**
    - Search functionality
@@ -80,7 +80,7 @@ abstract class UsfPlugin<Event : Any, UiState : Any, Effect : Any> :
    - Test search independently
    - Mock one plugin while testing another
 
-### ❌ Not Needed For
+### Not Needed For
 
 - Simple CRUD ViewModels
 - One-off logic
@@ -423,17 +423,18 @@ class AnalyticsPlugin : UsfPlugin<Event, State, Effect>() {
 }
 ```
 
-## When to Use Plugins in Your Features
+## Current App Status
 
-The architecture supports USF Plugins, but **start with standard USF ViewModels** for simplicity:
+The app has USF Plugin support but **currently uses standard USF ViewModels** for simplicity:
 
-- Use standard USF ViewModels for straightforward features
-- Introduce plugins only when reusability or complexity demands it
+- HomeViewModel - Standard USF
+- SettingsViewModel - Standard USF
+- DiscoverViewModel - Standard USF
 
 Consider plugins when:
-1. Multiple screens need the same logic (search, pagination, etc.)
-2. Features need isolated testing of concerns
-3. Complex screens benefit from separation of responsibilities
+1. Multiple screens need search
+2. Pagination logic needs sharing
+3. Complex features need isolation
 
 ## Migration Path
 

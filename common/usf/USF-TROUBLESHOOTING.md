@@ -54,12 +54,12 @@ Type mismatch: inferred type is CoroutineScope but CoroutineScope was expected
 
 **Solution:**
 ```kotlin
-// ❌ Wrong - don't use viewModelScope
+// Wrong - don't use viewModelScope
 class MyViewModel : ViewModel() {
     private val usfViewModel = UsfViewModel<Event, UiState, Effect>(viewModelScope)
 }
 
-// ✅ Correct - inject CoroutineScope
+// Correct - inject CoroutineScope
 @Inject
 class MyViewModelImpl(
     coroutineScope: CoroutineScope  // Injected from DI
@@ -99,7 +99,7 @@ override suspend fun ResultScope<UiState, Effect>.process(event: Event) {
 #### 1. Not Calling `runCurrent()` in Tests
 
 ```kotlin
-// ❌ Wrong
+// Wrong
 @Test
 fun `test state update`() = runTest {
     viewModel.input(Event.Update)
@@ -107,7 +107,7 @@ fun `test state update`() = runTest {
     assertThat(viewModel.state.value.updated).isTrue()
 }
 
-// ✅ Correct
+// Correct
 @Test
 fun `test state update`() = runTest {
     viewModel.input(Event.Update)
@@ -119,14 +119,14 @@ fun `test state update`() = runTest {
 #### 2. State Updates in Wrong Context
 
 ```kotlin
-// ❌ Wrong - updateState outside ResultScope
+// Wrong - updateState outside ResultScope
 override suspend fun process(event: Event) {
     coroutineScope.launch {
         updateState { it.copy(loading = false) } // Won't work!
     }
 }
 
-// ✅ Correct - updateState in ResultScope
+// Correct - updateState in ResultScope
 override suspend fun ResultScope<UiState, Effect>.process(event: Event) {
     coroutineScope.launch {
         val data = repository.fetch()
@@ -138,7 +138,7 @@ override suspend fun ResultScope<UiState, Effect>.process(event: Event) {
 #### 3. Mutating State Instead of Copying
 
 ```kotlin
-// ❌ Wrong - mutating existing state
+// Wrong - mutating existing state
 data class MyState(val items: MutableList<Item> = mutableListOf())
 
 updateState { state ->
@@ -146,7 +146,7 @@ updateState { state ->
     state // Returns same reference - no recomposition
 }
 
-// ✅ Correct - creating new state
+// Correct - creating new state
 data class MyState(val items: List<Item> = emptyList())
 
 updateState { state ->
@@ -166,7 +166,7 @@ updateState { state ->
 #### 1. Missing LaunchedEffect in UI
 
 ```kotlin
-// ❌ Wrong - effects not collected
+// Wrong - effects not collected
 @Composable
 fun MyScreen(viewModel: MyViewModel) {
     val uiState by viewModel.state.collectAsState()
@@ -175,7 +175,7 @@ fun MyScreen(viewModel: MyViewModel) {
     MyContent(uiState)
 }
 
-// ✅ Correct - collecting effects
+// Correct - collecting effects
 @Composable
 fun MyScreen(viewModel: MyViewModel) {
     val uiState by viewModel.state.collectAsState()
@@ -196,12 +196,12 @@ fun MyScreen(viewModel: MyViewModel) {
 #### 2. Wrong LaunchedEffect Key
 
 ```kotlin
-// ❌ Wrong - effect collection restarts on every state change
+// Wrong - effect collection restarts on every state change
 LaunchedEffect(uiState) {
     viewModel.effects.collect { /* handle */ }
 }
 
-// ✅ Correct - effect collection stable across state changes
+// Correct - effect collection stable across state changes
 LaunchedEffect(viewModel) {
     viewModel.effects.collect { /* handle */ }
 }
@@ -212,12 +212,12 @@ LaunchedEffect(viewModel) {
 #### 1. Not Using TestScope
 
 ```kotlin
-// ❌ Wrong - real coroutine scope in tests
+// Wrong - real coroutine scope in tests
 val viewModel = MyViewModelImpl(
     coroutineScope = CoroutineScope(Dispatchers.IO)
 )
 
-// ✅ Correct - TestScope for controlled execution
+// Correct - TestScope for controlled execution
 val viewModel = MyViewModelImpl(
     coroutineScope = TestScope().backgroundScope
 )
@@ -226,7 +226,7 @@ val viewModel = MyViewModelImpl(
 #### 2. Not Advancing Time for Delays
 
 ```kotlin
-// ❌ Wrong - real delays in tests
+// Wrong - real delays in tests
 @Test
 fun `search with debounce`() = runTest {
     viewModel.input(SearchEvent.Query("test"))
@@ -234,7 +234,7 @@ fun `search with debounce`() = runTest {
     assertThat(viewModel.state.value.results).isNotEmpty()
 }
 
-// ✅ Correct - advance test time
+// Correct - advance test time
 @Test
 fun `search with debounce`() = runTest {
     viewModel.input(SearchEvent.Query("test"))
@@ -247,10 +247,10 @@ fun `search with debounce`() = runTest {
 #### 3. Missing Mock Interactions
 
 ```kotlin
-// ❌ Wrong - mock doesn't return anything
+// Wrong - mock doesn't return anything
 coEvery { mockRepository.fetch() } returns Unit // Wrong return type
 
-// ✅ Correct - proper mock setup
+// Correct - proper mock setup
 coEvery { mockRepository.fetch() } returns listOf(item1, item2)
 ```
 
@@ -268,7 +268,7 @@ coEvery { mockRepository.fetch() } returns listOf(item1, item2)
 #### 1. Long-Running Operations Not Cancelled
 
 ```kotlin
-// ❌ Wrong - job continues after unsubscribe
+// Wrong - job continues after unsubscribe
 private var longRunningJob: Job? = null
 
 override fun ResultScope<UiState, Effect>.onSubscribed() {
@@ -280,7 +280,7 @@ override fun ResultScope<UiState, Effect>.onSubscribed() {
     }
 }
 
-// ✅ Correct - cancel job on unsubscribe
+// Correct - cancel job on unsubscribe
 override fun onUnsubscribed() {
     longRunningJob?.cancel()
     longRunningJob = null
@@ -290,12 +290,12 @@ override fun onUnsubscribed() {
 #### 2. External References Holding ViewModel
 
 ```kotlin
-// ❌ Wrong - static reference prevents GC
+// Wrong - static reference prevents GC
 object GlobalCache {
     var viewModel: MyViewModel? = null // Holds reference!
 }
 
-// ✅ Correct - use WeakReference or clear explicitly
+// Correct - use WeakReference or clear explicitly
 object GlobalCache {
     private var weakViewModel: WeakReference<MyViewModel>? = null
 
@@ -317,7 +317,7 @@ object GlobalCache {
 #### 1. State Updates Too Frequent
 
 ```kotlin
-// ❌ Wrong - updating state on every character
+// Wrong - updating state on every character
 override suspend fun ResultScope<UiState, Effect>.process(event: SearchEvent.TextChanged) {
     repository.searchItems(event.text) // Network call on every character!
         .collect { results ->
@@ -325,7 +325,7 @@ override suspend fun ResultScope<UiState, Effect>.process(event: SearchEvent.Tex
         }
 }
 
-// ✅ Correct - debounce updates
+// Correct - debounce updates
 private var searchJob: Job? = null
 
 override suspend fun ResultScope<UiState, Effect>.process(event: SearchEvent.TextChanged) {
@@ -345,7 +345,7 @@ override suspend fun ResultScope<UiState, Effect>.process(event: SearchEvent.Tex
 #### 2. Unstable Lambdas in State
 
 ```kotlin
-// ❌ Wrong - lambda recreated on each state update
+// Wrong - lambda recreated on each state update
 data class UiState(
     val onItemClick: (Item) -> Unit = { item ->
         // This lambda is recreated every time!
@@ -353,7 +353,7 @@ data class UiState(
     }
 )
 
-// ✅ Correct - stable callbacks or direct input
+// Correct - stable callbacks or direct input
 data class UiState(
     val onItemClick: (Item) -> Unit = {}
 )
@@ -478,11 +478,11 @@ applyState = { vmState, pluginState ->
 
 ### Check These First
 
-1. ✅ All required imports present
-2. ✅ CoroutineScope properly injected
-3. ✅ ResultScope used in process function
-4. ✅ Effects collected in UI
-5. ✅ Tests use TestScope and runCurrent()
+1. All required imports present
+2. CoroutineScope properly injected
+3. ResultScope used in process function
+4. Effects collected in UI
+5. Tests use TestScope and runCurrent()
 
 ### Enable More Logging
 

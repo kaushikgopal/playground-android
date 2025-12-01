@@ -448,15 +448,15 @@ class SearchPluginTest {
 
     @Test
     fun `search plugin handles query changes with debounce`() = runTest {
-        val plugin = SearchPlugin<Item> { query ->
-            dataRepository.search(query)
+        val plugin = SearchPlugin<Product> { query ->
+            productRepository.search(query)
         }
 
-        val mockScope = mockk<ResultScope<SearchState<Item>, SearchEffect>>()
-        val states = mutableListOf<SearchState<Item>>()
+        val mockScope = mockk<ResultScope<SearchState<Product>, SearchEffect>>()
+        val states = mutableListOf<SearchState<Product>>()
 
         every { mockScope.updateState(any()) } answers {
-            val updater = arg<(SearchState<Item>) -> SearchState<Item>>(0)
+            val updater = arg<(SearchState<Product>) -> SearchState<Product>>(0)
             states.add(updater(states.lastOrNull() ?: SearchState()))
         }
 
@@ -471,7 +471,7 @@ class SearchPluginTest {
 
         // Only final query should have triggered search
         assertThat(states.last().query).isEqualTo("abc")
-        coVerify(exactly = 1) { dataRepository.search("abc") }
+        coVerify(exactly = 1) { productRepository.search("abc") }
     }
 }
 ```
@@ -481,8 +481,8 @@ class SearchPluginTest {
 ```kotlin
 @Test
 fun `view model with search plugin integrates correctly`() = runTest {
-    val searchPlugin = mockk<SearchPlugin<Item>>()
-    val viewModel = DataViewModelImpl(
+    val searchPlugin = mockk<SearchPlugin<Product>>()
+    val viewModel = ProductViewModelImpl(
         coroutineScope = backgroundScope,
         searchPlugin = searchPlugin
     )
@@ -491,15 +491,15 @@ fun `view model with search plugin integrates correctly`() = runTest {
         searchPlugin.process(any<SearchEvent>())
     } coAnswers {
         // Mock plugin updating its internal state
-        SearchState(query = "test", results = listOf(Item("test")))
+        SearchState(query = "test", results = listOf(Product("test")))
     }
 
-    val states = mutableListOf<DataUiState>()
+    val states = mutableListOf<ProductUiState>()
     backgroundScope.launch { viewModel.state.toList(states) }
     runCurrent()
 
     // Act
-    viewModel.input(DataEvent.SearchQueryChanged("test"))
+    viewModel.input(ProductEvent.SearchQueryChanged("test"))
     runCurrent()
 
     // Assert plugin was called
@@ -634,24 +634,24 @@ fun `frequent state updates perform efficiently`() = runTest {
 
 ### DO
 
-- ✅ Test state transitions explicitly
-- ✅ Verify effects are emitted correctly
-- ✅ Test error conditions and edge cases
-- ✅ Use `TestScope` and `runTest` for coroutines
-- ✅ Mock dependencies with specific behaviors
-- ✅ Test lifecycle hooks (onSubscribed/onUnsubscribed)
-- ✅ Use descriptive test names in backticks
-- ✅ Separate arrange, act, and assert clearly
+- Test state transitions explicitly
+- Verify effects are emitted correctly
+- Test error conditions and edge cases
+- Use `TestScope` and `runTest` for coroutines
+- Mock dependencies with specific behaviors
+- Test lifecycle hooks (onSubscribed/onUnsubscribed)
+- Use descriptive test names in backticks
+- Separate arrange, act, and assert clearly
 
 ### DON'T
 
-- ❌ Test internal implementation details
-- ❌ Forget to call `runCurrent()` after triggering events
-- ❌ Mix UI testing with ViewModel testing
-- ❌ Use `GlobalScope` or real dispatchers in tests
-- ❌ Create overly complex test scenarios
-- ❌ Ignore cleanup in test lifecycle
-- ❌ Test multiple concerns in one test
+- Test internal implementation details
+- Forget to call `runCurrent()` after triggering events
+- Mix UI testing with ViewModel testing
+- Use `GlobalScope` or real dispatchers in tests
+- Create overly complex test scenarios
+- Ignore cleanup in test lifecycle
+- Test multiple concerns in one test
 
 ## Integration with UI Testing
 

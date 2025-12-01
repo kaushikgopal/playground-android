@@ -1,6 +1,6 @@
 # USF (Unidirectional State Flow) - Core Patterns
 
-> **For project overview**, see @AGENTS.md
+> **For project overview**, see root @AGENTS.md
 > **For complete tutorial**, see @USF-QUICKSTART.md
 > **For advanced plugins**, see @USF-PLUGINS.md
 > **For comprehensive testing**, see @USF-TESTING.md
@@ -160,7 +160,7 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
 
 **Key Points:**
 - **coroutineScope**: inject via DI - don't use `viewModelScope` directly
-- **processingDispatcher**: Used for `offload {}` work and inspector logging; events themselves run on `Dispatchers.Main.immediate`. The default is `Dispatchers.IO`, which is safe for background workloads.
+- **processingDispatcher**: Defaults to `Dispatchers.IO`, override for testing
 - **inspector**: Optional monitoring for debugging/analytics
 
 ### Complete ViewModel Example
@@ -209,68 +209,6 @@ class MyViewModelImpl(
     }
 }
 ```
-
-### Main-thread-first processing
-
-USF now processes events on the main thread (`Dispatchers.Main.immediate`) by default. This removes the old background hop before state updates, so UI changes happen immediately.
-
-- `process(event)` executes on the main thread whenever the view model is active.
-- `updateState { … }` applies synchronously when already on main; if a background coroutine calls it, USF posts the update back to main for you.
-- Effects are emitted from the main thread, so UI collectors can interact with Compose `LaunchedEffect` safely.
-- Inspector logging still uses the `processingDispatcher` in fire-and-forget coroutines so diagnostics never block the UI.
-
-Keep main-thread work tiny: pure state copies and effect emissions are fine, but any blocking or slow calls must use `offload { }` or custom background coroutines.
-
-### Offloading heavy work
-
-Use the new `offload { }` helper any time work would block the UI thread—network, disk, CPU-intensive transforms. The helper runs on `processingDispatcher` (IO by default) and resumes on the caller's context when finished.
-
-```kotlin
-override suspend fun ResultScope<UiState, Effect>.process(event: Event) {
-    when (event) {
-        is Event.LoadFeeds -> {
-            updateState { it.copy(isLoading = true) }
-
-            val feeds = offload {
-                repository.fetchFeeds()    // Heavy IO on background thread
-            }
-
-            updateState { it.copy(isLoading = false, feeds = feeds) }
-        }
-
-        is Event.ProcessImage -> {
-            val processed = offload {
-                imageProcessor.render(event.source)  // CPU intensive work
-            }
-            updateState { it.copy(processedImage = processed) }
-        }
-    }
-}
-```
-
-Need finer control (parallel requests, custom dispatchers)? You can still use raw coroutines:
-
-```kotlin
-override suspend fun ResultScope<UiState, Effect>.process(event: Event) {
-    when (event) {
-        is Event.LoadDashboard -> {
-            val (user, feed) = coroutineScope {
-                val userDeferred = async(Dispatchers.IO) { userRepo.load() }
-                val feedDeferred = async(Dispatchers.IO) { feedRepo.load() }
-                userDeferred.await() to feedDeferred.await()
-            }
-            updateState { it.copy(user = user, dashboard = feed) }
-        }
-    }
-}
-```
-
-### Debug guardrails (StrictMode)
-
-Debug builds enable StrictMode to surface accidental blocking calls. The initializer lives at `app/src/debug/java/sh/kau/playground/app/StrictModeInitializer.kt`, and `AppImpl` invokes `StrictModeInitializer.enableStrictMode()` when `BuildConfig.DEBUG`.
-
-- Disk reads/writes, network, or slow calls on main thread appear immediately in logcat.
-- If StrictMode warns, move that work into `offload { }` (or a background coroutine) before shipping.
 
 ### The ResultScope
 
