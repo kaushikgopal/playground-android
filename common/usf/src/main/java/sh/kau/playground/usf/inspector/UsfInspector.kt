@@ -11,25 +11,48 @@ package sh.kau.playground.usf.inspector
  * processing pipeline:
  * 1. Pipeline lifecycle (start/stop)
  * 2. Event receipt
- * 3. Result production
- * 4. State updates
- * 5. Effect emissions
- * 6. Error handling
+ * 3. Event processing (before/after)
+ * 4. Result production
+ * 5. State updates
+ * 6. Effect emissions
+ * 7. Error handling
  */
 interface UsfInspector {
 
   /** Called when the USF pipeline starts. */
-  fun onPipelineStarted()
+  fun onPipelineStarted() = Unit
 
   /** Called when the USF pipeline stops. */
-  fun onPipelineStopped()
+  fun onPipelineStopped() = Unit
 
   /**
    * Inspects an event that was received by a USF component.
    *
    * @param event The event that was received
    */
-  fun onEvent(event: Any)
+  fun onEvent(event: Any) = Unit
+
+  /**
+   * Called before an event is processed by a USF component.
+   *
+   * This hook is called immediately before event processing begins, allowing inspectors to track
+   * timing, measure performance, or perform pre-processing setup.
+   *
+   * @param event The event about to be processed
+   */
+  fun beforeProcessEvent(event: Any) = Unit
+
+  /**
+   * Called after an event has been fully processed by a USF component.
+   *
+   * This hook is invoked after the event processing completes and all state updates and effects
+   * have been emitted. It provides a symmetrical hook to [beforeProcessEvent], allowing inspectors
+   * to track the complete event processing lifecycle, measure end-to-end performance, or perform
+   * cleanup operations.
+   *
+   * @param event The event that was processed
+   */
+  fun afterProcessEvent(event: Any) = Unit
 
   /**
    * Inspects a result that was produced during event processing. For backward compatibility with
@@ -37,21 +60,21 @@ interface UsfInspector {
    *
    * @param result The result that was produced
    */
-  fun onResult(result: Any)
+  fun onResult(result: Any) = Unit
 
   /**
    * Inspects a state update in a USF component.
    *
    * @param state The new state after the update
    */
-  fun onStateUpdated(state: Any)
+  fun onStateUpdated(state: Any) = Unit
 
   /**
    * Inspects an effect that was emitted by a USF component.
    *
    * @param effect The effect that was emitted
    */
-  fun onEffect(effect: Any)
+  fun onEffect(effect: Any) = Unit
 
   /**
    * Logs an error that occurred during event processing.
@@ -59,7 +82,7 @@ interface UsfInspector {
    * @param error The error that occurred
    * @param message Optional message providing context about the error
    */
-  fun error(error: Throwable, message: String)
+  fun error(error: Throwable, message: String) = Unit
 
   /**
    * Logs a debug message during the USF pipeline execution.
@@ -69,7 +92,7 @@ interface UsfInspector {
    *
    * @param message The debug message to log
    */
-  fun debug(message: String)
+  fun debug(message: String) = Unit
 
   companion object {
     /**

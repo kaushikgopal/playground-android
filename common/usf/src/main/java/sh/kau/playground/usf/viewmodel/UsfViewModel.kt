@@ -166,7 +166,9 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
             _pipelineScope?.launch(handler + Dispatchers.Main.immediate) {
               launch(processingDispatcher) { _inspector?.onEvent(event) }
               try {
+                _inspector?.beforeProcessEvent(event)
                 resultScope.run { process(event) }
+                _inspector?.afterProcessEvent(event)
               } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 _inspector?.error(e, "[ev → s|e]")
@@ -252,7 +254,7 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
    * lifecycle and canceled when the pipeline terminates. To launch jobs that survive pipeline
    * termination, you would need to explicitly use a different scope.
    */
-  protected open fun ResultScope<UiState, Effect>.onSubscribed() {
+  protected open fun ResultScope<UiState, Effect>.onStarted() {
     // Default implementation does nothing
   }
 
@@ -268,13 +270,13 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
           )
 
       mainJob = pipeline.launchIn(_viewModelScope.plus(handler))
-      pluginRegistrar.register(_pipelineScope!!)
+      pluginRegistrar.start(_pipelineScope!!)
 
       try {
-        with(resultScope) { onSubscribed() }
+        with(resultScope) { onStarted() }
       } catch (e: Exception) {
         if (e is CancellationException) throw e
-        _inspector?.error(e, "[onSubscribed]")
+        _inspector?.error(e, "[onStarted]")
       }
     }
     terminationJob?.cancel()
@@ -285,15 +287,15 @@ abstract class UsfViewModel<Event : Any, UiState : Any, Effect : Any>(
    * Schedules pipeline termination after the timeout period if no subscribers remain.
    *
    * This method is automatically called when the last subscriber stops collecting. If no new
-   * subscribers appear within the timeout period, all plugins are notified via onUnregistered() and
-   * the pipeline is shut down.
+   * subscribers appear within the timeout period, all plugins are notified via stop() and the
+   * pipeline is shut down.
    */
   private fun schedulePipelineTermination() {
     terminationJob =
         _viewModelScope.launch(handler) {
           delay(viewModelMaxTimeoutSeconds)
           if (subscriberCount.get() == 0) {
-            pluginRegistrar.unregister()
+            pluginRegistrar.stop()
 
             mainJob?.cancel()
             mainJob = null

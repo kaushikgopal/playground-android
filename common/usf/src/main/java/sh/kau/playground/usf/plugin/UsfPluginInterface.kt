@@ -91,10 +91,10 @@ import sh.kau.playground.usf.api.Usf
 interface UsfPluginInterface<Event, State, Effect> : Usf<Event, State, Effect> {
 
   /**
-   * Called when the plugin is first registered with a parent component.
+   * Starts the plugin with the provided coroutine scope.
    *
    * This lifecycle method serves two purposes:
-   * 1. Setting up the plugin's isolated scope that is a child of the parent scope
+   * 1. Setting up the plugin's isolated scope that is a child of the provided scope
    * 2. Performing any initial setup or state initialization
    *
    * The plugin receives an isolated scope that preserves the parent-child cancellation relationship
@@ -102,19 +102,19 @@ interface UsfPluginInterface<Event, State, Effect> : Usf<Event, State, Effect> {
    * isolation while still allowing cancellation to propagate. The isolated scope preserves only the
    * dispatcher from the parent context.
    *
-   * When the parent scope is cancelled, plugin operations will also be cancelled. Override this
+   * When the provided scope is cancelled, plugin operations will also be cancelled. Override this
    * method to add additional initialization logic.
    *
    * @param coroutineScope The isolated coroutine scope for this plugin
    */
-  fun onRegistered(coroutineScope: CoroutineScope)
+  fun start(coroutineScope: CoroutineScope)
 
   /**
-   * Called when the plugin is unregistered from its parent component.
+   * Stops the plugin and performs cleanup.
    *
    * Override this method to perform cleanup operations such as cancelling ongoing tasks, closing
-   * resources, or resetting state. This is called when the plugin is explicitly unregistered or
-   * when the parent component's pipeline terminates.
+   * resources, or resetting state. This is called when the plugin is explicitly stopped or when the
+   * parent component's pipeline terminates.
    */
-  fun onUnregistered()
+  fun stop()
 }

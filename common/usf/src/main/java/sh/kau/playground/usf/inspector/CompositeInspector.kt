@@ -29,6 +29,14 @@ internal class CompositeInspector(private val inspectors: List<UsfInspector>) : 
     inspectors.forEach { it.onEvent(event) }
   }
 
+  override fun beforeProcessEvent(event: Any) {
+    inspectors.forEach { it.beforeProcessEvent(event) }
+  }
+
+  override fun afterProcessEvent(event: Any) {
+    inspectors.forEach { it.afterProcessEvent(event) }
+  }
+
   override fun onResult(result: Any) {
     inspectors.forEach { it.onResult(result) }
   }

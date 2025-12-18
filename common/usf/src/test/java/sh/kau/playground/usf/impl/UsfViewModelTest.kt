@@ -558,10 +558,10 @@ class UsfViewModelTest {
   }
 
   @Test
-  @DisplayName("onSubscribed is called when first subscriber connects")
-  fun onSubscribedCalledOnFirstSubscriber() = runTest {
-    var onSubscribedCallCount = 0
-    var onSubscribedStateAtCall: TestState? = null
+  @DisplayName("onStarted is called when first subscriber connects")
+  fun onStartedCalledOnFirstSubscriber() = runTest {
+    var onStartedCallCount = 0
+    var onStartedStateAtCall: TestState? = null
 
     val viewModel =
         object :
@@ -569,16 +569,16 @@ class UsfViewModelTest {
                 coroutineScope = backgroundScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
-            onSubscribedCallCount++
-            onSubscribedStateAtCall = state.value
-            // Test that we can update state and emit effects in onSubscribed
-            updateState { it.copy(name = "Subscribed") }
-            emitEffect(TestEffect.NamedEffect("OnSubscribed"))
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
+            onStartedCallCount++
+            onStartedStateAtCall = state.value
+            // Test that we can update state and emit effects in onStarted
+            updateState { it.copy(name = "Started") }
+            emitEffect(TestEffect.NamedEffect("OnStarted"))
           }
         }
 
-    assertThat(onSubscribedCallCount).isEqualTo(0) // Not called yet
+    assertThat(onStartedCallCount).isEqualTo(0) // Not called yet
 
     val viewStates = mutableListOf<TestState>()
     val effects = mutableListOf<TestEffect>()
@@ -586,20 +586,20 @@ class UsfViewModelTest {
     val jobEf = backgroundScope.launch { viewModel.effects.toList(effects) }
     runCurrent()
 
-    assertThat(onSubscribedCallCount).isEqualTo(1) // Called once when first subscriber connects
-    assertThat(onSubscribedStateAtCall).isEqualTo(TestState()) // Initial state was available
-    assertThat(viewStates.last()).isEqualTo(TestState(name = "Subscribed")) // State was updated
+    assertThat(onStartedCallCount).isEqualTo(1) // Called once when first subscriber connects
+    assertThat(onStartedStateAtCall).isEqualTo(TestState()) // Initial state was available
+    assertThat(viewStates.last()).isEqualTo(TestState(name = "Started")) // State was updated
     assertThat(effects)
-        .containsExactly(TestEffect.NamedEffect("OnSubscribed")) // Effect was emitted
+        .containsExactly(TestEffect.NamedEffect("OnStarted")) // Effect was emitted
 
     jobVs.cancel()
     jobEf.cancel()
   }
 
   @Test
-  @DisplayName("onSubscribed is called again when pipeline restarts after timeout")
-  fun onSubscribedCalledOnPipelineRestart() = runTest {
-    var onSubscribedCallCount = 0
+  @DisplayName("onStarted is called again when pipeline restarts after timeout")
+  fun onStartedCalledOnPipelineRestart() = runTest {
+    var onStartedCallCount = 0
 
     val viewModel =
         object :
@@ -607,8 +607,8 @@ class UsfViewModelTest {
                 coroutineScope = backgroundScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
-            onSubscribedCallCount++
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
+            onStartedCallCount++
             updateState { it.copy(counter = it.counter + 1) }
           }
         }
@@ -616,7 +616,7 @@ class UsfViewModelTest {
     // First subscription
     val job1 = backgroundScope.launch { viewModel.state.collect {} }
     runCurrent()
-    assertThat(onSubscribedCallCount).isEqualTo(1)
+    assertThat(onStartedCallCount).isEqualTo(1)
 
     job1.cancel()
     runCurrent()
@@ -626,18 +626,18 @@ class UsfViewModelTest {
     runCurrent()
     assertThat(viewModel.mainJob?.isActive ?: false).isFalse()
 
-    // Second subscription should restart pipeline and call onSubscribed again
+    // Second subscription should restart pipeline and call onStarted again
     val job2 = backgroundScope.launch { viewModel.state.collect {} }
     runCurrent()
-    assertThat(onSubscribedCallCount).isEqualTo(2) // Called again on restart
+    assertThat(onStartedCallCount).isEqualTo(2) // Called again on restart
 
     job2.cancel()
   }
 
   @Test
-  @DisplayName("onSubscribed is not called for additional subscribers while pipeline is active")
-  fun onSubscribedNotCalledForAdditionalSubscribers() = runTest {
-    var onSubscribedCallCount = 0
+  @DisplayName("onStarted is not called for additional subscribers while pipeline is active")
+  fun onStartedNotCalledForAdditionalSubscribers() = runTest {
+    var onStartedCallCount = 0
 
     val viewModel =
         object :
@@ -645,25 +645,25 @@ class UsfViewModelTest {
                 coroutineScope = backgroundScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
-            onSubscribedCallCount++
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
+            onStartedCallCount++
           }
         }
 
     // First subscriber
     val job1 = backgroundScope.launch { viewModel.state.collect {} }
     runCurrent()
-    assertThat(onSubscribedCallCount).isEqualTo(1)
+    assertThat(onStartedCallCount).isEqualTo(1)
 
     // Second subscriber while pipeline is still active
     val job2 = backgroundScope.launch { viewModel.state.collect {} }
     runCurrent()
-    assertThat(onSubscribedCallCount).isEqualTo(1) // Still only called once
+    assertThat(onStartedCallCount).isEqualTo(1) // Still only called once
 
     // Third subscriber (effects)
     val job3 = backgroundScope.launch { viewModel.effects.collect {} }
     runCurrent()
-    assertThat(onSubscribedCallCount).isEqualTo(1) // Still only called once
+    assertThat(onStartedCallCount).isEqualTo(1) // Still only called once
 
     job1.cancel()
     job2.cancel()
@@ -671,8 +671,8 @@ class UsfViewModelTest {
   }
 
   @Test
-  @DisplayName("onSubscribed can perform async operations")
-  fun onSubscribedAsyncOperations() = runTest {
+  @DisplayName("onStarted can perform async operations")
+  fun onStartedAsyncOperations() = runTest {
     var asyncOperationCompleted = false
 
     val viewModel =
@@ -681,7 +681,7 @@ class UsfViewModelTest {
                 coroutineScope = backgroundScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
             coroutineScope.launch {
               delay(50)
               updateState { it.copy(name = "Async Updated") }
@@ -715,9 +715,9 @@ class UsfViewModelTest {
   }
 
   @Test
-  @DisplayName("onSubscribed error handling does not break pipeline")
-  fun onSubscribedErrorHandling() = runTest {
-    var onSubscribedCalled = false
+  @DisplayName("onStarted error handling does not break pipeline")
+  fun onStartedErrorHandling() = runTest {
+    var onStartedCalled = false
 
     val viewModel =
         object :
@@ -725,10 +725,10 @@ class UsfViewModelTest {
                 coroutineScope = backgroundScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
-            onSubscribedCalled = true
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
+            onStartedCalled = true
             updateState { it.copy(name = "Before Error") }
-            error("Test error in onSubscribed")
+            error("Test error in onStarted")
           }
         }
 
@@ -738,11 +738,11 @@ class UsfViewModelTest {
     val jobEf = backgroundScope.launch { viewModel.effects.toList(effects) }
     runCurrent()
 
-    assertThat(onSubscribedCalled).isTrue()
+    assertThat(onStartedCalled).isTrue()
     // State should still be updated before the error
     assertThat(viewStates.last()).isEqualTo(TestState(name = "Before Error"))
 
-    // Pipeline should still be functional after error in onSubscribed
+    // Pipeline should still be functional after error in onStarted
     viewModel.input(TestEvent.UpdateName("After Error"))
     runCurrent()
 
@@ -753,8 +753,8 @@ class UsfViewModelTest {
   }
 
   @Test
-  @DisplayName("Jobs started in onSubscribed are canceled when pipeline terminates")
-  fun onSubscribedJobsCanceledOnPipelineTermination() = runTest {
+  @DisplayName("Jobs started in onStarted are canceled when pipeline terminates")
+  fun onStartedJobsCanceledOnPipelineTermination() = runTest {
     var jobStarted = false
     var jobCompleted = false
     var jobCanceled = false
@@ -766,7 +766,7 @@ class UsfViewModelTest {
                 coroutineScope = backgroundScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
             // Launch job on coroutineScope which now automatically provides the pipeline scope
             // when the pipeline is active, so jobs are tied to the pipeline lifecycle
             pipelineJob =
@@ -783,7 +783,7 @@ class UsfViewModelTest {
           }
         }
 
-    // Start subscription to trigger onSubscribed
+    // Start subscription to trigger onStarted
     val job = backgroundScope.launch { viewModel.state.collect {} }
     runCurrent()
 
@@ -859,7 +859,7 @@ class UsfViewModelTest {
                 coroutineScope = viewModelScope,
                 processingDispatcher = coroutineTestRule.testDispatcher,
             ) {
-          override fun ResultScope<TestState, TestEffect>.onSubscribed() {
+          override fun ResultScope<TestState, TestEffect>.onStarted() {
             // Launch a long-running job in the pipeline scope
             pipelineJob =
                 coroutineScope.launch {
@@ -875,7 +875,7 @@ class UsfViewModelTest {
           }
         }
 
-    // Start subscription to activate pipeline and trigger onSubscribed
+    // Start subscription to activate pipeline and trigger onStarted
     val stateCollectorJob = backgroundScope.launch { viewModel.state.collect {} }
     runCurrent()
 

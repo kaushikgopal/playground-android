@@ -35,7 +35,7 @@ class SettingsBViewModelImpl(
     )
   }
 
-  override fun ResultScope<SettingsBUiState, SettingsBEffect>.onSubscribed() {
+  override fun ResultScope<SettingsBUiState, SettingsBEffect>.onStarted() {
     // Load quote for the day
     coroutineScope.launch(Dispatchers.IO) {
       val quote = quotesRepo().quoteForTheDay()

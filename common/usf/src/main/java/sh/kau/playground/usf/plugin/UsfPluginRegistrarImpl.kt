@@ -27,7 +27,7 @@ import sh.kau.playground.usf.plugin.adapter.UsfStateAdapter
  * - Registration and unregistration of plugins
  * - Setup of state and effect subscriptions
  * - Forwarding events to plugins
- * - Managing plugin lifecycle (onRegister/onUnregister)
+ * - Managing plugin lifecycle (start/stop)
  *
  * It can be used by any component that needs to work with UsfPlugins, like ViewModels or other
  * plugins.
@@ -56,7 +56,21 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
       mutableMapOf<UsfPluginInterface<*, *, *>, PluginRegistration<*, *, *, Event, State, Effect>>()
 
   /**
+   * Cached list of plugins that have event mappers.
+   *
+   * This cache avoids allocating intermediate collections on every event by maintaining a list of
+   * plugins that can receive events. Updated when plugins are registered or unregistered.
+   */
+  private val _pluginsWithEventMappers =
+      mutableListOf<Pair<UsfPluginInterface<*, *, *>, PluginRegistration<*, *, *, Event, State, Effect>>>()
+
+  /**
    * Registers a plugin with its adapters.
+   *
+   * Plugins can be registered at any time, even before the parent component is ready. If the parent
+   * scope is not yet available, the plugin will be stored and set up later when the scope becomes
+   * available (deferred registration). This allows plugins to be registered in constructors or init
+   * blocks without timing errors.
    *
    * @param plugin The plugin to register
    * @param mapEvent Adapter that filters/maps events for this plugin
@@ -76,11 +90,19 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
     val registration = PluginRegistration(applyState, mapEffect, mapEvent, transformEffect)
     _registeredPlugins[plugin] = registration
 
+    // Add to cache if this plugin has an event mapper
+    if (registration.eventMapper != null) {
+      _pluginsWithEventMappers.add(plugin to registration)
+    }
+
     setupPluginSubscriptions(plugin)
   }
 
   /**
    * Unregisters a previously registered plugin.
+   *
+   * If the plugin was never fully set up (deferred registration before scope was available), this
+   * will only remove it from the registered plugins list without calling lifecycle methods.
    *
    * @param plugin The plugin to unregister
    */
@@ -88,23 +110,31 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
       plugin: UsfPluginInterface<PluginEvent, PluginState, PluginEffect>
   ) {
     val registration = _registeredPlugins.remove(plugin) ?: return
+
+    // Remove from cache if this plugin had an event mapper
+    if (registration.eventMapper != null) {
+      _pluginsWithEventMappers.removeAll { (p, _) -> p === plugin }
+    }
+
     registration.pluginScope?.cancel()
-    plugin.onUnregistered()
+    plugin.stop()
   }
 
   /**
    * Processes an event through all registered plugins.
    *
+   * Uses the cached list of plugins with event mappers to avoid allocating intermediate collections
+   * on every event.
+   *
    * @param event The event to process
    */
   @Suppress("UNCHECKED_CAST")
   override fun input(event: Event) {
-    _registeredPlugins
-        .filter { (_, registration) -> registration.eventMapper != null }
-        .forEach { (plugin, registration) ->
-          val eventMapper = registration.eventMapper as UsfEventAdapter<Event, Any>
-          eventMapper.map(event)?.let { mappedEvent -> tryProcessEvent(plugin, mappedEvent) }
-        }
+    // Iterate over cached list to avoid filter allocations on hot path
+    _pluginsWithEventMappers.forEach { (plugin, registration) ->
+      val eventMapper = registration.eventMapper as UsfEventAdapter<Event, Any>
+      eventMapper.map(event)?.let { mappedEvent -> tryProcessEvent(plugin, mappedEvent) }
+    }
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -163,42 +193,46 @@ internal class UsfPluginRegistrarImpl<Event : Any, State : Any, Effect : Any>(
       }
     }
 
-    if (registration.effectAdapter != null) {
+    // Collect plugin effects only once and process through both adapters if present
+    // This avoids the performance issue of collecting the same flow multiple times
+    if (registration.effectAdapter != null || registration.effectToEventAdapter != null) {
       pluginScope.launch {
         plugin.effects.collect { pluginEffect ->
           try {
-            registration.effectAdapter.map(pluginEffect)?.let { effect -> _effects.emit(effect) }
+            // Map plugin effect to parent effect if adapter exists
+            registration.effectAdapter?.map(pluginEffect)?.let { effect -> _effects.emit(effect) }
+
+            // Transform plugin effect to parent event if adapter exists
+            registration.effectToEventAdapter?.map(pluginEffect)?.let { event ->
+              parentInput(event)
+            }
           } catch (e: Exception) {
             if (e is CancellationException) throw e // propagate cancellation
-            inspector?.error(e, "[pef →  ef]")
+            inspector?.error(e, "[pef →  ef|ev]")
           }
         }
       }
     }
 
-    if (registration.effectToEventAdapter != null) {
-      pluginScope.launch {
-        plugin.effects.collect { pluginEffect ->
-          try {
-            registration.effectToEventAdapter.map(pluginEffect)?.let { event -> parentInput(event) }
-          } catch (e: Exception) {
-            if (e is CancellationException) throw e // propagate cancellation
-            inspector?.error(e, "[pef →  ev]")
-          }
-        }
-      }
-    }
-
-    plugin.onRegistered(pluginScope)
+    plugin.start(pluginScope)
   }
 
-  internal fun register(coroutineScope: CoroutineScope) {
+  internal fun start(coroutineScope: CoroutineScope) {
     _coroutineScope = coroutineScope
+
+    // Rebuild the event mapper cache when restarting with a new scope
+    _pluginsWithEventMappers.clear()
+    _registeredPlugins.forEach { (plugin, registration) ->
+      if (registration.eventMapper != null) {
+        _pluginsWithEventMappers.add(plugin to registration)
+      }
+    }
+
     _registeredPlugins.keys.forEach { plugin -> setupPluginSubscriptions(plugin) }
   }
 
-  internal fun unregister() {
-    _registeredPlugins.keys.forEach { plugin -> plugin.onUnregistered() }
+  internal fun stop() {
+    _registeredPlugins.keys.forEach { plugin -> plugin.stop() }
     _registeredPlugins.values.forEach { registration -> registration.pluginScope?.cancel() }
   }
 }

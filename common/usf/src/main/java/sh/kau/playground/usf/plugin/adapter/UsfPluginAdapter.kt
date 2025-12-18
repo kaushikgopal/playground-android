@@ -39,22 +39,22 @@ class UsfPluginAdapter<Event : Any, State : Any, Effect : Any>(
   }
 
   /**
-   * Called when this plugin is registered with a parent component.
+   * Called when this plugin is started.
    *
    * This method starts collecting from the component's state and effects flows, ensuring that:
    * 1. The component is actively processing events
    * 2. State and effects are propagated to the parent
    * 3. Coroutine cancellation is properly handled
    *
-   * @param coroutineScope The parent's coroutine scope to use for this plugin
+   * @param coroutineScope The coroutine scope to use for this plugin
    */
-  override fun onRegistered(coroutineScope: CoroutineScope) {
+  override fun start(coroutineScope: CoroutineScope) {
     usf.state.onEach { state -> _state.value = state }.launchIn(coroutineScope)
     usf.effects.onEach { effect -> _effects.emit(effect) }.launchIn(coroutineScope)
   }
 
   /** Structured concurrency takes care of cleanup, no need to do anything here. */
-  override fun onUnregistered() = Unit
+  override fun stop() = Unit
 }
 
 /**
